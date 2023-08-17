@@ -5,6 +5,7 @@ import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
 import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
 import com.example.princesstown.chat.dto.MemberIdListDto;
 import com.example.princesstown.chat.entity.ChatRoom;
+import com.example.princesstown.chat.entity.ChatUser;
 import com.example.princesstown.chat.repository.ChatRoomRepository;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
@@ -23,6 +24,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     @Override
+    @Transactional
     public ChatRoomInfoResponseDto createChatRoom(User user, MemberIdListDto memberIdListDto) {
         ChatRoom newChatRoom = new ChatRoom(user);
 
@@ -31,7 +33,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         userList.add(user);
 
         // 생성된 채팅방에 user 정보 추가(ChatUser)
-        newChatRoom.addChatUser(userList);
+        for (User u : userList) {
+            newChatRoom.addChatUser(u);
+        }
 
         chatRoomRepository.save(newChatRoom);
 
@@ -63,6 +67,16 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         chatRoomRepository.delete(chatRoom);
+    }
+
+    @Override
+    public MemberIdListDto getChatRoomMembers(Long chatRoomId) {
+        ChatRoom chatRoom = findChatRoomById(chatRoomId);
+
+        List<ChatMemberIdDto> chatMemberIdList = chatRoom.getChatUserList()
+                .stream().map(ChatUser::getUser).map(ChatMemberIdDto::new).toList();
+
+        return new MemberIdListDto(chatMemberIdList);
     }
 
     @Override

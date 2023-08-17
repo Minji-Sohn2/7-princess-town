@@ -4,6 +4,7 @@ import com.example.princesstown.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "chatroom")
 @NoArgsConstructor
 public class ChatRoom {
@@ -34,12 +36,11 @@ public class ChatRoom {
     private List<ChatUser> chatUserList = new ArrayList<>();
 
     /* 연관관계 편의 메서드 */
-    public void addChatUser(List<User> userList) {
-        for (User user : userList) {
-            ChatUser chatUser = new ChatUser(user, this);
-            this.chatUserList.add(chatUser);
-            user.getChatUserList().add(chatUser);
-        }
+    public void addChatUser(User user) {
+        ChatUser chatUser = new ChatUser(user, this);
+        this.chatUserList.add(chatUser);
+        user.getChatUserList().add(chatUser);
+
     }
 
     /* 서비스 메서드 */

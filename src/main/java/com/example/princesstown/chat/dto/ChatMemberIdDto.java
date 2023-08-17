@@ -1,10 +1,19 @@
 package com.example.princesstown.chat.dto;
 
-import lombok.Builder;
+import com.example.princesstown.entity.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
+@NoArgsConstructor
 public class ChatMemberIdDto {
     private Long userId;
+
+    public ChatMemberIdDto(Long userId) {
+        this.userId = userId;
+    }
+
+    public ChatMemberIdDto(User user) {
+        this.userId = user.getId();
+    }
 }

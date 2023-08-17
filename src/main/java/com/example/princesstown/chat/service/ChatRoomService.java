@@ -36,6 +36,14 @@ public interface ChatRoomService {
     void deleteChatRoom(Long roomId, User user);
 
     /**
+     * 채팅방 멤버 조회
+     *
+     * @param roomId 조회할 채팅방 id
+     * @return 멤버 id list
+     */
+    MemberIdListDto getChatRoomMembers(Long roomId);
+
+    /**
      * userId로 user 찾기
      *
      * @param userId 찾을 userId
