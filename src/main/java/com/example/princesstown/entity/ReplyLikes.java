@@ -25,6 +25,10 @@ public class ReplyLikes extends TimeStamped{
     @JoinColumn(name = "reply_id")
     private Reply reply;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @PostPersist
     @PostUpdate
     public void afterLikeChange() {

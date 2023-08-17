@@ -30,8 +30,8 @@ public class Reply extends TimeStamped {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private Comment comment;
+    @JoinColumn(name = "reply_id")
+    private Reply reply;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

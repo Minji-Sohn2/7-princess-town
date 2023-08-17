@@ -23,6 +23,10 @@ public class CommentLikes extends TimeStamped{
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @PostPersist
     @PostUpdate
     public void afterLikeChange() {

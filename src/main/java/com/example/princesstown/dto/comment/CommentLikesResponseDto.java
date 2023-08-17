@@ -21,7 +21,7 @@ public class CommentLikesResponseDto {
 
     public CommentLikesResponseDto(CommentLikes commentLikes) {
         this.id = commentLikes.getId();
-        this.user_id = commentLikes.getComment().getUser().getId();
+        this.user_id = commentLikes.getUser().getId();
 //        this.post_id = commentLikes.getComment().getPost().getId();
 //        this.nickname = commentLikes.getComment().getUser().getNickname();
         this.likes = commentLikes.isLikes();
