@@ -11,5 +11,11 @@ public class RestApiResponseDto {
 
     private int status;
     private String success;
+
     private Object result;
+
+    public RestApiResponseDto(int status, String success) {
+        this.status = status;
+        this.success = success;
+    }
 }

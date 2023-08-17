@@ -1,5 +1,6 @@
 package com.example.princesstown.entity;
 
+import com.example.princesstown.dto.comment.ReplyLikesRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,10 @@ public class ReplyLikes extends TimeStamped{
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void update(ReplyLikesRequestDto requestDto) {
+        this.likes = requestDto.isLikes();
+    }
 
     @PostPersist
     @PostUpdate
