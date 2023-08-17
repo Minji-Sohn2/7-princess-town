@@ -28,6 +28,14 @@ public interface ChatRoomService {
     ChatRoomInfoResponseDto updateChatRoomName(Long chatRoomId, User user, ChatRoomNameRequestDto requestDto);
 
     /**
+     * 채팅방 삭제
+     *
+     * @param roomId 삭제할 채팅방 id
+     * @param user   요청하는 user
+     */
+    void deleteChatRoom(Long roomId, User user);
+
+    /**
      * userId로 user 찾기
      *
      * @param userId 찾을 userId

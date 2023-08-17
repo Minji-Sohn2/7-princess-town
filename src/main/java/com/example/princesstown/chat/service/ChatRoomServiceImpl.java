@@ -54,6 +54,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    public void deleteChatRoom(Long chatRoomId, User user) {
+        // 요청한 user가 채팅방의 생성자인지 확인
+        ChatRoom chatRoom = findChatRoomById(chatRoomId);
+
+        if (!chatRoom.getHostUserId().equals(user.getId())) {
+            throw new IllegalArgumentException("채팅방은 호스트만 삭제할 수 있습니다.");
+        }
+
+        chatRoomRepository.delete(chatRoom);
+    }
+
+    @Override
     public User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 사용자입니다.")
