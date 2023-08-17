@@ -1,6 +1,5 @@
 package com.example.princesstown.entity;
 
-import com.example.princesstown.dto.comment.CommentLikesRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

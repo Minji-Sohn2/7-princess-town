@@ -1,6 +1,5 @@
 package com.example.princesstown.service.comment;
 
-import com.example.princesstown.dto.comment.CommentLikesRequestDto;
 import com.example.princesstown.dto.comment.CommentLikesResponseDto;
 import com.example.princesstown.dto.comment.CommentRequestDto;
 import com.example.princesstown.dto.comment.RestApiResponseDto;
