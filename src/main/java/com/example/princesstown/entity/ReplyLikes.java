@@ -30,10 +30,6 @@ public class ReplyLikes extends TimeStamped{
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void update(ReplyLikesRequestDto requestDto) {
-        this.likes = requestDto.isLikes();
-    }
-
     @PostPersist
     @PostUpdate
     public void afterLikeChange() {

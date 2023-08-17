@@ -56,13 +56,8 @@ public class ReplyService {
 
     public ResponseEntity<RestApiResponseDto> liketogle(Long postId, Long commentId, Long replyId, ReplyLikesRequestDto requestDto, User user) {
         try {
-
-            replyRepository.findByPostId(postId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-
-            replyRepository.findByCommentId(commentId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
-
+            replyRepository.findByPostIdAndCommentId(postId, commentId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
 
             Long userId = user.getId();
             ReplyLikes replyLikes = replyLikesRepository.findByReplyIdAndUserId(replyId, userId)
@@ -74,9 +69,14 @@ public class ReplyService {
                 throw new IllegalArgumentException("잘못된 접근입니다.");
             }
 
-            replyLikes.setLikes(true);
-            replyLikes.update(requestDto);
-            return this.resultResponse(HttpStatus.OK, "좋아요 클릭", new ReplyLikesResponseDto(replyLikes));
+            boolean likeState = !replyLikes.isLikes();
+            replyLikes.setLikes(likeState);
+            replyLikesRepository.save(replyLikes);
+
+            String message = likeState ? "좋아요 클릭" : "좋아요 취소";
+
+            return this.resultResponse(HttpStatus.OK, message, new ReplyLikesResponseDto(replyLikes));
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }

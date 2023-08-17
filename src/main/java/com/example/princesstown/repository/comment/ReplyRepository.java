@@ -9,7 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
-    Optional<Object> findByPostId(Long postId);
-    Optional<Object> findByCommentId(Long commentId);
+    Optional<Object> findByPostIdAndCommentId(Long postId, Long commentId);
 
 }

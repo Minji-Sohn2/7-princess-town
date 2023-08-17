@@ -76,10 +76,12 @@ public class CommentService {
                 throw new IllegalArgumentException("잘못된 접근입니다.");
             }
 
-            commentLikes.setLikes(true);
-            commentLikes.update(requestDto);
+            boolean likeStatus = !commentLikes.isLikes();
+            commentLikes.setLikes(likeStatus);
+            commentLikesRepository.save(commentLikes);
+            String message = likeStatus ? "좋아요 클릭" : "좋아요 취소";
 
-            return this.resultResponse(HttpStatus.OK, "좋아요 클릭", new CommentLikesResponseDto(commentLikes));
+            return this.resultResponse(HttpStatus.OK, message, new CommentLikesResponseDto(commentLikes));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }
