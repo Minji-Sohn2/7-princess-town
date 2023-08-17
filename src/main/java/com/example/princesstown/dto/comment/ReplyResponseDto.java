@@ -13,7 +13,7 @@ public class ReplyResponseDto {
     private Long id;
     private String content;
     private Long likeCnt;
-    private Long comment_id;
+    private Long reply_id;
     private Long user_id;
     private String username;
     private String nickname;
@@ -24,7 +24,7 @@ public class ReplyResponseDto {
         this.id = reply.getId();
         this.content = reply.getContent();
         this.likeCnt = reply.getLikeCnt();
-        this.comment_id = reply.getComment().getId();
+        this.reply_id = reply.getReply().getId();
         this.user_id = reply.getUser().getId();
 //        this.username = reply.getUser().getUsername();
 //        this.nickname = reply.getUser().getNickname();
