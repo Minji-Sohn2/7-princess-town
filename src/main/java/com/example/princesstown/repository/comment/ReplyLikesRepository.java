@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ReplyLikesRepository extends JpaRepository<ReplyLikes, Long> {
-    Optional<ReplyLikes> findByReplyIdAndUserId(Long replyId, Long userId);
+    Optional<ReplyLikes> findByReplyId(Long replyId);
 }

@@ -63,8 +63,8 @@ public class ReplyController {
         return replyService.deleteReplys(postId, commentId, replyId, userDetails.getUser());
     }
 
-    @PutMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}")
-    public ResponseEntity<RestApiResponseDto> likestogle(
+    @PostMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")
+    public ResponseEntity<RestApiResponseDto> createLikes(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @PathVariable Long replyId,
@@ -72,7 +72,19 @@ public class ReplyController {
     ) {
         this.tokenValidate(userDetails);
 
-        return replyService.liketogle(postId, commentId, replyId, userDetails.getUser());
+        return replyService.createLikes(postId, commentId, replyId, userDetails.getUser());
+    }
+
+    @PutMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")
+    public ResponseEntity<RestApiResponseDto> deleteLikes(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @PathVariable Long replyId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        this.tokenValidate(userDetails);
+
+        return replyService.deleteLikes(postId, commentId, replyId, userDetails.getUser());
     }
 
     public void tokenValidate(UserDetailsImpl userDetails) {

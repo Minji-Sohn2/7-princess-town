@@ -54,28 +54,59 @@ public class ReplyService {
         return null;
     }
 
-    public ResponseEntity<RestApiResponseDto> liketogle(Long postId, Long commentId, Long replyId, ReplyLikesRequestDto requestDto, User user) {
+    public ResponseEntity<RestApiResponseDto> createLike(Long postId, Long commentId, Long replyId, User user) {
+        try {
+            replyRepository.findByPostIdAndCommentId(postId, commentId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
+
+            ReplyLikes replyLikes = replyLikesRepository.findByReplyId(replyId)
+                    .orElseThrow(
+                            () -> new IllegalArgumentException("해당 답글이 존재하지 않습니다."));
+
+            Long writerId = replyLikes.getUser().getId();
+            Long loginId = user.getId();
+            if (!writerId.equals(loginId)) {
+                throw new IllegalArgumentException("다른 사용자의 요청입니다.");
+            }
+
+            if (replyLikes.isLikes()) {
+                throw new IllegalArgumentException("이미 좋아요가 눌러져있는 상태입니다.");
+            } else {
+                replyLikes.setLikes(true);
+                replyLikesRepository.save(replyLikes);
+            }
+
+            return this.resultResponse(HttpStatus.CREATED, "좋아요 생성", new ReplyLikesResponseDto(replyLikes));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<RestApiResponseDto> deleteLike(Long postId, Long commentId, Long replyId, User user) {
         try {
             replyRepository.findByPostIdAndCommentId(postId, commentId).orElseThrow(
                     () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
 
             Long userId = user.getId();
-            ReplyLikes replyLikes = replyLikesRepository.findByReplyIdAndUserId(replyId, userId)
+            ReplyLikes replyLikes = replyLikesRepository.findByReplyId(replyId)
                     .orElseThrow(
-                            () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
+                            () -> new IllegalArgumentException("해당 답글이 존재하지 않습니다."));
 
             Long writerId = replyLikes.getUser().getId();
             if (!writerId.equals(userId)) {
                 throw new IllegalArgumentException("잘못된 접근입니다.");
             }
 
-            boolean likeState = !replyLikes.isLikes();
-            replyLikes.setLikes(likeState);
-            replyLikesRepository.save(replyLikes);
+            if (!replyLikes.isLikes()) {
+                throw new IllegalArgumentException("이미 취소된 좋아요입니다.");
+            } else {
+                replyLikes.setLikes(false);
+                replyLikesRepository.save(replyLikes);
+            }
 
-            String message = likeState ? "좋아요 클릭" : "좋아요 취소";
 
-            return this.resultResponse(HttpStatus.OK, message, new ReplyLikesResponseDto(replyLikes));
+            return this.resultResponse(HttpStatus.CREATED, "좋아요 취소", new ReplyLikesResponseDto(replyLikes));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));

@@ -39,4 +39,8 @@ public class ReplyLikes extends TimeStamped{
             reply.setLikeCnt(reply.getLikeCnt() - 1);
         }
     }
+
+    public void update(ReplyLikesRequestDto requestDto) {
+        this.likes = requestDto.isLikes();
+    }
 }

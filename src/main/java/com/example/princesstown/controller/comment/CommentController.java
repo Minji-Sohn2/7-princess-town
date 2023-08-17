@@ -61,15 +61,27 @@ public class CommentController {
         return commentService.deleteComments(postId, commentId, userDetails.getUser());
     }
 
+    @PostMapping("/posts/{postId}/comments/{commentId}/likes")
+    public ResponseEntity<RestApiResponseDto> createLikes(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @PathVariable Long replyId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        this.tokenValidate(userDetails);
+
+        return commentService.createLikes(postId, commentId, replyId, userDetails.getUser());
+    }
+
     @PutMapping("/posts/{postId}/comments/{commentId}/likes")
-    public ResponseEntity<RestApiResponseDto> likestogle(
+    public ResponseEntity<RestApiResponseDto> deleteLikes(
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return commentService.liketogle(postId, commentId, userDetails.getUser());
+        return commentService.deleteLikes(postId, commentId, userDetails.getUser());
     }
 
     public void tokenValidate(UserDetailsImpl userDetails) {
