@@ -1,4 +1,7 @@
 package com.example.princesstown.service.comment;
 
-public interface CommentService {
+import org.springframework.stereotype.Service;
+
+@Service
+public class CommentService {
 }
