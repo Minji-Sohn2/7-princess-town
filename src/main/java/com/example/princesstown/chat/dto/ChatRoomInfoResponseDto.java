@@ -1,7 +1,6 @@
 package com.example.princesstown.chat.dto;
 
 import com.example.princesstown.chat.entity.ChatRoom;
-import com.example.princesstown.entity.User;
 import lombok.Getter;
 
 @Getter
@@ -12,10 +11,10 @@ public class ChatRoomInfoResponseDto {
     private int memberCount;
 
 
-    public ChatRoomInfoResponseDto(User user, ChatRoom chatRoom) {
+    public ChatRoomInfoResponseDto(ChatRoom chatRoom) {
         this.chatRoomId = chatRoom.getId();
         this.chatRoomName = chatRoom.getChatRoomName();
-        this.hostUserId = user.getId();
+        this.hostUserId = chatRoom.getHostUserId();
         this.memberCount = chatRoom.getChatUserList().size();
     }
 }

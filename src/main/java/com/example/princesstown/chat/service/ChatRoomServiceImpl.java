@@ -2,6 +2,7 @@ package com.example.princesstown.chat.service;
 
 import com.example.princesstown.chat.dto.ChatMemberIdDto;
 import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
+import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
 import com.example.princesstown.chat.dto.MemberIdListDto;
 import com.example.princesstown.chat.entity.ChatRoom;
 import com.example.princesstown.chat.repository.ChatRoomRepository;
@@ -9,6 +10,7 @@ import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public ChatRoomInfoResponseDto createChatRoom(User user, MemberIdListDto memberIdListDto) {
-        ChatRoom newChatRoom = new ChatRoom();
+        ChatRoom newChatRoom = new ChatRoom(user);
 
         // userList에 초대한 사용자와 생성한 사용자 추가
         List<User> userList = dtoToUserList(memberIdListDto);
@@ -33,20 +35,43 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         chatRoomRepository.save(newChatRoom);
 
-        return new ChatRoomInfoResponseDto(user, newChatRoom);
+        return new ChatRoomInfoResponseDto(newChatRoom);
     }
 
-    private User findById(Long userId) {
+    @Override
+    @Transactional
+    public ChatRoomInfoResponseDto updateChatRoomName(Long chatRoomId, User user, ChatRoomNameRequestDto requestDto) {
+        // 요청한 user가 채팅방의 생성자인지 확인
+        ChatRoom chatRoom = findChatRoomById(chatRoomId);
+
+        if (!chatRoom.getHostUserId().equals(user.getId())) {
+            throw new IllegalArgumentException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
+        }
+
+        chatRoom.updateChatRoomName(requestDto.getNewChatRoomName());
+
+        return new ChatRoomInfoResponseDto(chatRoom);
+    }
+
+    @Override
+    public User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 사용자입니다.")
         );
     }
 
-    private List<User> dtoToUserList (MemberIdListDto memberIdListDto) {
+    public ChatRoom findChatRoomById(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId).orElseThrow(
+                () -> new NullPointerException("존재하지 않는 채팅방입니다.")
+        );
+    }
+
+    @Override
+    public List<User> dtoToUserList(MemberIdListDto memberIdListDto) {
         // 전달받은 사용자 리스트
         List<User> userList = new ArrayList<>();
-        for(ChatMemberIdDto cmd : memberIdListDto.getMemberIdList()) {
-            User user = findById(cmd.getUserId());
+        for (ChatMemberIdDto cmd : memberIdListDto.getMemberIdList()) {
+            User user = findUserById(cmd.getUserId());
             userList.add(user);
         }
         return userList;
