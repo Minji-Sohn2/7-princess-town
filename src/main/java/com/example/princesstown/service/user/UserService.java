@@ -87,11 +87,6 @@ public class UserService {
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
 
-        // JWT 생성 후 Response 객체의 헤더에 추가함
-        String token = jwtUtil.createToken(requestDto.getUsername());
-        log.info("token : " + token);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
-
         // 서버 측에 로그를 찍는 역할을 합니다.
         log.info(username + "님이 로그인에 성공하였습니다");
     }
