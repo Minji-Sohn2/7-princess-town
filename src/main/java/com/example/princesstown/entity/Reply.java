@@ -7,16 +7,13 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
 @DynamicInsert
 @NoArgsConstructor
-@Table(name = "comments")
-public class Comment extends TimeStamped {
+@Table(name = "replys")
+public class Reply extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +30,10 @@ public class Comment extends TimeStamped {
     private Post post;
 
     @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany( mappedBy = "comment", cascade = CascadeType.ALL)
-    private List<Reply> ReplyList= new ArrayList<>();
 }
