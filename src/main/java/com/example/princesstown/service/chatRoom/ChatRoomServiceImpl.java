@@ -73,7 +73,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public MemberIdListDto getChatRoomMembers(Long chatRoomId) {
 
-        List<ChatMemberIdDto> chatMemberIdList = chatUserRepository.findAllByChatRoom_Id(chatRoomId)
+        ChatRoom chatRoom = findChatRoomById(chatRoomId);
+
+        List<ChatMemberIdDto> chatMemberIdList = chatRoom.getChatUserList()
                 .stream().map(ChatMemberIdDto::new).toList();
 
         return new MemberIdListDto(chatMemberIdList);
