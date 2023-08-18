@@ -19,6 +19,11 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
+/*  모든 요청에 대해 실행되며, 요청 헤더에서 JWT 토큰을 추출하고 해당 토큰의 유효성을 검증한 후,
+    유효한 토큰인 경우 Spring Security의 SecurityContext에 인증 정보를 설정하는 필터  */
+/*  JwtUtil을 사용하여 JWT 토큰의 유효성을 검증, 사용자 정보를 추출하고,
+    UserDetailsServiceImpl을 사용하여 사용자의 상세 정보를 로드하는 역할을 함  */
+
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
@@ -41,6 +46,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             tokenValue = jwtUtil.substringToken(tokenValue);
             log.info(tokenValue);
 
+            // 유효성 검증
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Token Error");
                 return;
