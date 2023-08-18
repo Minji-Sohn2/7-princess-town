@@ -1,6 +1,5 @@
 package com.example.princesstown.entity;
 
-import com.example.princesstown.chat.entity.ChatUser;
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
-package com.example.princesstown.chat.dto;
+package com.example.princesstown.dto.chatRoom;
 
-import com.example.princesstown.chat.entity.ChatUser;
+import com.example.princesstown.entity.ChatUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

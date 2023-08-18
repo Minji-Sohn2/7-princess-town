@@ -1,12 +1,12 @@
-package com.example.princesstown.chat.controller;
+package com.example.princesstown.controller.chatRoom;
 
-import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
-import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
-import com.example.princesstown.chat.dto.MemberIdListDto;
-import com.example.princesstown.chat.dto.MyChatRoomResponseDto;
-import com.example.princesstown.chat.service.ChatRoomService;
+import com.example.princesstown.dto.chatRoom.ChatRoomInfoResponseDto;
+import com.example.princesstown.dto.chatRoom.ChatRoomNameRequestDto;
+import com.example.princesstown.dto.chatRoom.MemberIdListDto;
+import com.example.princesstown.dto.chatRoom.MyChatRoomResponseDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.chatRoom.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.example.princesstown.chat.dto;
+package com.example.princesstown.dto.chatRoom;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

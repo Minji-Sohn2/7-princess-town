@@ -1,11 +1,11 @@
-package com.example.princesstown.chat.service;
+package com.example.princesstown.service.chatRoom;
 
-import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
-import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
-import com.example.princesstown.chat.dto.MemberIdListDto;
-import com.example.princesstown.chat.dto.MyChatRoomResponseDto;
-import com.example.princesstown.chat.entity.ChatRoom;
-import com.example.princesstown.chat.entity.ChatUser;
+import com.example.princesstown.dto.chatRoom.ChatRoomInfoResponseDto;
+import com.example.princesstown.dto.chatRoom.ChatRoomNameRequestDto;
+import com.example.princesstown.dto.chatRoom.MemberIdListDto;
+import com.example.princesstown.dto.chatRoom.MyChatRoomResponseDto;
+import com.example.princesstown.entity.ChatRoom;
+import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
 
 import java.util.List;
