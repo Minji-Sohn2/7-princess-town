@@ -1,9 +1,6 @@
 package com.example.princesstown.chat.service;
 
-import com.example.princesstown.chat.dto.ChatMemberIdDto;
-import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
-import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
-import com.example.princesstown.chat.dto.MemberIdListDto;
+import com.example.princesstown.chat.dto.*;
 import com.example.princesstown.chat.entity.ChatRoom;
 import com.example.princesstown.chat.entity.ChatUser;
 import com.example.princesstown.chat.repository.ChatRoomRepository;
@@ -80,6 +77,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 .stream().map(ChatMemberIdDto::new).toList();
 
         return new MemberIdListDto(chatMemberIdList);
+    }
+
+    @Override
+    public MyChatRoomResponseDto getMyChatRooms(User user) {
+        List<ChatRoomInfoResponseDto> myChatRoomList = chatUserRepository.findAllByUser(user)
+                .stream()
+                .map(ChatUser::getChatRoom)
+                .map(ChatRoomInfoResponseDto::new).toList();
+        return new MyChatRoomResponseDto(myChatRoomList);
     }
 
     @Override

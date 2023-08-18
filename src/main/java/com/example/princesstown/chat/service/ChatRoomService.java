@@ -3,6 +3,7 @@ package com.example.princesstown.chat.service;
 import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
 import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
 import com.example.princesstown.chat.dto.MemberIdListDto;
+import com.example.princesstown.chat.dto.MyChatRoomResponseDto;
 import com.example.princesstown.entity.User;
 
 import java.util.List;
@@ -42,6 +43,14 @@ public interface ChatRoomService {
      * @return 멤버 id list
      */
     MemberIdListDto getChatRoomMembers(Long roomId);
+
+    /**
+     * 내가 속한 채팅방 조회
+     *
+     * @param user 요청한 user
+     * @return 내가 속한 채팅방 list
+     */
+    MyChatRoomResponseDto getMyChatRooms(User user);
 
     /**
      * userId로 user 찾기
