@@ -1,4 +1,4 @@
 package com.example.princesstown.entity;
 
-public class Comment {
+public class Comment extends Timestamped{
 }

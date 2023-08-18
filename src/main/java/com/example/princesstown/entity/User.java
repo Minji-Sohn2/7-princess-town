@@ -51,6 +51,4 @@ public class User {
         this.phoneNumber = profileEditRequestDto.getPhoneNumber();
         this.profile_image_url = profileEditRequestDto.getProfile_image_url();
     }
-
-
 }
