@@ -28,7 +28,7 @@ public class User {
     @Column
     private String phoneNumber;
     @Column
-    private String profile_image_url;
+    private String profileImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
@@ -40,7 +40,7 @@ public class User {
         this.nickname = signupRequestDto.getNickname();
         this.email = signupRequestDto.getEmail();
         this.phoneNumber = signupRequestDto.getPhoneNumber();
-        this.profile_image_url = signupRequestDto.getProfile_image_url();
+        this.profileImage = signupRequestDto.getProfileImageUrl();
     }
 
     public void editProfile(ProfileEditRequestDto profileEditRequestDto, String password) {
@@ -49,8 +49,5 @@ public class User {
         this.nickname = profileEditRequestDto.getNickname();
         this.email = profileEditRequestDto.getEmail();
         this.phoneNumber = profileEditRequestDto.getPhoneNumber();
-        this.profile_image_url = profileEditRequestDto.getProfile_image_url();
     }
-
-
 }
