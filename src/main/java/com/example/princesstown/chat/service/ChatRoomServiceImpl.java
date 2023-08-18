@@ -97,6 +97,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new IllegalArgumentException("해당 채팅방에 속해있지 않습니다.");
         }
 
+        // user가 해당 채팅방의 host인 경우 채팅방 삭제
+        if(chatRoom.getHostUserId().equals(user.getUserId())) {
+            deleteChatRoom(roomId, user);
+        }
+
         chatUserRepository.delete(chatUser);
     }
 
