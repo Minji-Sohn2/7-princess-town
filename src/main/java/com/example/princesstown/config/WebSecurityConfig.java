@@ -1,8 +1,8 @@
 package com.example.princesstown.config;
 
-import com.example.princesstown.jwt.JwtAuthenticationFilter;
-import com.example.princesstown.jwt.JwtAuthorizationFilter;
-import com.example.princesstown.jwt.JwtUtil;
+import com.example.princesstown.security.jwt.JwtAuthenticationFilter;
+import com.example.princesstown.security.jwt.JwtAuthorizationFilter;
+import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
