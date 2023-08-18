@@ -1,5 +1,6 @@
 package com.example.princesstown.entity;
 
+import com.example.princesstown.dto.comment.CommentRequestDto;
 import com.example.princesstown.dto.comment.ReplyRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,6 +24,9 @@ public class Reply extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String emoji;
+
     @ColumnDefault("0")
     private Long likeCnt;
 
@@ -35,7 +39,7 @@ public class Reply extends Timestamped {
     private Comment comment;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_userId")
     private User user;
 
     public Reply(ReplyRequestDto requestDto, Post post, Comment comment, User user) {
@@ -45,9 +49,5 @@ public class Reply extends Timestamped {
         this.post = post;
         this.comment = comment;
         this.user = user;
-    }
-
-    public void update(ReplyRequestDto requestDto) {
-        this.content = requestDto.getContent();
     }
 }

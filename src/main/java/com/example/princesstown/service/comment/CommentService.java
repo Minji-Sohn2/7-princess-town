@@ -2,6 +2,7 @@ package com.example.princesstown.service.comment;
 
 import com.example.princesstown.dto.comment.*;
 import com.example.princesstown.entity.*;
+import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.repository.comment.CommentLikesRepository;
 import com.example.princesstown.repository.comment.CommentRepository;
 import com.example.princesstown.repository.post.PostRepository;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +23,7 @@ public class CommentService {
     private final CommentLikesRepository commentLikesRepository;
 
     // 댓글 가져오기
-    public ResponseEntity<RestApiResponseDto> getComments(Long postId, CommentRequestDto requestDto) {
-
-        try {
-            getPostId(postId);
-
+    public ResponseEntity<RestApiResponseDto> getComments(Long postId) {
             List<Comment> commentsList = commentRepository.findAllByPostId(postId);
 
             List<CommentResponseDto> commentResponseDtoList = commentsList.stream()
@@ -33,10 +31,6 @@ public class CommentService {
                     .toList();
 
             return this.resultResponse(HttpStatus.OK, "댓글 조회", commentResponseDtoList);
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
-        }
     }
 
     // 댓글 생성
@@ -46,6 +40,8 @@ public class CommentService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
             Comment comment = new Comment(requestDto, post, user);
+
+            comment.setLikeCnt(0L);
 
             commentRepository.save(comment);
             return this.resultResponse(HttpStatus.CREATED, "댓글 생성", new CommentResponseDto(comment));
@@ -64,7 +60,9 @@ public class CommentService {
 
             commentsValid(comment, user);
 
-            comment.update(requestDto);
+            comment.setContent(requestDto.getContent());
+
+            commentRepository.save(comment);
 
             return this.resultResponse(HttpStatus.OK, "댓글 수정", new CommentResponseDto(comment));
 
@@ -74,10 +72,9 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public ResponseEntity<RestApiResponseDto> deleteComments(Long postId, Long commentId, CommentRequestDto requestDto, User user) {
+    public ResponseEntity<RestApiResponseDto> deleteComments(Long postId, Long commentId, User user) {
         try {
-            postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+            getPostId(postId);
 
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
@@ -93,11 +90,11 @@ public class CommentService {
     }
 
     // 좋아요 가져오기
-    public ResponseEntity<RestApiResponseDto> getLikes(Long postId, Long commentId) {
+    public ResponseEntity<RestApiResponseDto> getLikes(Long postId) {
         try {
             getPostId(postId);
 
-            List<CommentLikes> likesList = commentLikesRepository.findAllByCommentId(commentId);
+            List<CommentLikes> likesList = commentLikesRepository.findAllByPostId(postId);
 
             List<CommentLikesResponseDto> commentLikesResponseDtoList = likesList.stream()
                     .map(CommentLikesResponseDto :: new)
@@ -109,36 +106,51 @@ public class CommentService {
         }
     }
 
-    // 좋아요 생성
-    public ResponseEntity<RestApiResponseDto> createLikes(Long commentId, Long postId, User user) {
+    public ResponseEntity<RestApiResponseDto> createLikes(Long postId, Long commentId, User user) {
         try {
             getPostId(postId);
 
-            CommentLikes commentLikes = commentLikesRepository.findByCommentId(commentId)
-                    .orElseThrow(
-                            () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+            Optional<CommentLikes> existingLikesOptional = commentLikesRepository.findByCommentIdAndUserUserId(commentId, user.getUserId());
 
-            likesValid(commentLikes, user);
+            if (existingLikesOptional.isPresent()) {
+                CommentLikes existingLikes = existingLikesOptional.get();
 
-            if (commentLikes.isLikes()) {
-                throw new IllegalArgumentException("이미 좋아요가 눌러져있는 상태입니다.");
+                if (!existingLikes.isLikes()) {
+                    existingLikes.setLikes(true);
+                    existingLikes.getComment().setLikeCnt(existingLikes.getComment().getLikeCnt() + 1);
+                    commentLikesRepository.save(existingLikes);
+                    return this.resultResponse(HttpStatus.OK, "좋아요 클릭", new CommentLikesResponseDto(existingLikes));
+                } else {
+                    throw new IllegalArgumentException("이미 좋아요가 선택되어 있습니다.");
+                }
             } else {
-                commentLikes.setLikes(true);
-                commentLikesRepository.save(commentLikes);
-            }
+                Post post = postRepository.findById(postId)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
-            return this.resultResponse(HttpStatus.CREATED, "좋아요 생성", new CommentLikesResponseDto(commentLikes));
+                Comment comment = commentRepository.findById(commentId)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+
+
+                CommentLikes newLikes = new CommentLikes(true, comment, post, user);
+                comment.setLikeCnt(comment.getLikeCnt() + 1);
+                commentLikesRepository.save(newLikes);
+                return this.resultResponse(HttpStatus.CREATED, "좋아요 생성", new CommentLikesResponseDto(newLikes));
+            }
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }
     }
 
+
     // 좋아요 취소
-    public ResponseEntity<RestApiResponseDto> deleteLikes(Long commentId, Long postId, User user) {
+    public ResponseEntity<RestApiResponseDto> deleteLikes(Long postId, Long commentId, User user) {
         try {
             getPostId(postId);
 
-            CommentLikes commentLikes = commentLikesRepository.findByCommentId(commentId)
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+
+            CommentLikes commentLikes = commentLikesRepository.findByCommentIdAndUserUserId(commentId, user.getUserId())
                     .orElseThrow(
                             () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
@@ -148,9 +160,9 @@ public class CommentService {
                 throw new IllegalArgumentException("이미 취소된 좋아요입니다.");
             } else {
                 commentLikes.setLikes(false);
+                comment.setLikeCnt(comment.getLikeCnt() - 1);
                 commentLikesRepository.save(commentLikes);
             }
-
             return this.resultResponse(HttpStatus.OK, "좋아요 취소", new CommentLikesResponseDto(commentLikes));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
@@ -168,14 +180,14 @@ public class CommentService {
 
     // 게시물Id 가져오는 메소드 분리
     private void getPostId(Long postId) {
-        commentRepository.findByPostId(postId).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
+       postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
     }
 
     // 댓글 사용자 검증
     private void commentsValid(Comment comment, User user) {
-        Long writerId = comment.getUser().getId();
-        Long loginId = user.getId();
+        Long writerId = comment.getUser().getUserId();
+        Long loginId = user.getUserId();
         if (!writerId.equals(loginId)) {
             throw new IllegalArgumentException("작성자만 수정 혹은 삭제가 가능합니다.");
         }
@@ -183,8 +195,8 @@ public class CommentService {
 
     // 좋아요 사용자 검증
     private void likesValid(CommentLikes commentLikes, User user) {
-        Long writerId = commentLikes.getUser().getId();
-        Long loginId = user.getId();
+        Long writerId = commentLikes.getUser().getUserId();
+        Long loginId = user.getUserId();
         if (!writerId.equals(loginId)) {
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }

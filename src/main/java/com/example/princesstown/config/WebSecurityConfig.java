@@ -77,22 +77,22 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 
-        // 로그인 페이지 설정
-        http.formLogin((formLogin) ->
-                formLogin
-                        .loginPage("/auth/login-page").permitAll()
-        );
+//        // 로그인 페이지 설정
+//        http.formLogin((formLogin) ->
+//                formLogin
+//                        .loginPage("/auth/login-page").permitAll()
+//        );
 
         // JWT 관련 필터를 Spring Security 필터 체인에 추가
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // 예외 처리 설정: 접근 거부 페이지 설정
-        http.exceptionHandling((exceptionHandling) ->
-                exceptionHandling
-                        .accessDeniedPage("/forbidden.html")
-        );
-
+//        // 예외 처리 설정: 접근 거부 페이지 설정
+//        http.exceptionHandling((exceptionHandling) ->
+//                exceptionHandling
+//                        .accessDeniedPage("/forbidden.html")
+//        );
+//
 
         return http.build();
     }

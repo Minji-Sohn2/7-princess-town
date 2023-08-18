@@ -7,6 +7,7 @@ import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.comment.ReplyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class ReplyController {
     private final ReplyService replyService;
 
-    @GetMapping("/posts/{postid}/comments/{commentsid}/reply")
+    @GetMapping("/posts/{postId}/comments/{commentId}/reply")
     public ResponseEntity<RestApiResponseDto> getReplys(
             @PathVariable Long postId,
-            @PathVariable Long commentId,
-            @RequestBody ReplyRequestDto requestDto
+            @PathVariable Long commentId
     ) {
-        return replyService.getReplys(postId, commentId, requestDto);
+        return replyService.getReplys(postId, commentId);
     }
 
     // 댓글 작성
@@ -59,21 +59,19 @@ public class ReplyController {
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @PathVariable Long replyId,
-            @RequestBody ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return replyService.deleteReplys(postId, commentId, replyId, requestDto, userDetails.getUser());
+        return replyService.deleteReplys(postId, commentId, replyId, userDetails.getUser());
     }
 
-    @GetMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")
+    @GetMapping("/posts/{postId}/comments/{commentId}/reply/likes")
     public ResponseEntity<RestApiResponseDto> getLikes(
             @PathVariable Long postId,
-            @PathVariable Long commentId,
-            @PathVariable Long replyId
+            @PathVariable Long commentId
     ) {
-        return replyService.getLikes(postId, commentId, replyId);
+        return replyService.getLikes(postId, commentId);
     }
 
     @PostMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")

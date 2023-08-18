@@ -24,16 +24,17 @@ public class CommentLikes extends Timestamped {
     private Comment comment;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @ManyToOne
+    @JoinColumn(name = "user_userId")
     private User user;
 
-    @PostPersist
-    @PostUpdate
-    public void afterLikeChange() {
-        if (likes) {
-            comment.setLikeCnt(comment.getLikeCnt() + 1);
-        } else {
-            comment.setLikeCnt(comment.getLikeCnt() - 1);
-        }
+    public CommentLikes(boolean likes, Comment comment, Post post, User user) {
+        this.likes = likes;
+        this.comment = comment;
+        this.post = post;
+        this.user = user;
     }
 }

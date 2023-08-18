@@ -21,20 +21,21 @@ public class ReplyLikes extends Timestamped {
     private boolean likes;
 
     @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
+    @ManyToOne
     @JoinColumn(name = "reply_id")
     private Reply reply;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_userId")
     private User user;
 
-    @PostPersist
-    @PostUpdate
-    public void afterLikeChange() {
-        if (likes) {
-            reply.setLikeCnt(reply.getLikeCnt() + 1);
-        } else {
-            reply.setLikeCnt(reply.getLikeCnt() - 1);
-        }
+    public ReplyLikes(boolean likes, Comment comment,Reply reply, User user) {
+        this.likes = likes;
+        this.comment = comment;
+        this.reply = reply;
+        this.user = user;
     }
 }

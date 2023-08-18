@@ -1,14 +1,13 @@
 package com.example.princesstown.repository.comment;
 
 import com.example.princesstown.entity.CommentLikes;
-import com.example.princesstown.entity.ReplyLikes;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CommentLikesRepository extends JpaRepository<CommentLikes, Long> {
-    Optional<CommentLikes> findByCommentId(Long commentId);
+    Optional<CommentLikes> findByCommentIdAndUserUserId(Long commentId, Long userId);
 
-    List<CommentLikes> findAllByCommentId(Long commentId);
+    List<CommentLikes> findAllByPostId(Long postId);
 }

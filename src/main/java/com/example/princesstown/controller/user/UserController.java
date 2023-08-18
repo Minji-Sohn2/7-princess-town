@@ -61,12 +61,12 @@ public class UserController {
     }
 
 
-    // view.html 부분
-    @GetMapping("/login-page")
-    public String loginAndsignupPage() {
-        return "loginAndSignup";
-    } // loginAndsignup.html view
-
+//    // view.html 부분
+//    @GetMapping("/login-page")
+//    public String loginAndsignupPage() {
+//        return "loginAndSignup";
+//    } // loginAndsignup.html view
+//
 
 }
 

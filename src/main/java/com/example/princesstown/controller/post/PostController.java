@@ -1,20 +1,17 @@
 package com.example.princesstown.controller.post;
 
 import com.example.princesstown.dto.ApiResponseDto;
-import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.PostResponseDto;
+import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
 @Controller
@@ -23,12 +20,12 @@ import java.util.concurrent.RejectedExecutionException;
 @RequiredArgsConstructor
 public class PostController {
 
-    private PostController postService;
+    private PostService postService;
 
     @PostMapping("/posts") // 글 작성
     @ResponseBody
-    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto) { // , @AuthenticationPrincipal UserDetailsImpl userDetails
-        return postService.createPost(requestDto); // , userDetails.getUser()
+    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, UserDetailsImpl userDetails) { // , @AuthenticationPrincipal UserDetailsImpl userDetails
+        return postService.createPost(requestDto, userDetails.getUser()); // , userDetails.getUser()
     }
 
 
@@ -49,14 +46,14 @@ public class PostController {
     }
 
     @PutMapping("/posts/{id}") // 상세 게시글 수정
-    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto) { // , @AuthenticationPrincipal UserDetailsImpl userDetails
-        return postService.updatePost(id, postRequestDto); //,userDetails.getUser()
+    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, UserDetailsImpl userDetails) { // , @AuthenticationPrincipal UserDetailsImpl userDetails
+        return postService.updatePost(id, postRequestDto, userDetails.getUser()); //,userDetails.getUser()
     }
 
     @DeleteMapping("/posts/{id}") // 상세 게시글 삭제
     @ResponseBody
-    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long id) { //, @AuthenticationPrincipal UserDetailsImpl userDetails
-        return postService.deletePost(id); // , userDetails.getUser()
+    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long id, UserDetailsImpl userDetails) { //, @AuthenticationPrincipal UserDetailsImpl userDetails
+        return postService.deletePost(id, userDetails.getUser()); // , userDetails.getUser()
     }
 
     // 좋아요

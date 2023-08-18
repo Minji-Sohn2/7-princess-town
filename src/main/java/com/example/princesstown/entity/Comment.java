@@ -29,12 +29,15 @@ public class Comment extends Timestamped {
     @ColumnDefault("0")
     private Long likeCnt;
 
+    @Column
+    private String emoji;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_userId")
     private User user;
 
     @OneToMany( mappedBy = "comment", cascade = CascadeType.ALL)
@@ -46,9 +49,5 @@ public class Comment extends Timestamped {
         this.likeCnt = getLikeCnt();
         this.post = post;
         this.user = user;
-    }
-
-    public void update(CommentRequestDto requestDto) {
-        this.content = requestDto.getContent();
     }
 }

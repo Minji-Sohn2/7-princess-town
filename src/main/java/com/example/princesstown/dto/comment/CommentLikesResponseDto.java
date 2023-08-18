@@ -13,6 +13,7 @@ public class CommentLikesResponseDto {
     private Long id;
     private Long user_id;
     private Long post_id;
+    private String username;
     private String nickname;
     private boolean likes;
     private Long likeCnt;
@@ -21,9 +22,10 @@ public class CommentLikesResponseDto {
 
     public CommentLikesResponseDto(CommentLikes commentLikes) {
         this.id = commentLikes.getId();
-        this.user_id = commentLikes.getUser().getId();
-//        this.post_id = commentLikes.getComment().getPost().getId();
-//        this.nickname = commentLikes.getComment().getUser().getNickname();
+        this.user_id = commentLikes.getUser().getUserId();
+        this.post_id = commentLikes.getComment().getPost().getId();
+        this.username = commentLikes.getUser().getUsername();
+        this.nickname = commentLikes.getComment().getUser().getNickname();
         this.likes = commentLikes.isLikes();
         this.likeCnt = commentLikes.getComment().getLikeCnt();
         this.createdAt = commentLikes.getCreatedAt();

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private Long id;
     private String content;
+    private String emoji;
     private Long likeCnt;
     private Long post_id;
     private Long user_id;
@@ -24,10 +25,10 @@ public class CommentResponseDto {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.likeCnt = comment.getLikeCnt();
-//        this.post_id = comment.getPost().getId();
-        this.user_id = comment.getUser().getId();
-//        this.username = comment.getUser().getUsername();
-//        this.nickname = comment.getUser().getNickname();
+        this.post_id = comment.getPost().getId();
+        this.user_id = comment.getUser().getUserId();
+        this.username = comment.getUser().getUsername();
+        this.nickname = comment.getUser().getNickname();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }

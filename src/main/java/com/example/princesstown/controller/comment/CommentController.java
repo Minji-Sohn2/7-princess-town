@@ -6,6 +6,7 @@ import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +19,15 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 조회
-    @GetMapping("/posts/{postId}/coomments")
+    @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<RestApiResponseDto> getComments(
-            @PathVariable Long postId,
-            @RequestBody CommentRequestDto requestDto
+            @PathVariable Long postId
     ) {
-        return commentService.getComments(postId, requestDto);
+        return commentService.getComments(postId);
     }
 
      // 댓글 작성
-    @PostMapping("/posts/{postId}/coomments")
+    @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<RestApiResponseDto> createComments(
             @PathVariable Long postId,
             @RequestBody CommentRequestDto requestDto,
@@ -56,21 +56,19 @@ public class CommentController {
     public ResponseEntity<RestApiResponseDto> deleteComments(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return commentService.deleteComments(postId, commentId, requestDto, userDetails.getUser());
+        return commentService.deleteComments(postId, commentId, userDetails.getUser());
     }
 
     // 좋아요 조회
-    @GetMapping("/posts/{postId}/comments/{commentId}/likes")
+    @GetMapping("/posts/{postId}/comments/likes")
     public ResponseEntity<RestApiResponseDto> getLikes(
-            @PathVariable Long postId,
-            @PathVariable Long commentId
+            @PathVariable Long postId
     ) {
-        return commentService.getLikes(postId, commentId);
+        return commentService.getLikes(postId);
     }
 
     // 좋아요 추가
@@ -78,12 +76,11 @@ public class CommentController {
     public ResponseEntity<RestApiResponseDto> createLikes(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @PathVariable Long replyId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return commentService.createLikes(postId, commentId, replyId, userDetails.getUser());
+        return commentService.createLikes(postId, commentId, userDetails.getUser());
     }
 
     // 좋아요 취소
