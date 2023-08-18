@@ -89,6 +89,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    public void leaveChatRoom(Long roomId, User user) {
+        ChatRoom chatRoom = findChatRoomById(roomId);
+        ChatUser chatUser = chatUserRepository.findByChatRoomAndUser(chatRoom, user);
+
+        if (chatUser == null) {
+            throw new IllegalArgumentException("해당 채팅방에 속해있지 않습니다.");
+        }
+
+        chatUserRepository.delete(chatUser);
+    }
+
+    @Override
     public User findUserById(Long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 사용자입니다.")

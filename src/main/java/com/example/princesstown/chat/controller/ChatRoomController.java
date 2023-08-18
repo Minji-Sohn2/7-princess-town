@@ -62,6 +62,15 @@ public class ChatRoomController {
         return ResponseEntity.ok().body(result);
     }
 
+    @DeleteMapping("/rooms/{roomId}/members")
+    public ResponseEntity<ApiResponseDto> leaveChatRoom(
+            @PathVariable Long roomId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        chatRoomService.leaveChatRoom(roomId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "채팅방 나가기 완료"));
+    }
+
     @GetMapping("/rooms/myRooms")
     public ResponseEntity<MyChatRoomResponseDto> getMyChatRooms(
             @AuthenticationPrincipal UserDetailsImpl userDetails

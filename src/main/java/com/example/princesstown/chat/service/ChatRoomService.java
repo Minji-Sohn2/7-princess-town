@@ -53,6 +53,14 @@ public interface ChatRoomService {
     MyChatRoomResponseDto getMyChatRooms(User user);
 
     /**
+     * 채팅방 나가기
+     *
+     * @param roomId 나갈 채팅방 id
+     * @param user   요청한 user
+     */
+    void leaveChatRoom(Long roomId, User user);
+
+    /**
      * userId로 user 찾기
      *
      * @param userId 찾을 userId
