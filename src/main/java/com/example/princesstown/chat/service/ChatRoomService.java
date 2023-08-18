@@ -4,6 +4,8 @@ import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
 import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
 import com.example.princesstown.chat.dto.MemberIdListDto;
 import com.example.princesstown.chat.dto.MyChatRoomResponseDto;
+import com.example.princesstown.chat.entity.ChatRoom;
+import com.example.princesstown.chat.entity.ChatUser;
 import com.example.princesstown.entity.User;
 
 import java.util.List;
@@ -61,12 +63,38 @@ public interface ChatRoomService {
     void leaveChatRoom(Long roomId, User user);
 
     /**
+     * 채팅방에 user 초대하기
+     *
+     * @param roomId          초대할 채팅방 id
+     * @param memberIdListDto 초대할 user id list
+     * @param user            요청한 user
+     */
+    void inviteMember(Long roomId, MemberIdListDto memberIdListDto, User user);
+
+    /**
      * userId로 user 찾기
      *
      * @param userId 찾을 userId
      * @return 찾은 user
      */
     User findUserById(Long userId);
+
+    /**
+     * 채팅방 찾기
+     *
+     * @param chatRoomId 찾을 채팅방 id
+     * @return 찾은 채팅방
+     */
+    ChatRoom findChatRoomById(Long chatRoomId);
+
+    /**
+     * ChatUser 객체 찾기
+     *
+     * @param chatRoom 찾을 ChatUser의 ChatRoom
+     * @param user     찾을 ChatUser의 User
+     * @return 찾은 ChatUser
+     */
+    ChatUser findChatUserByChatRoomAndUser(ChatRoom chatRoom, User user);
 
     /**
      * 초대할 userId list를 user list로 변환

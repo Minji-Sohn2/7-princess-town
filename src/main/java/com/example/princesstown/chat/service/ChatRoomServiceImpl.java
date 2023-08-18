@@ -33,7 +33,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         List<User> userList = dtoToUserList(memberIdListDto);
         userList.add(user);
 
-        // 생성된 채팅방에 user 정보 추가(ChatUser)
         for (User u : userList) {
             chatUserRepository.save(new ChatUser(u, newChatRoom));
         }
@@ -91,18 +90,38 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public void leaveChatRoom(Long roomId, User user) {
         ChatRoom chatRoom = findChatRoomById(roomId);
-        ChatUser chatUser = chatUserRepository.findByChatRoomAndUser(chatRoom, user);
+        ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
         if (chatUser == null) {
             throw new IllegalArgumentException("해당 채팅방에 속해있지 않습니다.");
         }
 
         // user가 해당 채팅방의 host인 경우 채팅방 삭제
-        if(chatRoom.getHostUserId().equals(user.getUserId())) {
+        if (chatRoom.getHostUserId().equals(user.getUserId())) {
             deleteChatRoom(roomId, user);
         }
 
         chatUserRepository.delete(chatUser);
+    }
+
+    @Override
+    public void inviteMember(Long roomId, MemberIdListDto memberIdListDto, User user) {
+        ChatRoom chatRoom = findChatRoomById(roomId);
+        ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
+
+        if (chatUser == null) {
+            throw new IllegalArgumentException("해당 채팅방으로의 초대 권한이 없습니다.");
+        }
+
+        List<User> userList = dtoToUserList(memberIdListDto);
+        for (User u : userList) {
+            // 만약 이미 채팅방에 존재하는 멤버라면 건너뛰기
+            if(findChatUserByChatRoomAndUser(chatRoom, u) != null) {
+                continue;
+            }
+            chatUserRepository.save(new ChatUser(u, chatRoom));
+        }
+
     }
 
     @Override
@@ -112,10 +131,16 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         );
     }
 
+    @Override
     public ChatRoom findChatRoomById(Long chatRoomId) {
         return chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 채팅방입니다.")
         );
+    }
+
+    @Override
+    public ChatUser findChatUserByChatRoomAndUser(ChatRoom chatRoom, User user) {
+        return chatUserRepository.findByChatRoomAndUser(chatRoom, user);
     }
 
     @Override

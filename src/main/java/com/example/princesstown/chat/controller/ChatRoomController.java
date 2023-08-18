@@ -67,8 +67,20 @@ public class ChatRoomController {
             @PathVariable Long roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        log.info("채팅방 멤버 나가기 컨트롤러");
         chatRoomService.leaveChatRoom(roomId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "채팅방 나가기 완료"));
+    }
+
+    @PostMapping("/rooms/{roomId}/members")
+    public ResponseEntity<ApiResponseDto> inviteMember(
+            @PathVariable Long roomId,
+            @RequestBody MemberIdListDto memberIdListDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        log.info("채팅방 멤버 초대 컨트롤러");
+        chatRoomService.inviteMember(roomId, memberIdListDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "채팅방에 초대했습니다."));
     }
 
     @GetMapping("/rooms/myRooms")
