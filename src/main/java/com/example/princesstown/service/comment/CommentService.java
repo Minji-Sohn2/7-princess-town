@@ -2,8 +2,10 @@ package com.example.princesstown.service.comment;
 
 import com.example.princesstown.dto.comment.CommentLikesResponseDto;
 import com.example.princesstown.dto.comment.CommentRequestDto;
+import com.example.princesstown.dto.comment.ReplyLikesResponseDto;
 import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.entity.CommentLikes;
+import com.example.princesstown.entity.ReplyLikes;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.comment.CommentLikesRepository;
 import com.example.princesstown.repository.comment.CommentRepository;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,23 @@ public class CommentService {
 
         }
         return null;
+    }
+
+    public ResponseEntity<RestApiResponseDto> getLikes(Long postId, Long commentId) {
+        try {
+            commentRepository.findByPostId(postId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
+
+            List<CommentLikes> likesList = commentLikesRepository.findAllByCommentId(commentId);
+
+            List<CommentLikesResponseDto> commentLikesResponseDtoList = likesList.stream()
+                    .map(CommentLikesResponseDto :: new)
+                    .toList();
+
+            return this.resultResponse(HttpStatus.OK, "좋아요 조회", commentLikesResponseDtoList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
     }
 
     public ResponseEntity<RestApiResponseDto> createLikes(Long commentId, Long postId, User user) {

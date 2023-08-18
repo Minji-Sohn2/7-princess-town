@@ -63,6 +63,15 @@ public class ReplyController {
         return replyService.deleteReplys(postId, commentId, replyId, userDetails.getUser());
     }
 
+    @GetMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")
+    public ResponseEntity<RestApiResponseDto> getLikes(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @PathVariable Long replyId
+    ) {
+        return replyService.getLikes(postId, commentId, replyId);
+    }
+
     @PostMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")
     public ResponseEntity<RestApiResponseDto> createLikes(
             @PathVariable Long postId,

@@ -61,6 +61,14 @@ public class CommentController {
         return commentService.deleteComments(postId, commentId, userDetails.getUser());
     }
 
+    @GetMapping("/posts/{postId}/comments/{commentId}/likes")
+    public ResponseEntity<RestApiResponseDto> getLikes(
+            @PathVariable Long postId,
+            @PathVariable Long commentId
+    ) {
+        return commentService.getLikes(postId, commentId);
+    }
+
     @PostMapping("/posts/{postId}/comments/{commentId}/likes")
     public ResponseEntity<RestApiResponseDto> createLikes(
             @PathVariable Long postId,

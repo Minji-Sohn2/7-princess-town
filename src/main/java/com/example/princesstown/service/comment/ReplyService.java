@@ -1,15 +1,18 @@
 package com.example.princesstown.service.comment;
 
-import com.example.princesstown.dto.comment.*;
+import com.example.princesstown.dto.comment.CommentRequestDto;
+import com.example.princesstown.dto.comment.ReplyLikesResponseDto;
+import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.entity.ReplyLikes;
 import com.example.princesstown.entity.User;
-import com.example.princesstown.repository.comment.CommentRepository;
 import com.example.princesstown.repository.comment.ReplyLikesRepository;
 import com.example.princesstown.repository.comment.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +57,24 @@ public class ReplyService {
         return null;
     }
 
-    public ResponseEntity<RestApiResponseDto> createLike(Long postId, Long commentId, Long replyId, User user) {
+    public ResponseEntity<RestApiResponseDto> getLikes(Long postId, Long commentId, Long replyId) {
+        try {
+            replyRepository.findByPostIdAndCommentId(postId, commentId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
+
+            List<ReplyLikes> likesList = replyLikesRepository.findAllByReplyId(replyId);
+
+        List<ReplyLikesResponseDto> replyLikesResponseDtoList = likesList.stream()
+                .map(ReplyLikesResponseDto :: new)
+                .toList();
+
+        return this.resultResponse(HttpStatus.OK, "좋아요 조회", replyLikesResponseDtoList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<RestApiResponseDto> createLikes(Long postId, Long commentId, Long replyId, User user) {
         try {
             replyRepository.findByPostIdAndCommentId(postId, commentId).orElseThrow(
                     () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
@@ -83,7 +103,7 @@ public class ReplyService {
         }
     }
 
-    public ResponseEntity<RestApiResponseDto> deleteLike(Long postId, Long commentId, Long replyId, User user) {
+    public ResponseEntity<RestApiResponseDto> deleteLikes(Long postId, Long commentId, Long replyId, User user) {
         try {
             replyRepository.findByPostIdAndCommentId(postId, commentId).orElseThrow(
                     () -> new IllegalArgumentException("해당 게시물이나 댓글이 존재하지 않습니다."));
