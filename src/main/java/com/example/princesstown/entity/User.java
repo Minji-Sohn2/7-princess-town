@@ -1,9 +1,15 @@
 package com.example.princesstown.entity;
 
+import com.example.princesstown.chat.entity.ChatUser;
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,6 +39,10 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
+
+    /* 연관관계 */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatUser> chatUserList = new ArrayList<>();
 
     public User(SignupRequestDto signupRequestDto, String password) {
         this.username = signupRequestDto.getUsername();

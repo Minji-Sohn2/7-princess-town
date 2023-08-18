@@ -1,12 +1,13 @@
 package com.example.princesstown.chat.controller;
 
-import com.example.princesstown.chat.ApiResponseDto;
 import com.example.princesstown.chat.dto.ChatRoomInfoResponseDto;
 import com.example.princesstown.chat.dto.ChatRoomNameRequestDto;
 import com.example.princesstown.chat.dto.MemberIdListDto;
 import com.example.princesstown.chat.service.ChatRoomService;
+import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/chat")
+@Slf4j(topic = "ChatRoomController")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
@@ -23,9 +25,9 @@ public class ChatRoomController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody MemberIdListDto memberIdListDto
             ) {
-//        ChatRoomInfoResponseDto result = chatRoomService.createChatRoom(userDetails.getUser(),memberIdListDto);
-//        return ResponseEntity.status(201).body(result);
-        return null;
+        log.info("채팅방 생성 컨트롤러 -> " + userDetails.getUser().getUsername());
+        ChatRoomInfoResponseDto result = chatRoomService.createChatRoom(userDetails.getUser(),memberIdListDto);
+        return ResponseEntity.status(201).body(result);
     }
 
     @PutMapping("/rooms/{roomId}")
@@ -34,9 +36,9 @@ public class ChatRoomController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody ChatRoomNameRequestDto requestDto
             ) {
-//        ChatRoomInfoResponseDto result = chatRoomService.updateChatRoomName(roomId, userDetails.getUser(), requestDto);
-//        return ResponseEntity.ok().body(result);
-        return null;
+        log.info("채팅방 이름 수정 컨트롤러 -> " + userDetails.getUser().getUsername());
+        ChatRoomInfoResponseDto result = chatRoomService.updateChatRoomName(roomId, userDetails.getUser(), requestDto);
+        return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping("/rooms/{roomId}")
@@ -44,6 +46,17 @@ public class ChatRoomController {
             @PathVariable Long roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        log.info("채팅방 삭제 컨트롤러 -> " + userDetails.getUser().getUsername());
+        chatRoomService.deleteChatRoom(roomId, userDetails.getUser());
         return null;
+    }
+
+    @GetMapping("/rooms/{roomId}/members")
+    public ResponseEntity<MemberIdListDto> getChatRoomMembers (
+            @PathVariable Long roomId
+    ) {
+        log.info("채팅방 멤버 조회 컨트롤러");
+        MemberIdListDto result = chatRoomService.getChatRoomMembers(roomId);
+        return ResponseEntity.ok().body(result);
     }
 }

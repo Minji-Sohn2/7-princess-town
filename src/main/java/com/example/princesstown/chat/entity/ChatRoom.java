@@ -4,7 +4,6 @@ import com.example.princesstown.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "chatroom")
 @NoArgsConstructor
 public class ChatRoom {
@@ -28,20 +26,12 @@ public class ChatRoom {
     /* 생성자 */
     public ChatRoom(User user) {
         this.chatRoomName = UUID.randomUUID().toString();
-        this.hostUserId = user.getId();
+        this.hostUserId = user.getUserId();
     }
 
     /* 연관관계 */
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatUser> chatUserList = new ArrayList<>();
-
-    /* 연관관계 편의 메서드 */
-    public void addChatUser(User user) {
-        ChatUser chatUser = new ChatUser(user, this);
-        this.chatUserList.add(chatUser);
-        user.getChatUserList().add(chatUser);
-
-    }
 
     /* 서비스 메서드 */
     public void updateChatRoomName(String newChatRoomName) {
