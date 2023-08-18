@@ -24,6 +24,7 @@ jQuery(document).ready(function($){
 			//show the selected form
 			( $(event.target).is('.cd-signup') ) ? signup_selected() : login_selected();
 		}
+
 	});
 
 	//close modal
@@ -32,7 +33,6 @@ jQuery(document).ready(function($){
 			$form_modal.removeClass('is-visible');
 		}	
 	});
-
 	//close modal when clicking the esc keyboard button
 	$(document).keyup(function(event){
     	if(event.which=='27'){

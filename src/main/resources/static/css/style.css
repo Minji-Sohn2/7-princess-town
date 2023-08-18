@@ -138,11 +138,11 @@ xsigin/signup popup
   cursor: pointer;
   visibility: hidden;
   opacity: 0;
-  transition: opacity 0.3s 0, visibility 0.3s; }
+  transition: opacity 0.3s; }
   .cd-user-modal.is-visible {
     visibility: visible;
     opacity: 1;
-    transition: opacity 0.3s 0, visibility 0 0.3s; }
+    transition: opacity 0.3s; }
     .cd-user-modal.is-visible .cd-user-modal-container {
       -webkit-transform: translateY(0);
       -moz-transform: translateY(0);
@@ -311,11 +311,11 @@ xsigin/signup popup
     pointer-events: none;
     visibility: hidden;
     opacity: 0;
-    -webkit-transition: opacity 0.2s 0, visibility 0 0.2s;
-    -moz-transition: opacity 0.2s 0, visibility 0 0.2s;
-    -ms-transition: opacity 0.2s 0, visibility 0 0.2s;
-    -o-transition: opacity 0.2s 0, visibility 0 0.2s;
-    transition: opacity 0.2s 0, visibility 0 0.2s; }
+    -webkit-transition: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    -ms-transition: opacity 0.2s;
+    -o-transition: opacity 0.2s;
+    transition: opacity 0.2s;}
     .cd-form .cd-error-message::after {
       /* triangle */
       content: '';
@@ -330,11 +330,11 @@ xsigin/signup popup
     .cd-form .cd-error-message.is-visible {
       opacity: 1;
       visibility: visible;
-      -webkit-transition: opacity 0.2s 0, visibility 0 0;
-      -moz-transition: opacity 0.2s 0, visibility 0 0;
-      -ms-transition: opacity 0.2s 0, visibility 0 0;
-      -o-transition: opacity 0.2s 0, visibility 0 0;
-      transition: opacity 0.2s 0, visibility 0 0; }
+      -webkit-transition: opacity 0.2s;
+      -moz-transition: opacity 0.2s;
+      -ms-transition: opacity 0.2s;
+      -o-transition: opacity 0.2s;
+      transition: opacity 0.2s; }
   @media only screen and (min-width: 600px) {
     .cd-form {
       padding: 2em; }
