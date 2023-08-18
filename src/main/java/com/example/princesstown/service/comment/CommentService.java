@@ -1,8 +1,13 @@
 package com.example.princesstown.service.comment;
 
-import com.example.princesstown.dto.comment.*;
-import com.example.princesstown.entity.*;
-import com.example.princesstown.exception.TokenNotValidateException;
+import com.example.princesstown.dto.comment.CommentLikesResponseDto;
+import com.example.princesstown.dto.comment.CommentRequestDto;
+import com.example.princesstown.dto.comment.CommentResponseDto;
+import com.example.princesstown.dto.comment.RestApiResponseDto;
+import com.example.princesstown.entity.Comment;
+import com.example.princesstown.entity.CommentLikes;
+import com.example.princesstown.entity.Post;
+import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.comment.CommentLikesRepository;
 import com.example.princesstown.repository.comment.CommentRepository;
 import com.example.princesstown.repository.post.PostRepository;
@@ -24,7 +29,7 @@ public class CommentService {
 
     // 댓글 가져오기
     public ResponseEntity<RestApiResponseDto> getComments(Long postId) {
-            List<Comment> commentsList = commentRepository.findAllByPostId(postId);
+            List<Comment> commentsList = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId);
 
             List<CommentResponseDto> commentResponseDtoList = commentsList.stream()
                     .map(CommentResponseDto::new)
@@ -61,6 +66,7 @@ public class CommentService {
             commentsValid(comment, user);
 
             comment.setContent(requestDto.getContent());
+            comment.setEmoji(requestDto.getEmoji());
 
             commentRepository.save(comment);
 
@@ -106,6 +112,7 @@ public class CommentService {
         }
     }
 
+    // 좋아요 추가
     public ResponseEntity<RestApiResponseDto> createLikes(Long postId, Long commentId, User user) {
         try {
             getPostId(postId);
@@ -129,7 +136,6 @@ public class CommentService {
 
                 Comment comment = commentRepository.findById(commentId)
                         .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
-
 
                 CommentLikes newLikes = new CommentLikes(true, comment, post, user);
                 comment.setLikeCnt(comment.getLikeCnt() + 1);

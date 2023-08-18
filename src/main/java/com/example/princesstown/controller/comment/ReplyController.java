@@ -1,13 +1,11 @@
 package com.example.princesstown.controller.comment;
 
-import com.example.princesstown.dto.comment.CommentRequestDto;
 import com.example.princesstown.dto.comment.ReplyRequestDto;
 import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.comment.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

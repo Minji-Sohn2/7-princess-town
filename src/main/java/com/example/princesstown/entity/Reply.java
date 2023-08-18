@@ -1,6 +1,5 @@
 package com.example.princesstown.entity;
 
-import com.example.princesstown.dto.comment.CommentRequestDto;
 import com.example.princesstown.dto.comment.ReplyRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -45,6 +44,7 @@ public class Reply extends Timestamped {
     public Reply(ReplyRequestDto requestDto, Post post, Comment comment, User user) {
         this.id = getId();
         this.content = requestDto.getContent();
+        this.emoji = requestDto.getEmoji();
         this.likeCnt = getLikeCnt();
         this.post = post;
         this.comment = comment;

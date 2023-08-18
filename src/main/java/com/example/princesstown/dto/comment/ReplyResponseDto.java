@@ -1,7 +1,6 @@
 package com.example.princesstown.dto.comment;
 
 import com.example.princesstown.entity.Reply;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +23,7 @@ public class ReplyResponseDto {
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();
         this.content = reply.getContent();
+        this.emoji = reply.getEmoji();
         this.likeCnt = reply.getLikeCnt();
         this.user_id = reply.getUser().getUserId();
         this.comment_id = reply.getComment().getId();

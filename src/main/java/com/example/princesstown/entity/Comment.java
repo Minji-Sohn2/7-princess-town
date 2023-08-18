@@ -26,11 +26,12 @@ public class Comment extends Timestamped {
     @Column(nullable = false)
     private String content;
 
+    @Column
+    private String emoji;
+
     @ColumnDefault("0")
     private Long likeCnt;
 
-    @Column
-    private String emoji;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -46,6 +47,7 @@ public class Comment extends Timestamped {
     public Comment(CommentRequestDto requestDto, Post post, User user) {
         this.id = getId();
         this.content = requestDto.getContent();
+        this.emoji = requestDto.getEmoji();
         this.likeCnt = getLikeCnt();
         this.post = post;
         this.user = user;

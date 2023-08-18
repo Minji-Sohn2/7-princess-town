@@ -1,8 +1,6 @@
 package com.example.princesstown.dto.comment;
 
-import com.example.princesstown.entity.CommentLikes;
 import com.example.princesstown.entity.ReplyLikes;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

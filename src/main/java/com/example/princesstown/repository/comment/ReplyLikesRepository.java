@@ -1,7 +1,6 @@
 package com.example.princesstown.repository.comment;
 
 import com.example.princesstown.entity.ReplyLikes;
-import com.example.princesstown.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

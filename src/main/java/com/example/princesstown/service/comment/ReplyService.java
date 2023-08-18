@@ -28,7 +28,7 @@ public class ReplyService {
 
     // 답글 조회
     public ResponseEntity<RestApiResponseDto> getReplys(Long postId, Long commentId) {
-            List<Reply> replysList = replyRepository.findAllByPostIdAndCommentId(postId, commentId);
+            List<Reply> replysList = replyRepository.findAllByPostIdAndCommentIdOrderByCreatedAtAsc(postId, commentId);
 
             List<ReplyResponseDto> replyResponseDtoList = replysList.stream()
                     .map(ReplyResponseDto::new)
@@ -68,6 +68,8 @@ public class ReplyService {
             replysValid(reply, user);
 
             reply.setContent(requestDto.getContent());
+
+            reply.setEmoji(requestDto.getEmoji());
 
             replyRepository.save(reply);
 
@@ -113,7 +115,7 @@ public class ReplyService {
         }
     }
 
-    // 좋아요 생성
+    // 좋아요 추가
     public ResponseEntity<RestApiResponseDto> createLikes(Long postId, Long commentId, Long replyId, User user) {
         try {
             getPostIdAndCommentId(postId, commentId);
