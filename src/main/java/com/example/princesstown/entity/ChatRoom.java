@@ -32,6 +32,10 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatUser> chatUserList = new ArrayList<>();
 
+    public void addChatUser(ChatUser chatUser) {
+        this.chatUserList.add(chatUser);
+    }
+
     /* 서비스 메서드 */
     public void updateChatRoomName(String newChatRoomName) {
         this.chatRoomName = newChatRoomName;

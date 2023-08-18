@@ -34,7 +34,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         userList.add(user);
 
         for (User u : userList) {
-            chatUserRepository.save(new ChatUser(u, newChatRoom));
+            ChatUser chatUser = chatUserRepository.save(new ChatUser(u, newChatRoom));
+            newChatRoom.addChatUser(chatUser);
         }
 
         chatRoomRepository.save(newChatRoom);
