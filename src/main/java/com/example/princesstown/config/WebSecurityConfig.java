@@ -4,6 +4,7 @@ import com.example.princesstown.security.jwt.JwtAuthenticationFilter;
 import com.example.princesstown.security.jwt.JwtAuthorizationFilter;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
+import com.example.princesstown.service.user.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final TokenBlacklistService tokenBlacklistService;
 
     // 비밀번호 암호화를 위한 Bean 설정
     @Bean
@@ -52,7 +54,7 @@ public class WebSecurityConfig {
     // JWT 권한 검사 필터 Bean 설정
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, tokenBlacklistService);
     }
 
     // Spring Security 설정
