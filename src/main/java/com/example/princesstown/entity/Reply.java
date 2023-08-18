@@ -1,5 +1,6 @@
 package com.example.princesstown.entity;
 
+import com.example.princesstown.dto.comment.ReplyRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @NoArgsConstructor
 @Table(name = "replys")
-public class Reply extends TimeStamped {
+public class Reply extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +31,23 @@ public class Reply extends TimeStamped {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "reply_id")
-    private Reply reply;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Reply(ReplyRequestDto requestDto, Post post, Comment comment, User user) {
+        this.id = getId();
+        this.content = requestDto.getContent();
+        this.likeCnt = getLikeCnt();
+        this.post = post;
+        this.comment = comment;
+        this.user = user;
+    }
+
+    public void update(ReplyRequestDto requestDto) {
+        this.content = requestDto.getContent();
+    }
 }

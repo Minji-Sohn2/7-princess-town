@@ -1,6 +1,4 @@
 package com.example.princesstown.entity;
-
-import com.example.princesstown.dto.comment.ReplyLikesRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,7 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @NoArgsConstructor
 @Table(name = "replylikes")
-public class ReplyLikes extends TimeStamped{
+public class ReplyLikes extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +36,5 @@ public class ReplyLikes extends TimeStamped{
         } else {
             reply.setLikeCnt(reply.getLikeCnt() - 1);
         }
-    }
-
-    public void update(ReplyLikesRequestDto requestDto) {
-        this.likes = requestDto.isLikes();
     }
 }

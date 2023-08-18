@@ -1,5 +1,6 @@
 package com.example.princesstown.entity;
 
+import com.example.princesstown.dto.comment.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 @DynamicInsert
 @NoArgsConstructor
 @Table(name = "comments")
-public class Comment extends TimeStamped {
+public class Comment extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +39,16 @@ public class Comment extends TimeStamped {
 
     @OneToMany( mappedBy = "comment", cascade = CascadeType.ALL)
     private List<Reply> ReplyList= new ArrayList<>();
+
+    public Comment(CommentRequestDto requestDto, Post post, User user) {
+        this.id = getId();
+        this.content = requestDto.getContent();
+        this.likeCnt = getLikeCnt();
+        this.post = post;
+        this.user = user;
+    }
+
+    public void update(CommentRequestDto requestDto) {
+        this.content = requestDto.getContent();
+    }
 }

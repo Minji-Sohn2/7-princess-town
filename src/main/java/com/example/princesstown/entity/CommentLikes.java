@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "commentlikes")
-public class CommentLikes extends TimeStamped{
+public class CommentLikes extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

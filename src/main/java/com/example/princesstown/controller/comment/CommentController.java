@@ -17,6 +17,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    // 댓글 조회
     @GetMapping("/posts/{postId}/coomments")
     public ResponseEntity<RestApiResponseDto> getComments(
             @PathVariable Long postId,
@@ -42,11 +43,12 @@ public class CommentController {
     public ResponseEntity<RestApiResponseDto> updateComments(
             @PathVariable Long postId,
             @PathVariable Long commentId,
+            @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return commentService.updateComments(postId, commentId, userDetails.getUser());
+        return commentService.updateComments(postId, commentId, requestDto, userDetails.getUser());
     }
 
     // 댓글 삭제
@@ -54,13 +56,15 @@ public class CommentController {
     public ResponseEntity<RestApiResponseDto> deleteComments(
             @PathVariable Long postId,
             @PathVariable Long commentId,
+            @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return commentService.deleteComments(postId, commentId, userDetails.getUser());
+        return commentService.deleteComments(postId, commentId, requestDto, userDetails.getUser());
     }
 
+    // 좋아요 조회
     @GetMapping("/posts/{postId}/comments/{commentId}/likes")
     public ResponseEntity<RestApiResponseDto> getLikes(
             @PathVariable Long postId,
@@ -69,6 +73,7 @@ public class CommentController {
         return commentService.getLikes(postId, commentId);
     }
 
+    // 좋아요 추가
     @PostMapping("/posts/{postId}/comments/{commentId}/likes")
     public ResponseEntity<RestApiResponseDto> createLikes(
             @PathVariable Long postId,
@@ -81,6 +86,7 @@ public class CommentController {
         return commentService.createLikes(postId, commentId, replyId, userDetails.getUser());
     }
 
+    // 좋아요 취소
     @PutMapping("/posts/{postId}/comments/{commentId}/likes")
     public ResponseEntity<RestApiResponseDto> deleteLikes(
             @PathVariable Long postId,

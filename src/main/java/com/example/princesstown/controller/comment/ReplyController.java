@@ -1,6 +1,7 @@
 package com.example.princesstown.controller.comment;
 
 import com.example.princesstown.dto.comment.CommentRequestDto;
+import com.example.princesstown.dto.comment.ReplyRequestDto;
 import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
@@ -19,9 +20,10 @@ public class ReplyController {
     @GetMapping("/posts/{postid}/comments/{commentsid}/reply")
     public ResponseEntity<RestApiResponseDto> getReplys(
             @PathVariable Long postId,
-            @RequestBody CommentRequestDto requestDto
+            @PathVariable Long commentId,
+            @RequestBody ReplyRequestDto requestDto
     ) {
-        return replyService.getReplys(postId, requestDto);
+        return replyService.getReplys(postId, commentId, requestDto);
     }
 
     // 댓글 작성
@@ -29,7 +31,7 @@ public class ReplyController {
     public ResponseEntity<RestApiResponseDto> createReplys(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @RequestBody CommentRequestDto requestDto,
+            @RequestBody ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
@@ -43,11 +45,12 @@ public class ReplyController {
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @PathVariable Long replyId,
+            @RequestBody ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return replyService.updateReplys(postId, commentId, replyId, userDetails.getUser());
+        return replyService.updateReplys(postId, commentId, replyId, requestDto, userDetails.getUser());
     }
 
     // 댓글 삭제
@@ -56,11 +59,12 @@ public class ReplyController {
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @PathVariable Long replyId,
+            @RequestBody ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         this.tokenValidate(userDetails);
 
-        return replyService.deleteReplys(postId, commentId, replyId, userDetails.getUser());
+        return replyService.deleteReplys(postId, commentId, replyId, requestDto, userDetails.getUser());
     }
 
     @GetMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}/likes")
