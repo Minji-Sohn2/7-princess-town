@@ -1,4 +1,4 @@
-package com.example.princesstown.jwt;
+package com.example.princesstown.security.jwt;
 
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
@@ -80,3 +80,4 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }
+
