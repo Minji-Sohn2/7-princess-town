@@ -1,12 +1,14 @@
-package com.example.princesstown.jwt;
+package com.example.princesstown.security.jwt;
 
 import com.example.princesstown.dto.request.LoginRequestDto;
+import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -55,9 +57,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = jwtUtil.createToken(username);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
-//      // JWT 생성 후 Response 객체의 헤더에 추가함
-//      String token = jwtUtil.createToken(username);
-//      response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        // 로그인 성공시 상태코드,메세지 반환
+        ApiResponseDto apiResponseDto = new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공");
+        String json = new ObjectMapper().writeValueAsString(apiResponseDto);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(json);
+
     }
 
     @Override
@@ -66,4 +73,3 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(401);
     }
 }
-
