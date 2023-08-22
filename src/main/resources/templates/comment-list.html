@@ -102,11 +102,28 @@
                 success: function (data) {
                     const comments = data.result.comments;
                     totalPages = data.result.paginationInfo.totalPages;
-                    // console.log(comments)
+                    const pagelist = data.result.paginationInfo
+                    console.log(pagelist)
                     // console.log(totalPages)
                     // console.log(page)
                     displayCommentsAndReplies(comments, page);
                     updatePagination(totalPages, page);
+                }
+            });
+        }
+
+        function loadCommentsAndReplies2(page) {
+            $.ajax({
+                url: `/api/posts/${postId}/comments?page=${page}&size=${pageSize}`,
+                method: 'GET',
+                success: function (data) {
+                    const comments = data.result.comments;
+                    totalPages = data.result.paginationInfo.totalPages;
+                    const pagelist = data.result.paginationInfo
+                    console.log(pagelist)
+                    // console.log(totalPages)
+                    // console.log(page)
+                    displayCommentsAndReplies(comments, page);
                 }
             });
         }
@@ -280,7 +297,7 @@
                                                             <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif;">수정</a>
                                                             <a class="btn1" style="font-family: 'Jua', sans-serif;">삭제</a>
                                                         </div>
-                                                        </div>
+                                                    </div>
                                                 `
 
                                                     // 해당 댓글에 대한 좋아요 정보 검사
@@ -336,10 +353,12 @@
         }
 
         function updatePageButtons() {
+            console.log("시작")
             const pageNumbersContainer = paginationContainer.find('.page-numbers');
             pageNumbersContainer.empty();
 
             const maxPage = Math.min(totalPages, endPage + 1); // 실제 데이터가 있는 페이지까지만 생성
+            console.log("중간")
 
             for (let i = startPage; i < maxPage; i++) {
                 const pageNumber = i + 1; // 페이지 번호는 1부터 시작
@@ -350,13 +369,16 @@
                                 </a>
                             </li>`;
                 pageNumbersContainer.append(pageButton);
+                console.log("도달")
             }
         }
 
         function updatePagination() {
             updatePageButtons();
-            paginationContainer.find('.prev-page-button').toggleClass('disabled', currentPage === 0);
-            paginationContainer.find('.next-page-button').toggleClass('disabled', currentPage === totalPages - 1);
+            // console.log(totalPages.toString().slice(0, -1) * 10)
+
+            paginationContainer.find('.prev-page-button').toggleClass('disabled', currentPage < 10);
+            paginationContainer.find('.next-page-button').toggleClass('disabled', currentPage + 1 > totalPages.toString().slice(0, -1) * 10);
         }
 
         // 초기 페이지 로드
