@@ -74,6 +74,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
+                        .requestMatchers("/img/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 

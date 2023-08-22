@@ -8,6 +8,7 @@ import com.example.princesstown.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +21,11 @@ public class CommentController {
     // 댓글 조회
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<RestApiResponseDto> getComments(
-            @PathVariable Long postId
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        return commentService.getComments(postId);
+        return commentService.getComments(postId, page, size);
     }
 
      // 댓글 작성
@@ -32,7 +35,6 @@ public class CommentController {
             @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return commentService.createComments(postId, requestDto, userDetails.getUser());
     }
@@ -45,7 +47,6 @@ public class CommentController {
             @RequestBody CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return commentService.updateComments(postId, commentId, requestDto, userDetails.getUser());
     }
@@ -57,7 +58,6 @@ public class CommentController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return commentService.deleteComments(postId, commentId, userDetails.getUser());
     }
@@ -77,7 +77,6 @@ public class CommentController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return commentService.createLikes(postId, commentId, userDetails.getUser());
     }
@@ -89,16 +88,7 @@ public class CommentController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return commentService.deleteLikes(postId, commentId, userDetails.getUser());
-    }
-
-    public void tokenValidate(UserDetailsImpl userDetails) {
-         try {
-             userDetails.getUser();
-         } catch (Exception e) {
-             throw new TokenNotValidateException("토큰이 유효하지 않습니다.");
-         }
     }
 }

@@ -32,7 +32,6 @@ public class ReplyController {
             @RequestBody ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return replyService.createReplys(postId, commentId, requestDto, userDetails.getUser());
     }
@@ -46,7 +45,6 @@ public class ReplyController {
             @RequestBody ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return replyService.updateReplys(postId, commentId, replyId, requestDto, userDetails.getUser());
     }
@@ -59,7 +57,6 @@ public class ReplyController {
             @PathVariable Long replyId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return replyService.deleteReplys(postId, commentId, replyId, userDetails.getUser());
     }
@@ -79,7 +76,6 @@ public class ReplyController {
             @PathVariable Long replyId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return replyService.createLikes(postId, commentId, replyId, userDetails.getUser());
     }
@@ -91,16 +87,7 @@ public class ReplyController {
             @PathVariable Long replyId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        this.tokenValidate(userDetails);
 
         return replyService.deleteLikes(postId, commentId, replyId, userDetails.getUser());
-    }
-
-    public void tokenValidate(UserDetailsImpl userDetails) {
-        try {
-            userDetails.getUser();
-        } catch (Exception e) {
-            throw new TokenNotValidateException("토큰이 유효하지 않습니다.");
-        }
     }
 }

@@ -1,9 +1,6 @@
 package com.example.princesstown.service.comment;
 
-import com.example.princesstown.dto.comment.CommentLikesResponseDto;
-import com.example.princesstown.dto.comment.CommentRequestDto;
-import com.example.princesstown.dto.comment.CommentResponseDto;
-import com.example.princesstown.dto.comment.RestApiResponseDto;
+import com.example.princesstown.dto.comment.*;
 import com.example.princesstown.entity.Comment;
 import com.example.princesstown.entity.CommentLikes;
 import com.example.princesstown.entity.Post;
@@ -12,6 +9,9 @@ import com.example.princesstown.repository.comment.CommentLikesRepository;
 import com.example.princesstown.repository.comment.CommentRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,14 +28,22 @@ public class CommentService {
     private final CommentLikesRepository commentLikesRepository;
 
     // 댓글 가져오기
-    public ResponseEntity<RestApiResponseDto> getComments(Long postId) {
-            List<Comment> commentsList = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId);
+    public ResponseEntity<RestApiResponseDto> getComments(Long postId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+            Page<Comment> commentsList = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId, pageable);
 
             List<CommentResponseDto> commentResponseDtoList = commentsList.stream()
                     .map(CommentResponseDto::new)
                     .toList();
 
-            return this.resultResponse(HttpStatus.OK, "댓글 조회", commentResponseDtoList);
+        PaginationInfo paginationInfo = new PaginationInfo(
+                page,
+                size,
+                commentsList.getTotalPages(),
+                commentsList.getTotalElements()
+        );
+
+            return this.resultResponse(HttpStatus.OK, "댓글 조회", new PagedCommentResponseDto(commentResponseDtoList, paginationInfo));
     }
 
     // 댓글 생성
@@ -126,7 +134,7 @@ public class CommentService {
                     existingLikes.setLikes(true);
                     existingLikes.getComment().setLikeCnt(existingLikes.getComment().getLikeCnt() + 1);
                     commentLikesRepository.save(existingLikes);
-                    return this.resultResponse(HttpStatus.OK, "좋아요 클릭", new CommentLikesResponseDto(existingLikes));
+                    return this.resultResponse(HttpStatus.CREATED, "좋아요 클릭", new CommentLikesResponseDto(existingLikes));
                 } else {
                     throw new IllegalArgumentException("이미 좋아요가 선택되어 있습니다.");
                 }

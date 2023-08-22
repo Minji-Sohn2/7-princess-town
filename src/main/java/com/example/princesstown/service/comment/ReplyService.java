@@ -1,15 +1,15 @@
 package com.example.princesstown.service.comment;
 
-import com.example.princesstown.dto.comment.ReplyLikesResponseDto;
-import com.example.princesstown.dto.comment.ReplyRequestDto;
-import com.example.princesstown.dto.comment.ReplyResponseDto;
-import com.example.princesstown.dto.comment.RestApiResponseDto;
+import com.example.princesstown.dto.comment.*;
 import com.example.princesstown.entity.*;
 import com.example.princesstown.repository.comment.CommentRepository;
 import com.example.princesstown.repository.comment.ReplyLikesRepository;
 import com.example.princesstown.repository.comment.ReplyRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class ReplyService {
                     .map(ReplyResponseDto::new)
                     .toList();
 
-            return this.resultResponse(HttpStatus.OK, "답글 조회", replyResponseDtoList);
+            return this.resultResponse(HttpStatus.OK, "답글 조회", new PagedReplyResponseDto(replyResponseDtoList));
     }
 
     // 답글 생성
@@ -129,7 +129,7 @@ public class ReplyService {
                     existingLikes.setLikes(true);
                     existingLikes.getReply().setLikeCnt(existingLikes.getReply().getLikeCnt() + 1);
                     replyLikesRepository.save(existingLikes);
-                    return this.resultResponse(HttpStatus.OK, "좋아요 클릭", new ReplyLikesResponseDto(existingLikes));
+                    return this.resultResponse(HttpStatus.CREATED, "좋아요 클릭", new ReplyLikesResponseDto(existingLikes));
                 } else {
                     throw new IllegalArgumentException("이미 좋아요가 선택되어있습니다.");
                 }
@@ -171,7 +171,7 @@ public class ReplyService {
                 reply.setLikeCnt(reply.getLikeCnt() - 1);
                 replyLikesRepository.save(replyLikes);
             }
-            return this.resultResponse(HttpStatus.CREATED, "좋아요 취소", new ReplyLikesResponseDto(replyLikes));
+            return this.resultResponse(HttpStatus.OK, "좋아요 취소", new ReplyLikesResponseDto(replyLikes));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }
