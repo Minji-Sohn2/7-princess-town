@@ -45,11 +45,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public ChatRoomInfoResponseDto updateChatRoomName(Long chatRoomId, User user, ChatRoomNameRequestDto requestDto) {
+    public ChatRoomInfoResponseDto updateChatRoomName(String chatRoomId, User user, ChatRoomNameRequestDto requestDto) {
         // 요청한 user가 채팅방의 생성자인지 확인
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
-        if (!chatRoom.getHostUserId().equals(user.getUserId())) {
+        if (!chatRoom.getHostUser().getUserId().equals(user.getUserId())) {
             throw new IllegalArgumentException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
         }
 
@@ -59,11 +59,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void deleteChatRoom(Long chatRoomId, User user) {
+    public void deleteChatRoom(String chatRoomId, User user) {
         // 요청한 user가 채팅방의 생성자인지 확인
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
-        if (!chatRoom.getHostUserId().equals(user.getUserId())) {
+        if (!chatRoom.getHostUser().getUserId().equals(user.getUserId())) {
             throw new IllegalArgumentException("채팅방은 호스트만 삭제할 수 있습니다.");
         }
 
@@ -71,7 +71,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public MemberIdListDto getChatRoomMembers(Long chatRoomId) {
+    public MemberIdListDto getChatRoomMembers(String chatRoomId) {
 
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
@@ -91,7 +91,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void leaveChatRoom(Long roomId, User user) {
+    public void leaveChatRoom(String roomId, User user) {
         ChatRoom chatRoom = findChatRoomById(roomId);
         ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
@@ -100,7 +100,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         // user가 해당 채팅방의 host인 경우 채팅방 삭제
-        if (chatRoom.getHostUserId().equals(user.getUserId())) {
+        if (chatRoom.getHostUser().getUserId().equals(user.getUserId())) {
             deleteChatRoom(roomId, user);
         }
 
@@ -108,7 +108,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void inviteMember(Long roomId, MemberIdListDto memberIdListDto, User user) {
+    public void inviteMember(String roomId, MemberIdListDto memberIdListDto, User user) {
         ChatRoom chatRoom = findChatRoomById(roomId);
         ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
@@ -135,7 +135,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public ChatRoom findChatRoomById(Long chatRoomId) {
+    public ChatRoom findChatRoomById(String chatRoomId) {
         return chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 채팅방입니다.")
         );

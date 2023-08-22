@@ -3,6 +3,7 @@ package com.example.princesstown.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +16,26 @@ import java.util.UUID;
 public class ChatRoom {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(length = 36)
+    private String id;
 
     private String chatRoomName;
 
-    private Long hostUserId;
+    private int memberCount;
+
+    @ManyToOne
+    @JoinColumn(name = "host_id")
+    private User hostUser;
 
     /* 생성자 */
     public ChatRoom(User user) {
         this.chatRoomName = UUID.randomUUID().toString();
-        this.hostUserId = user.getUserId();
+        this.hostUser = user;
     }
 
     /* 연관관계 */

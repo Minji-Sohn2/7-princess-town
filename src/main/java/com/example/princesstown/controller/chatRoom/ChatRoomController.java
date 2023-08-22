@@ -34,7 +34,7 @@ public class ChatRoomController {
 
     @PutMapping("/rooms/{roomId}")
     public ResponseEntity<ChatRoomInfoResponseDto> updateChatRoomName(
-            @PathVariable Long roomId,
+            @PathVariable String roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody ChatRoomNameRequestDto requestDto
     ) {
@@ -45,7 +45,7 @@ public class ChatRoomController {
 
     @DeleteMapping("/rooms/{roomId}")
     public ResponseEntity<ApiResponseDto> deleteChatRoom(
-            @PathVariable Long roomId,
+            @PathVariable String roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         log.info("채팅방 삭제 컨트롤러 -> " + userDetails.getUser().getUsername());
@@ -55,7 +55,7 @@ public class ChatRoomController {
 
     @GetMapping("/rooms/{roomId}/members")
     public ResponseEntity<MemberIdListDto> getChatRoomMembers(
-            @PathVariable Long roomId
+            @PathVariable String roomId
     ) {
         log.info("채팅방 멤버 조회 컨트롤러");
         MemberIdListDto result = chatRoomService.getChatRoomMembers(roomId);
@@ -64,7 +64,7 @@ public class ChatRoomController {
 
     @DeleteMapping("/rooms/{roomId}/members")
     public ResponseEntity<ApiResponseDto> leaveChatRoom(
-            @PathVariable Long roomId,
+            @PathVariable String roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         log.info("채팅방 멤버 나가기 컨트롤러");
@@ -74,7 +74,7 @@ public class ChatRoomController {
 
     @PostMapping("/rooms/{roomId}/members")
     public ResponseEntity<ApiResponseDto> inviteMember(
-            @PathVariable Long roomId,
+            @PathVariable String roomId,
             @RequestBody MemberIdListDto memberIdListDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

@@ -28,7 +28,7 @@ public interface ChatRoomService {
      * @param requestDto 새로운 채팅방 이름
      * @return 수정된 채팅방 정보
      */
-    ChatRoomInfoResponseDto updateChatRoomName(Long chatRoomId, User user, ChatRoomNameRequestDto requestDto);
+    ChatRoomInfoResponseDto updateChatRoomName(String chatRoomId, User user, ChatRoomNameRequestDto requestDto);
 
     /**
      * 채팅방 삭제
@@ -36,7 +36,7 @@ public interface ChatRoomService {
      * @param roomId 삭제할 채팅방 id
      * @param user   요청하는 user
      */
-    void deleteChatRoom(Long roomId, User user);
+    void deleteChatRoom(String roomId, User user);
 
     /**
      * 채팅방 멤버 조회
@@ -44,7 +44,7 @@ public interface ChatRoomService {
      * @param roomId 조회할 채팅방 id
      * @return 멤버 id list
      */
-    MemberIdListDto getChatRoomMembers(Long roomId);
+    MemberIdListDto getChatRoomMembers(String roomId);
 
     /**
      * 내가 속한 채팅방 조회
@@ -60,7 +60,7 @@ public interface ChatRoomService {
      * @param roomId 나갈 채팅방 id
      * @param user   요청한 user
      */
-    void leaveChatRoom(Long roomId, User user);
+    void leaveChatRoom(String roomId, User user);
 
     /**
      * 채팅방에 user 초대하기
@@ -69,7 +69,7 @@ public interface ChatRoomService {
      * @param memberIdListDto 초대할 user id list
      * @param user            요청한 user
      */
-    void inviteMember(Long roomId, MemberIdListDto memberIdListDto, User user);
+    void inviteMember(String roomId, MemberIdListDto memberIdListDto, User user);
 
     /**
      * userId로 user 찾기
@@ -85,7 +85,7 @@ public interface ChatRoomService {
      * @param chatRoomId 찾을 채팅방 id
      * @return 찾은 채팅방
      */
-    ChatRoom findChatRoomById(Long chatRoomId);
+    ChatRoom findChatRoomById(String chatRoomId);
 
     /**
      * ChatUser 객체 찾기
