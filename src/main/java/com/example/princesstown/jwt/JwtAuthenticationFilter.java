@@ -51,8 +51,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // 인증 성공 시 JWT 토큰 생성 및 응답 헤더에 추가
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        String nickname = ((UserDetailsImpl) authResult.getPrincipal()).getNickname();
         // JWT 생성 후 Response 객체의 헤더에 추가함
-        String token = jwtUtil.createToken(username);
+        String token = jwtUtil.createToken(username, nickname);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
 //      // JWT 생성 후 Response 객체의 헤더에 추가함

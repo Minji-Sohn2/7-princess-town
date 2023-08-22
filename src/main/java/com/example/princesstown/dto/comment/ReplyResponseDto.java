@@ -17,6 +17,7 @@ public class ReplyResponseDto {
     private Long user_id;
     private String username;
     private String nickname;
+    private String img;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -29,6 +30,7 @@ public class ReplyResponseDto {
         this.comment_id = reply.getComment().getId();
         this.username = reply.getUser().getUsername();
         this.nickname = reply.getUser().getNickname();
+        this.img = reply.getUser().getProfile_image_url();
         this.createdAt = reply.getCreatedAt();
         this.modifiedAt = reply.getModifiedAt();
     }

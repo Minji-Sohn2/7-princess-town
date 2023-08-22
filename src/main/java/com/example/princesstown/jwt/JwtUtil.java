@@ -39,12 +39,13 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     }
 
     // 토큰 생성
-    public String createToken(String username) {
+    public String createToken(String username, String nickname) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
+                        .claim("nickname", nickname)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘

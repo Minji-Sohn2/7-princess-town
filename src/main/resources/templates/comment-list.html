@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="shortcut icon" href="#">
     <title>댓글 리스트</title>
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
@@ -51,29 +52,23 @@
         </div>
     </div>
 </div>
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link prev-page-button" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item page-numbers">
-                    <a class="page-link page-button active pagenumber"></a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link next-page-button" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-<!--<div class="pagination">-->
-<!--    <button class="prev-page-button">이전</button>-->
-<!--    <button class="next-page-button">다음</button>-->
-<!--    <span class="page-numbers">-->
-<!--  </span>-->
-<!--</div>-->
+<nav aria-label="..." style="margin-bottom: 2em">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link prev-page-button" style="cursor: pointer" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item page-numbers">
+            <a class="page-link page-button active pagenumber"></a>
+        </li>
+        <li class="page-item">
+            <a class="page-link next-page-button" style="cursor: pointer" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 
 </body>
 <script>
@@ -86,6 +81,7 @@
 
     // 화면이 띄워질경우 실행되는 메소드
     $(document).ready(function () {
+
         const postId = getPostIdFromUrl();
 
         // 페이징
@@ -103,7 +99,7 @@
             $.ajax({
                 url: `/api/posts/${postId}/comments?page=${page}&size=${pageSize}`,
                 method: 'GET',
-                success: function(data) {
+                success: function (data) {
                     const comments = data.result.comments;
                     totalPages = data.result.paginationInfo.totalPages;
                     // console.log(comments)
@@ -159,21 +155,22 @@
                                 <div class="grid_text">
                                     <hr style="border-top: 1px solid #6c757d;">
                                     <div class="grid_img">
-                                        <img src="/img/20230812_215821.jpg" style="border-radius: 50%;">
+                                        <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
                                     </div>
                                     <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}</a></h4>
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
-                                    <h5 class="style1 list">${comment.content}</h5>
                                     <br/>
-                                    <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif" data-comment-id="${comment.id}">수정</a>
-                                    <a class="btn1" style="font-family: 'Jua', sans-serif" data-comment-id="${comment.id}">삭제</a>
-                                    <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif">답글 달기</a>
-                                    <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif"  data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기  (0개)</a>
-                                    <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
-                                    <div>
-                                        <a class="commentunLikes">🤍</a>
-                                        <span>${comment.likeCnt}</span>
+                                    <h4 class="style1 list">${comment.content}</h4>
+                                    <br/>
+                                    <div class="commentsLikes" data-comment-id="${comment.id}">
+                                        <a class="commentunLikes" style="cursor: pointer" data-comment-id="${comment.id}" onclick="likesClick(${postId}, ${comment.id}, ${comment.likeCnt})">🤍</a>
+                                        <span class="commentcnt" data-comment-id="${comment.id}">${comment.likeCnt}</span>
                                     </div>
+                                    <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">수정</a>
+                                    <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">삭제</a>
+                                    <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif; cursor: pointer">답글 달기</a>
+                                    <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif; cursor: pointer"  data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기  (0개)</a>
+                                    <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
                                 <div class="grid_text userReply-Form" style="display: none">
                                     <label for="userReply" style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
@@ -200,21 +197,22 @@
                                 <div class="grid_text">
                                     <hr style="border-top: 1px solid #6c757d;">
                                     <div class="grid_img">
-                                        <img src="/img/20230812_215821.jpg" style="border-radius: 50%;">
+                                        <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
                                     </div>
                                     <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}</a></h4>
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
-                                    <h5 class="style1 list">${comment.content}</h5>
                                     <br/>
-                                    <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif" data-comment-id="${comment.id}">수정</a>
-                                    <a class="btn1" style="font-family: 'Jua', sans-serif" data-comment-id="${comment.id}">삭제</a>
-                                    <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif">답글 달기</a>
-                                    <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif" data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기 (0개)</a>
-                                    <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
-                                    <div>
-                                        <a class="commentLikes">❤️</a>
-                                        <span>${comment.likeCnt}</span>
+                                    <h4 class="style1 list">${comment.content}</h4>
+                                    <br/>
+                                    <div class="commentsLikes" data-comment-id="${comment.id}">
+                                        <a class="commentLikes" style="cursor: pointer" data-comment-id="${comment.id}" onclick="unlikesClick(${postId}, ${comment.id}, ${comment.likeCnt})">❤️</a>
+                                        <span class="commentcnt" data-comment-id="${comment.id}">${comment.likeCnt}</span>
                                     </div>
+                                    <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">수정</a>
+                                    <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">삭제</a>
+                                    <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif; cursor: pointer">답글 달기</a>
+                                    <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기 (0개)</a>
+                                    <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
                                 <div class="grid_text userReply-Form" style="display: none">
                                     <label for="userReply" style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
@@ -267,12 +265,15 @@
                                                     <div  class="grid1_of_2 left" id="replyList" data-reply-id="${reply.id}">
                                                         <div class="grid_text">
                                                             <hr style="border-top: 1px solid #6c757d;">
+                                                            <div class="grid_img">
+                                                                <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
+                                                            </div>
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
                                                             <h4 class="style1 list" data-reply-id="${reply.id}"> ${reply.content}</h4>
                                                             <div>
-                                                                <a data-reply-id="${reply.id}">🤍</a>
-                                                                <span data-reply-id="${reply.id}">${reply.likeCnt}</span>
+                                                                <a class="unreplysLikes" data-reply-id="${reply.id}">🤍</a>
+                                                                <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
                                                             <textarea type="text"  placeholder="답글을 입력해주세요" style="display: none"/></textarea>
                                                             <button type="button" style="display: none">reply 수정</button>
@@ -292,12 +293,15 @@
                                                     <div  class="grid1_of_2 left" id="replyList" data-reply-id="${reply.id}" style="display: none">
                                                         <div class="grid_text">
                                                             <hr style="border-top: 1px solid #6c757d;">
+                                                            <div class="grid_img">
+                                                                <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
+                                                            </div>
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
                                                             <h4 class="style1 list" data-reply-id="${reply.id}"> ${reply.content}</h4>
                                                             <div>
-                                                                <a id="replysLikes" data-reply-id="${reply.id}">❤️</a>
-                                                                <span data-reply-id="${reply.id}">${reply.likeCnt}</span>
+                                                                <a class="replysLikes" data-reply-id="${reply.id}">❤️</a>
+                                                                <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
                                                             <textarea type="text"  placeholder="답글을 입력해주세요" style="display: none"/></textarea>
                                                             <button type="button" style="display: none">reply 수정</button>
@@ -340,7 +344,7 @@
             for (let i = startPage; i < maxPage; i++) {
                 const pageNumber = i + 1; // 페이지 번호는 1부터 시작
                 const activeClass = i === currentPage ? 'active' : '';
-                const pageButton = `<li class="page-item page-numbers list-inline-item" style="margin-right: 0">
+                const pageButton = `<li class="page-item page-numbers list-inline-item" style="margin-right: 0; cursor: pointer">
                                 <a class="page-link page-button ${activeClass} pagenumber" data-page="${i}">
                                     ${pageNumber}
                                 </a>
@@ -360,7 +364,7 @@
         loadCommentsAndReplies(currentPage);
 
         // 페이지 번호 클릭 시 해당 페이지 댓글/답글 가져오기
-        $('.pagination').on('click', '.pagenumber', function() {
+        $('.pagination').on('click', '.pagenumber', function () {
             const page = parseInt($(this).data('page'));
             currentPage = page; // 활성화된 페이지 번호를 업데이트
             updatePagination();
@@ -368,14 +372,14 @@
         });
 
         // 이전 페이지 버튼 클릭 시 이전 페이지 댓글/답글 가져오기
-        $('.prev-page-button').click(function() {
+        $('.prev-page-button').click(function () {
             if (currentPage > 0) {
-                if(currentPage < 1) {
+                if (currentPage < 1) {
                     currentPage -= pageSize;
                 } else {
-                        currentPage = currentPage.toString().slice(0, -1) * 10 - pageSize;
-                        console.log(currentPage)
-                    }
+                    currentPage = currentPage.toString().slice(0, -1) * 10 - pageSize;
+                    console.log(currentPage)
+                }
                 if (currentPage < startPage) {
                     startPage -= 10;
                     endPage -= 10;
@@ -385,10 +389,10 @@
             }
         });
 
-// 다음 페이지 버튼 클릭 시 다음 페이지 댓글/답글 가져오기
-        $('.next-page-button').click(function() {
+        // 다음 페이지 버튼 클릭 시 다음 페이지 댓글/답글 가져오기
+        $('.next-page-button').click(function () {
             if (currentPage < totalPages - 1) {
-                if(currentPage < 1) {
+                if (currentPage < 1) {
                     currentPage += pageSize;
                     // console.log(currentPage)
                 } else {
@@ -405,6 +409,76 @@
         });
     });
 
+    function likesClick(postId, commentId, cnt) {
+        const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
+
+        console.log(token);
+        $.ajax({
+            type: 'POST',
+            url: `/api/posts/${postId}/comments/${commentId}/likes`,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            data: {},
+            success: function (data) {
+                console.log(data);
+                console.log(cnt)
+
+                const updateCnt = cnt += 1;
+
+                $(`.commentunLikes[data-comment-id=${commentId}]`).empty();
+                $(`.commentcnt[data-comment-id=${commentId}]`).empty();
+
+                const temp_html = `
+                    <a class="commentLikes" style="cursor: pointer" data-comment-id="${commentId}" onclick="unlikesClick(${postId}, ${commentId}, ${cnt})">❤️</a>
+                    <span class="commentcnt" data-comment-id="${commentId}">${updateCnt}</span>
+                `
+
+                $(`.commentsLikes[data-comment-id=${commentId}]`).append(temp_html);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
+    function unlikesClick(postId, commentId, cnt) {
+        const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTU4NzEsImlhdCI6MTY5MjY5NTg3MX0.Hj386tCG4ZqUmkJkWg99V2DrWHJl_wXKLju__7q6t6E";
+
+        console.log(token);
+        $.ajax({
+            type: 'PUT',
+            url: `/api/posts/${postId}/comments/${commentId}/likes`,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            data: {},
+            success: function (data) {
+                console.log(data);
+                console.log(cnt)
+
+                const updateCnt = cnt -= 1;
+
+                $(`.commentLikes[data-comment-id=${commentId}]`).empty();
+                $(`.commentcnt[data-comment-id=${commentId}]`).empty();
+
+                const temp_html = `
+                    <a class="commentunLikes" style="cursor: pointer" data-comment-id="${commentId}" onclick="likesClick(${postId}, ${commentId}, ${cnt})">🤍</a>
+                    <span class="commentcnt" data-comment-id="${commentId}">${updateCnt}</span>
+                `
+
+                $(`.commentsLikes[data-comment-id=${commentId}]`).append(temp_html);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
     function openReply(commentId) {
         $(`.commentbox[data-comment-id="${commentId}"] #replyList`).show();
         $(`.commentbox[data-comment-id="${commentId}"] .replyRead`).hide();
@@ -416,5 +490,7 @@
         $(`.commentbox[data-comment-id="${commentId}"] .replyRead`).show();
         $(`.commentbox[data-comment-id="${commentId}"] .replyClose`).hide();
     }
+
+
 </script>
 </html>
