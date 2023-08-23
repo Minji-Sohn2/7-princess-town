@@ -22,7 +22,7 @@ public class UserResponseDto {
         this.username = user.getUsername();
         this.userId = user.getUserId();
         this.password = "******************";
-        this.username = user.getNickname();
+        this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
         this.profileImage = user.getProfileImage();
