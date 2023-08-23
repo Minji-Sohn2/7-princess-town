@@ -78,7 +78,7 @@ public class PostController {
         return postService.deletePost(postId, userDetails.getUser());
     }
 
-    //블로그 게시글 좋아요 API
+    //게시글 좋아요 API
     @PostMapping("/board/{boardId}/posts/{postId}/like")
     public ResponseEntity<ApiResponseDto> likeBlog(@PathVariable Long boardId,
                                                    @PathVariable Long postId,
@@ -86,7 +86,7 @@ public class PostController {
         return ResponseEntity.ok().body(likeService.likePost(postId, userDetails.getUser()));
     }
 
-    //블로그 게시글 좋아요 취소 API
+    //게시글 좋아요 취소 API
     @DeleteMapping("/board/{boardId}/posts/{postId}/like")
     public ResponseEntity<ApiResponseDto> deleteLikeBlog(@PathVariable Long boardId,
                                                          @PathVariable Long postId,
