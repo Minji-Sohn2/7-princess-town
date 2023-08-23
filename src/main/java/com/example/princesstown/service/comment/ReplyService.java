@@ -51,7 +51,7 @@ public class ReplyService {
             reply.setLikeCnt(0L);
 
             replyRepository.save(reply);
-            return this.resultResponse(HttpStatus.CREATED, "댓글 생성", new ReplyResponseDto(reply));
+            return this.resultResponse(HttpStatus.CREATED, "답글 생성", new ReplyResponseDto(reply));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }

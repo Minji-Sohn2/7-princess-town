@@ -5,6 +5,22 @@ function getPostIdFromUrl() {
     return urlParts[postIdIndex];
 }
 
+function maskingName(username) {
+    if (username.length >= 8) {
+        return (
+            username.slice(0, 3) +
+            "*".repeat(Math.max(0, username.length - 5)) +
+            username.slice(-3)
+        );
+    } else {
+        return (
+            username.slice(0, 2) +
+            "*".repeat(Math.max(0, username.length - 3)) +
+            username.slice(-1)
+        );
+    }
+}
+
 // 화면이 띄워질경우 실행되는 메소드
 $(document).ready(function () {
 
@@ -48,22 +64,6 @@ $(document).ready(function () {
                 updatePagination(totalPages, page);
             }
         });
-    }
-
-    function maskingName(username) {
-        if (username.length >= 8) {
-            return (
-                username.slice(0, 3) +
-                "*".repeat(Math.max(0, username.length - 5)) +
-                username.slice(-3)
-            );
-        } else {
-            return (
-                username.slice(0, 2) +
-                "*".repeat(Math.max(0, username.length - 3)) +
-                username.slice(-1)
-            );
-        }
     }
 
     function displayCommentsAndReplies(comments, page) {
@@ -125,7 +125,7 @@ $(document).ready(function () {
                                     <a class="btn1 editCommentsClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}">수정창 닫기</a>
                                     <a class="btn1 deleteComments" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">삭제</a>
                                     <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">답글 달기</a>
-                                    <a class="btn1 replyCreateClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}">답글 달기 취소</a>
+                                    <a class="btn1 replyCreateClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}">답글입력창 닫기</a>
                                     <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif; cursor: pointer"  data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기  (0개)</a>
                                     <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
@@ -137,7 +137,7 @@ $(document).ready(function () {
                                 <div class="grid_text userReply-Form" style="display: none" data-comment-id="${comment.id}">
                                     <label style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
                                     <textarea type="text" class="userReply" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
-                                    <button class="btn btn-secondary" type="button" data-comment-id="${comment.id}">답글 작성</button>
+                                    <button class="btn btn-secondary" type="button" data-comment-id="${comment.id}" onclick="replyCreate(${postId}, ${comment.id})">답글 작성</button>
                                 </div>
 
                             `
@@ -170,7 +170,7 @@ $(document).ready(function () {
                                     <a class="btn1 editCommentsClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}">수정창 닫기</a>
                                     <a class="btn1 deleteComments" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">삭제</a>
                                     <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">답글 달기</a>
-                                    <a class="btn1 replyCreateClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}">답글 달기 취소</a>
+                                    <a class="btn1 replyCreateClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}">답글입력창 닫기</a>
                                     <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기 (0개)</a>
                                     <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
@@ -182,7 +182,7 @@ $(document).ready(function () {
                                 <div class="grid_text userReply-Form" style="display: none" data-comment-id="${comment.id}">
                                     <label style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
                                     <textarea type="text" class="userReply" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
-                                    <button class="btn btn-secondary" type="button" data-comment-id="${comment.id}">답글 작성</button>
+                                    <button class="btn btn-secondary" type="button" data-comment-id="${comment.id}" onclick="replyCreate(${postId}, ${comment.id})">답글 작성</button>
                                 </div>
                             `
                             }
@@ -198,7 +198,7 @@ $(document).ready(function () {
                                 dataType: "json",
                                 success: function (replies) {
                                     let data2 = replies.result.replys;
-                                    var repliesContainer = $('<div class="grid1_of_2 left" id="replyList" style="display: none"></div>');
+                                    var repliesContainer = $(`<div class="grid1_of_2 left replyLists" id="replyList" style="display: none" data-comment-id="${comment.id}"></div>`);
 
                                     $.ajax({
                                         url: "/api/posts/" + postId + "/comments/" + comment.id + "/reply/likes",
@@ -238,8 +238,8 @@ $(document).ready(function () {
                                                                 <a class="unreplysLikes" style="cursor: pointer" data-reply-id="${reply.id}" onclick="replyLikesClick(${postId}, ${commentId}, ${reply.id}, ${reply.likeCnt})">🤍</a>
                                                                 <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
-                                                            <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">수정</a>
-                                                            <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">삭제</a>
+                                                            <a class="btn1 replyedit" style="font-family: 'Jua', sans-serif; cursor: pointer" data-reply-id="${reply.id}">수정</a>
+                                                            <a class="btn1 replydelete" style="font-family: 'Jua', sans-serif; cursor: pointer" data-reply-id="${reply.id}">삭제</a>
                                                         </div>
                                                         <div class="grid_text userReplyEdit-Form" style="display: none" data-reply-id="${reply.id}">
                                                             <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
@@ -269,8 +269,8 @@ $(document).ready(function () {
                                                                 <a class="replysLikes" style="cursor: pointer" data-reply-id="${reply.id}" onclick="replyUnlikesClick(${postId}, ${commentId}, ${reply.id}, ${reply.likeCnt})">❤️</a>
                                                                 <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
-                                                            <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">수정</a>
-                                                            <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">삭제</a>
+                                                            <a class="btn1 replyedit" style="font-family: 'Jua', sans-serif; cursor: pointer" data-reply-id="${reply.id}">수정</a>
+                                                            <a class="btn1 replydelete" style="font-family: 'Jua', sans-serif; cursor: pointer" data-reply-id="${reply.id}">삭제</a>
                                                         </div>
                                                         <div class="grid_text userReplyEdit-Form" style="display: none" data-reply-id="${reply.id}">
                                                             <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
@@ -287,8 +287,17 @@ $(document).ready(function () {
                                                 // 답글 갯수 구한후 텍스트 변환
                                                 let replyCount = data2.length;
                                                 $(`.commentbox[data-comment-id="${comment.id}"] .replyRead`).text(`답글 펼치기 (${replyCount}개)`);
+
+                                                if (reply.username !== usernames) {
+                                                    $(`.replyedit[data-reply-id="${reply.id}"]`).remove();
+                                                }
+
+                                                if (reply.username !== usernames) {
+                                                    $(`.replydelete[data-reply-id="${reply.id}"]`).remove();
+                                                }
                                             })
                                         }
+
                                     });
 
                                     // 답글을 댓글 아래에 추가
@@ -412,39 +421,40 @@ $(document).ready(function () {
             $('#userComment').focus();
             return false;
         }
-            $.ajax({
-                type: 'POST',
-                url: `/api/posts/${postId}/comments`,
-                dataType: 'json',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": token
-                },
-                data: JSON.stringify({
-                    content: $('#userComment').val()
-                }),
-                success: function (data) {
-                    // console.log(data);
-                    // 댓글 작성 후 작성된 댓글이 있는 페이지 번호 계산
-                    // const commentsPerPage = 10; // 페이지당 댓글 수
-                    // const commentPage = Math.floor(commentIndex / commentsPerPage);
-                    const commentIndex = parseInt(totalItems.toString().slice(0, -1));
-                    console.log("totalPages = " + totalPages)
-                    console.log("commentIndex = " + commentIndex)
+        $.ajax({
+            type: 'POST',
+            url: `/api/posts/${postId}/comments`,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            data: JSON.stringify({
+                content: $('#userComment').val()
+            }),
+            success: function (data) {
+                // console.log(data);
+                // 댓글 작성 후 작성된 댓글이 있는 페이지 번호 계산
+                // const commentsPerPage = 10; // 페이지당 댓글 수
+                // const commentPage = Math.floor(commentIndex / commentsPerPage);
+                const commentIndex = parseInt(totalItems.toString().slice(0, -1));
+                console.log("totalPages = " + totalPages)
+                console.log("commentIndex = " + commentIndex)
 
-                    // 페이지 이동
-                    currentPage = commentIndex; // currentPage 업데이트
-                    startPage = commentIndex.toString().slice(0, -1) * 10;
-                    endPage = startPage + 9;
-                    console.log("startPage = " + startPage)
-                    console.log("endPage = " + endPage)
-                    updatePagination();
-                    loadCommentsAndReplies(currentPage);
-                },
-                error: function (e) {
-                    console.log(e)
-                }
-            })
+                // 페이지 이동
+                currentPage = commentIndex; // currentPage 업데이트
+                startPage = commentIndex.toString().slice(0, -1) * 10;
+                endPage = startPage + 9;
+                console.log("startPage = " + startPage)
+                console.log("endPage = " + endPage)
+                updatePagination();
+                loadCommentsAndReplies(currentPage);
+                $('#userComment').val("");
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        })
     })
 
     // 댓글 수정
@@ -482,6 +492,7 @@ $(document).ready(function () {
                 $(`.userCommentEdit-Form[data-comment-id="${commentId}"]`).hide();
                 $(`.editCommentsClose[data-comment-id="${commentId}"]`).hide();
                 $(`.editComments[data-comment-id="${commentId}"]`).show();
+                $(`.userCommentEdit[data-comment-id="${commentId}"]`).val("");
             },
             error: function (e) {
                 console.log(e)
@@ -523,13 +534,90 @@ $(document).ready(function () {
             }
         })
     })
+
+
 });
+
+function replyCreate(postId, commentId) {
+    const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
+    const createReplyValue = $(`.userReply[data-comment-id="${commentId}"]`).val();
+    if (createReplyValue.length <= 2) {
+        alert("댓글내용이 2자 이하입니다. 3자이상 1000자 이하로 작성해주세요");
+        $('#userComment').focus();
+        return false;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: `/api/posts/${postId}/comments/${commentId}/reply`,
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+        },
+        data: JSON.stringify({
+            content: createReplyValue
+        }),
+        success: function (data) {
+            console.log(data);
+            // alert(data.message)
+
+            const createdAt = data.result.createdAt;
+
+            const date = new Date(createdAt);
+
+            const formattedDate = date.toLocaleString("ko-KR", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+            });
+
+            let temp_html = `
+            <div  class="grid1_of_2 left" id="replyList" data-reply-id="${data.result.id}">
+               <div class="grid_text">
+               <hr style="border-top: 1px solid #6c757d;">
+               <div class="grid_img">
+                   <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
+               </div>
+               <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${data.result.id}">${data.result.nickname}(${maskingName(data.result.username)})</a></h4>
+               <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${data.result.id}">${formattedDate}</p>
+               <h4 class="style1 list replayContents" data-reply-id="${data.result.id}"> ${data.result.content}</h4>
+               <div class="replyslikes" data-reply-id="${data.result.id}">
+                    <a class="unreplysLikes" style="cursor: pointer" data-reply-id="${data.result.id}" onclick="replyLikesClick(${postId}, ${commentId}, ${data.result.id}, ${data.result.likeCnt})">🤍</a>
+                    <span class="likecnt" data-reply-id="${data.result.id}">${data.result.likeCnt}</span>
+               </div>
+               <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">수정</a>
+               <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">삭제</a>
+               </div>
+               <div class="grid_text userReplyEdit-Form" style="display: none" data-reply-id="${data.result.id}">
+               <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
+               <textarea type="text" class="userReplyEdit" name="content" placeholder="수정내용을 입력해주세요." data-reply-id="${data.result.id}"></textarea>
+               <button class="btn btn-secondary userEditReplyComplete" type="button" data-reply-id="${data.result.id}">답글 수정</button>
+               </div>
+            </div>
+            `
+
+            $(`.replyLists[data-comment-id="${commentId}"]`).append(temp_html)
+            $(`.replyRead[data-comment-id="${commentId}"]`).text(`댓글 펼치기 (${$(`.replyLists[data-comment-id="${commentId}"] #replyList`).length}개)`)
+            $(`.commentbox[data-comment-id="${commentId}"] #replyList`).show();
+            $(`.commentbox[data-comment-id="${commentId}"] .replyRead`).hide();
+            $(`.commentbox[data-comment-id="${commentId}"] .replyClose`).show();
+            $(`.userReply[data-comment-id="${commentId}"]`).val("");
+        },
+        error: function (e) {
+            console.log(createReplyValue)
+            console.log(e)
+        }
+    })
+}
 
 // 댓글 좋아요 추가
 function likesClick(postId, commentId, cnt) {
     const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
 
-    console.log(token);
+    // console.log(token);
     $.ajax({
         type: 'POST',
         url: `/api/posts/${postId}/comments/${commentId}/likes`,
@@ -541,7 +629,7 @@ function likesClick(postId, commentId, cnt) {
         data: {},
         success: function (data) {
             console.log(data);
-            console.log(cnt)
+            // console.log(cnt)
 
             const updateCnt = cnt += 1;
 
@@ -565,7 +653,7 @@ function likesClick(postId, commentId, cnt) {
 function unlikesClick(postId, commentId, cnt) {
     const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTU4NzEsImlhdCI6MTY5MjY5NTg3MX0.Hj386tCG4ZqUmkJkWg99V2DrWHJl_wXKLju__7q6t6E";
 
-    console.log(token);
+    // console.log(token);
     $.ajax({
         type: 'PUT',
         url: `/api/posts/${postId}/comments/${commentId}/likes`,
@@ -577,7 +665,7 @@ function unlikesClick(postId, commentId, cnt) {
         data: {},
         success: function (data) {
             console.log(data);
-            console.log(cnt)
+            // console.log(cnt)
 
             const updateCnt = cnt -= 1;
 
@@ -612,9 +700,9 @@ function replyLikesClick(postId, commentId, replyId, cnt) {
         },
         data: {},
         success: function (data) {
-            // console.log(data);
+            console.log(data);
             // console.log(cnt)
-            console.log(commentId)
+            // console.log(commentId)
             const updateCnt = cnt += 1;
 
             $(`.unreplysLikes[data-reply-id=${replyId}]`).empty();
@@ -648,7 +736,7 @@ function replyUnlikesClick(postId, commentId, replyId, cnt) {
         },
         data: {},
         success: function (data) {
-            // console.log(data);
+            console.log(data);
             // console.log(cnt)
             console.log(commentId)
 

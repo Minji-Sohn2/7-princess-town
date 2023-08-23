@@ -25,7 +25,7 @@ public class ReplyController {
         return replyService.getReplys(postId, commentId);
     }
 
-    // 댓글 작성
+    // 답글 작성
     @PostMapping("/posts/{postId}/comments/{commentId}/reply")
     public ResponseEntity<RestApiResponseDto> createReplys(
             @PathVariable Long postId,
@@ -37,7 +37,7 @@ public class ReplyController {
         return replyService.createReplys(postId, commentId, requestDto, userDetails.getUser());
     }
 
-    // 댓글 수정
+    // 답글 수정
     @PutMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}")
     public ResponseEntity<RestApiResponseDto> updateReplys(
             @PathVariable Long postId,
@@ -50,7 +50,7 @@ public class ReplyController {
         return replyService.updateReplys(postId, commentId, replyId, requestDto, userDetails.getUser());
     }
 
-    // 댓글 삭제
+    // 답글 삭제
     @DeleteMapping("/posts/{postId}/comments/{commentId}/reply/{replyId}")
     public ResponseEntity<RestApiResponseDto> deleteReplys(
             @PathVariable Long postId,
