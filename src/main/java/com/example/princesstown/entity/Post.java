@@ -49,8 +49,10 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Like> likeList = new ArrayList<>();
 
-    public Post(PostRequestDto postRequestDto, User user){
+    public Post(PostRequestDto postRequestDto, User user, Board board, Long likeCount){
         this.user = user;
+        this.board = board;
+        this.likeCount = likeCount;
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
         this.image = postRequestDto.getImage();

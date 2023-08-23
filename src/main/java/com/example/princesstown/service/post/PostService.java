@@ -3,8 +3,11 @@ package com.example.princesstown.service.post;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
+import com.example.princesstown.entity.Board;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.repository.board.BoardRepository;
+import com.example.princesstown.repository.post.LikeRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
 
+    private final BoardRepository boardRepository;
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
     // private final JwtUtil jwtUtil;
 
     // 게시글 전체 조회 API
@@ -51,12 +56,13 @@ public class PostService {
     }
 
     // 게시글 등록 API
-    public PostResponseDto createPost(PostRequestDto postRequestDto, User user) {
+    public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId) {
+        Board board =boardRepository.findById(boardId).orElseThrow();
+
         if(user == null){
             throw new IllegalArgumentException("허가되지 않은 사용자입니다.");
         }
-
-        Post post = new Post(postRequestDto, user);
+        Post post = new Post(postRequestDto, user, board, 0L);
         postRepository.save(post);
 
         return new PostResponseDto(post);

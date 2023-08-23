@@ -46,13 +46,13 @@ public class PostController {
     // 게시글 등록 API
     @PostMapping("/board/{boardId}/posts")
     @ResponseBody
-    public ResponseEntity<ApiResponseDto> createPost(@PathVariable Long boardId,
-                                                     @RequestBody PostRequestDto postRequestDto,
-                                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<ApiResponseDto> createPost(@RequestBody PostRequestDto postRequestDto,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                     @PathVariable Long boardId){
         log.info("title : " + postRequestDto.getTitle());
         log.info("contents : " + postRequestDto.getContents());
 
-        postService.createPost(postRequestDto, userDetails.getUser());
+        postService.createPost(postRequestDto, userDetails.getUser(), boardId);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));
     }
     // 게시글 수정 API

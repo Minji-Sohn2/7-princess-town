@@ -35,7 +35,7 @@ public class BoardController {
         return boardService.getBoard(boardId);
     }
 
-    // 게시글 등록 API
+    // 게시판 생성 API
     @PostMapping("/board")
     @ResponseBody
     public ResponseEntity<ApiResponseDto> createBoard(@RequestBody BoardRequestDto boardRequestDto,
@@ -46,7 +46,7 @@ public class BoardController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));
     }
 
-    // 게시글 수정 API
+    // 게시판 수정 API
     @PutMapping("/board/{boardId}")
     public ResponseEntity<ApiResponseDto> updateBoard(@PathVariable Long boardId,
                                                       @RequestBody BoardRequestDto boardRequestDto,
@@ -60,7 +60,7 @@ public class BoardController {
     }
 
 
-    // 게시글 삭제 API
+    // 게시판 삭제 API
     @DeleteMapping("/board/{boardId}")
     public ApiResponseDto deletePost(@PathVariable Long boardId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
