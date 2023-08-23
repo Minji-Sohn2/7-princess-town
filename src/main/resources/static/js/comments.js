@@ -10,6 +10,18 @@ $(document).ready(function () {
 
     let usernames = "testid3";
 
+    // const token = Cookies.get('Authorization');
+    // if (token) {
+    //     $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+    //         jqXHR.setRequestHeader('Authorization', token);
+    //     });
+    //     // JWT 토큰 디코딩하여 페이로드 추출
+    //     // 예시 {sub: 'qw12345611', nickname: 'testid3', auth: 'USER', exp: 1689745728, iat: 1689742128}
+    //     // 그중 username을 추출해야하니 sub를 가져옴. 만약 관리자 확인이면 auth를 가져올듯.
+    //     const payload = JSON.parse(atob(token.split(".")[1]));
+    //     const usernames = payload.nickname;
+    // }
+
     const postId = getPostIdFromUrl();
 
     // 페이징
@@ -103,7 +115,7 @@ $(document).ready(function () {
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
                                     <br/>
                                     <h4 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h4>
-                                    <img class="emoji" src="${comment.emoji}" alt="emoji" style="display:none;">
+<!--                                    <img class="emoji" src="${comment.emoji}" alt="emoji" style="display:none;">-->
                                     <br/>
                                     <div class="commentsLikes" data-comment-id="${comment.id}">
                                         <a class="commentunLikes" style="cursor: pointer" data-comment-id="${comment.id}" onclick="likesClick(${postId}, ${comment.id}, ${comment.likeCnt})">🤍</a>
@@ -148,7 +160,7 @@ $(document).ready(function () {
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
                                     <br/>
                                     <h4 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h4>
-                                    <img class="emoji" src="${comment.emoji}" alt="emoji" style="display:none;">
+<!--                                    <img class="emoji" src="${comment.emoji}" alt="emoji" style="display:none;">-->
                                     <br/>
                                     <div class="commentsLikes" data-comment-id="${comment.id}">
                                         <a class="commentLikes" style="cursor: pointer" data-comment-id="${comment.id}" onclick="unlikesClick(${postId}, ${comment.id}, ${comment.likeCnt})">❤️</a>
@@ -414,7 +426,7 @@ $(document).ready(function () {
                 success: function (data) {
                     // console.log(data);
                     // 댓글 작성 후 작성된 댓글이 있는 페이지 번호 계산
-                    // const commentsPerPage = 10; // 페이지당 댓글 수 (컨트롤러에서 설정한 값과 동일해야 함)
+                    // const commentsPerPage = 10; // 페이지당 댓글 수
                     // const commentPage = Math.floor(commentIndex / commentsPerPage);
                     const commentIndex = parseInt(totalItems.toString().slice(0, -1));
                     console.log("totalPages = " + totalPages)
@@ -441,6 +453,12 @@ $(document).ready(function () {
         const postId = getPostIdFromUrl();
         const commentId = $(this).data('comment-id');
         console.log(commentId)
+
+        if ($('.userCommentEdit').val().length <= 2) {
+            alert("댓글내용이 2자 이하입니다. 3자이상 1000자 이하로 작성해주세요");
+            $('#userComment').focus();
+            return false;
+        }
 
         $.ajax({
             type: 'PUT',

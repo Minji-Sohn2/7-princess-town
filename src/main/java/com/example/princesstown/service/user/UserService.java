@@ -6,8 +6,8 @@ import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.UserResponseDto;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.jwt.JwtUtil;
 import com.example.princesstown.repository.user.UserRepository;
-import com.example.princesstown.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil.JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
 
     public void signup(SignupRequestDto requestDto){
