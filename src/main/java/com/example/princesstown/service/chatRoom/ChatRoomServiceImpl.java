@@ -23,23 +23,25 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatUserRepository chatUserRepository;
+    // redis 추가 후 사용
+    // private final ChatRoomRedisRepository chatRoomRedisRepository;
 
     @Override
     @Transactional
-    public ChatRoomInfoResponseDto createChatRoom(User user, MemberIdListDto memberIdListDto) {
-        ChatRoom newChatRoom = new ChatRoom(user);
+    public ChatRoomInfoResponseDto createChatRoom(User user, CreateChatRoomRequestDto requestDto) {
+        ChatRoom newChatRoom = new ChatRoom(user, requestDto.getChatRoomName());
 
         // userList에 초대한 사용자와 생성한 사용자 추가
-        List<User> userList = dtoToUserList(memberIdListDto);
+        List<User> userList = dtoToUserList(requestDto.getMemberIdList());
         userList.add(user);
 
         for (User u : userList) {
             ChatUser chatUser = chatUserRepository.save(new ChatUser(u, newChatRoom));
-            newChatRoom.addChatUser(chatUser);
+            u.addChatUser(chatUser);
         }
 
         chatRoomRepository.save(newChatRoom);
-
+        // chatRoomRedisRepository.saveChatRoomRedis(newChatRoom);
         return new ChatRoomInfoResponseDto(newChatRoom);
     }
 
@@ -49,12 +51,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 요청한 user가 채팅방의 생성자인지 확인
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
-        if (!chatRoom.getHostUser().getUserId().equals(user.getUserId())) {
+        if (!chatRoom.getHostUserId().equals(user.getUserId())) {
             throw new IllegalArgumentException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
         }
 
         chatRoom.updateChatRoomName(requestDto.getNewChatRoomName());
-
+        // chatRoomRedisRepository.saveChatRoomRedis(chatRoom);
         return new ChatRoomInfoResponseDto(chatRoom);
     }
 
@@ -63,22 +65,23 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 요청한 user가 채팅방의 생성자인지 확인
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
-        if (!chatRoom.getHostUser().getUserId().equals(user.getUserId())) {
+        if (!chatRoom.getHostUserId().equals(user.getUserId())) {
             throw new IllegalArgumentException("채팅방은 호스트만 삭제할 수 있습니다.");
         }
 
+        // chatRoomRedisRepository.deleteChatRoomRedis(chatRoom);
         chatRoomRepository.delete(chatRoom);
     }
 
     @Override
-    public MemberIdListDto getChatRoomMembers(String chatRoomId) {
+    public MemberInfoListDto getChatRoomMembers(String chatRoomId) {
 
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
-        List<ChatMemberIdDto> chatMemberIdList = chatRoom.getChatUserList()
-                .stream().map(ChatMemberIdDto::new).toList();
+        List<ChatMemberInfoDto> chatMemberInfoList = chatUserRepository.findAllByChatRoom(chatRoom)
+                .stream().map(ChatMemberInfoDto::new).toList();
 
-        return new MemberIdListDto(chatMemberIdList);
+        return new MemberInfoListDto(chatMemberInfoList);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         // user가 해당 채팅방의 host인 경우 채팅방 삭제
-        if (chatRoom.getHostUser().getUserId().equals(user.getUserId())) {
+        if (chatRoom.getHostUserId().equals(user.getUserId())) {
             deleteChatRoom(roomId, user);
         }
 
@@ -116,10 +119,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new IllegalArgumentException("해당 채팅방으로의 초대 권한이 없습니다.");
         }
 
-        List<User> userList = dtoToUserList(memberIdListDto);
+        List<User> userList = dtoToUserList(memberIdListDto.getMemberIdList());
         for (User u : userList) {
             // 만약 이미 채팅방에 존재하는 멤버라면 건너뛰기
-            if(findChatUserByChatRoomAndUser(chatRoom, u) != null) {
+            if (findChatUserByChatRoomAndUser(chatRoom, u) != null) {
                 continue;
             }
             chatUserRepository.save(new ChatUser(u, chatRoom));
@@ -147,11 +150,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public List<User> dtoToUserList(MemberIdListDto memberIdListDto) {
-        log.info(memberIdListDto.getMemberIdList().get(0).toString());
+    public List<User> dtoToUserList(List<ChatMemberIdDto> memberIdList) {
+        log.info(memberIdList.get(0).toString());
         // 전달받은 사용자 리스트
         List<User> userList = new ArrayList<>();
-        for (ChatMemberIdDto cmd : memberIdListDto.getMemberIdList()) {
+        for (ChatMemberIdDto cmd : memberIdList) {
             User user = findUserById(cmd.getUserId());
             userList.add(user);
         }

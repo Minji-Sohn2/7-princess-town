@@ -5,16 +5,16 @@ import lombok.Getter;
 
 @Getter
 public class ChatRoomInfoResponseDto {
+    private Long jpaSavedId;
     private String chatRoomId;
     private String chatRoomName;
     private Long hostUserId;
-    private int memberCount;
 
 
     public ChatRoomInfoResponseDto(ChatRoom chatRoom) {
-        this.chatRoomId = chatRoom.getId();
+        this.jpaSavedId = chatRoom.getId();
+        this.chatRoomId = chatRoom.getChatRoomId();
         this.chatRoomName = chatRoom.getChatRoomName();
-        this.hostUserId = chatRoom.getHostUser().getUserId();
-        this.memberCount = chatRoom.getChatUserList().size();
+        this.hostUserId = chatRoom.getHostUserId();
     }
 }

@@ -1,9 +1,6 @@
 package com.example.princesstown.service.chatRoom;
 
-import com.example.princesstown.dto.chatRoom.ChatRoomInfoResponseDto;
-import com.example.princesstown.dto.chatRoom.ChatRoomNameRequestDto;
-import com.example.princesstown.dto.chatRoom.MemberIdListDto;
-import com.example.princesstown.dto.chatRoom.MyChatRoomResponseDto;
+import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.entity.ChatRoom;
 import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
@@ -14,11 +11,11 @@ public interface ChatRoomService {
     /**
      * 채팅방 생성
      *
-     * @param user            생성하는 user
-     * @param memberIdListDto 초대할 userId list
+     * @param user       생성하는 user
+     * @param requestDto 채팅방 이름, 초대할 userId list
      * @return 생성된 채팅방 정보
      */
-    ChatRoomInfoResponseDto createChatRoom(User user, MemberIdListDto memberIdListDto);
+    ChatRoomInfoResponseDto createChatRoom(User user, CreateChatRoomRequestDto requestDto);
 
     /**
      * 채팅방 이름 수정
@@ -44,7 +41,7 @@ public interface ChatRoomService {
      * @param roomId 조회할 채팅방 id
      * @return 멤버 id list
      */
-    MemberIdListDto getChatRoomMembers(String roomId);
+    MemberInfoListDto getChatRoomMembers(String roomId);
 
     /**
      * 내가 속한 채팅방 조회
@@ -99,8 +96,8 @@ public interface ChatRoomService {
     /**
      * 초대할 userId list를 user list로 변환
      *
-     * @param memberIdListDto userId list
+     * @param memberIdList userId list
      * @return user list
      */
-    List<User> dtoToUserList(MemberIdListDto memberIdListDto);
+    List<User> dtoToUserList(List<ChatMemberIdDto> memberIdList);
 }
