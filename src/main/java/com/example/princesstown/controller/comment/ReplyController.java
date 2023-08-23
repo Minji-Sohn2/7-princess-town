@@ -5,6 +5,7 @@ import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.comment.ReplyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +30,7 @@ public class ReplyController {
     public ResponseEntity<RestApiResponseDto> createReplys(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @RequestBody ReplyRequestDto requestDto,
+            @RequestBody @Valid ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
@@ -42,7 +43,7 @@ public class ReplyController {
             @PathVariable Long postId,
             @PathVariable Long commentId,
             @PathVariable Long replyId,
-            @RequestBody ReplyRequestDto requestDto,
+            @RequestBody @Valid ReplyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 

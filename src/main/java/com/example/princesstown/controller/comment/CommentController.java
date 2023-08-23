@@ -5,6 +5,7 @@ import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.comment.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,7 +33,7 @@ public class CommentController {
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<RestApiResponseDto> createComments(
             @PathVariable Long postId,
-            @RequestBody CommentRequestDto requestDto,
+            @RequestBody @Valid CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
@@ -44,7 +45,7 @@ public class CommentController {
     public ResponseEntity<RestApiResponseDto> updateComments(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @RequestBody CommentRequestDto requestDto,
+            @RequestBody @Valid CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 

@@ -1,13 +1,14 @@
 package com.example.princesstown.dto.comment;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class CommentRequestDto {
-    @NotBlank(message = "내용이 입력되지 않었습니다.")
+    @Size(min = 3, max = 1000,
+            message = "최소 3자이상 최대 1000자 이하로 작성해주세요.")
     private String content;
 
     private String emoji;

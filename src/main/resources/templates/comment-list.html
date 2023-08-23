@@ -46,7 +46,7 @@
                         <textarea type="text" id="userComment" name="content" placeholder="내용을 입력해주세요."></textarea>
                     </div>
                 </form>
-                <button class="btn btn-secondary" type="button" onclick="insert()">댓글 작성</button>
+                <button id="createComments" class="btn btn-secondary" type="button">댓글 작성</button>
             </div>
             <div class="clear" id="comment"></div>
         </div>
@@ -102,10 +102,6 @@
                 success: function (data) {
                     const comments = data.result.comments;
                     totalPages = data.result.paginationInfo.totalPages;
-                    const pagelist = data.result.paginationInfo
-                    console.log(pagelist)
-                    // console.log(totalPages)
-                    // console.log(page)
                     displayCommentsAndReplies(comments, page);
                     updatePagination(totalPages, page);
                 }
@@ -187,7 +183,7 @@
                                     <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer" data-comment-id="${comment.id}">삭제</a>
                                     <a class="btn1 replyCreate" style="font-family: 'Jua', sans-serif; cursor: pointer">답글 달기</a>
                                     <a class="btn1 replyRead" style="font-family: 'Jua', sans-serif; cursor: pointer"  data-comment-id="${comment.id}" onclick="openReply(${comment.id})">답글 펼치기  (0개)</a>
-                                    <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
+                                    <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
                                 <div class="grid_text userReply-Form" style="display: none">
                                     <label for="userReply" style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
@@ -278,6 +274,8 @@
                                                         second: "2-digit",
                                                     });
 
+                                                    const commentId = comment.id;
+
                                                     let temp_html = `
                                                     <div  class="grid1_of_2 left" id="replyList" data-reply-id="${reply.id}">
                                                         <div class="grid_text">
@@ -288,8 +286,8 @@
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
                                                             <h4 class="style1 list" data-reply-id="${reply.id}"> ${reply.content}</h4>
-                                                            <div>
-                                                                <a class="unreplysLikes" data-reply-id="${reply.id}">🤍</a>
+                                                            <div class="replyslikes" data-reply-id="${reply.id}">
+                                                                <a class="unreplysLikes" style="cursor: pointer" data-reply-id="${reply.id}" onclick="replyLikesClick(${postId}, ${commentId}, ${reply.id}, ${reply.likeCnt})">🤍</a>
                                                                 <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
                                                             <textarea type="text"  placeholder="답글을 입력해주세요" style="display: none"/></textarea>
@@ -315,9 +313,9 @@
                                                             </div>
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
-                                                            <h4 class="style1 list" data-reply-id="${reply.id}"> ${reply.content}</h4>
-                                                            <div>
-                                                                <a class="replysLikes" data-reply-id="${reply.id}">❤️</a>
+                                                            <h4 class="style1 list" data-reply-id="${reply.id}">${reply.content}</h4>
+                                                            <div class="replyslikes" data-reply-id="${reply.id}">
+                                                                <a class="replysLikes" style="cursor: pointer" data-reply-id="${reply.id}" onclick="replyUnlikesClick(${postId}, ${commentId}, ${reply.id}, ${reply.likeCnt})">❤️</a>
                                                                 <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
                                                             <textarea type="text"  placeholder="답글을 입력해주세요" style="display: none"/></textarea>
@@ -352,13 +350,12 @@
             });
         }
 
+        // 이전버튼, 다음버튼 클릭
         function updatePageButtons() {
-            console.log("시작")
             const pageNumbersContainer = paginationContainer.find('.page-numbers');
             pageNumbersContainer.empty();
 
             const maxPage = Math.min(totalPages, endPage + 1); // 실제 데이터가 있는 페이지까지만 생성
-            console.log("중간")
 
             for (let i = startPage; i < maxPage; i++) {
                 const pageNumber = i + 1; // 페이지 번호는 1부터 시작
@@ -369,10 +366,10 @@
                                 </a>
                             </li>`;
                 pageNumbersContainer.append(pageButton);
-                console.log("도달")
             }
         }
 
+        // 댓글 페이지 추가
         function updatePagination() {
             updatePageButtons();
             // console.log(totalPages.toString().slice(0, -1) * 10)
@@ -431,6 +428,7 @@
         });
     });
 
+    // 댓글 좋아요 추가
     function likesClick(postId, commentId, cnt) {
         const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
 
@@ -466,6 +464,7 @@
         })
     }
 
+    // 댓글 좋아요 취소
     function unlikesClick(postId, commentId, cnt) {
         const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTU4NzEsImlhdCI6MTY5MjY5NTg3MX0.Hj386tCG4ZqUmkJkWg99V2DrWHJl_wXKLju__7q6t6E";
 
@@ -501,12 +500,114 @@
         })
     }
 
+    // 답글 좋아요 추가
+    function replyLikesClick(postId, commentId, replyId, cnt) {
+        const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
+
+        console.log(token);
+        $.ajax({
+            type: 'POST',
+            url: `/api/posts/${postId}/comments/${commentId}/reply/${replyId}/likes`,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            data: {},
+            success: function (data) {
+                // console.log(data);
+                // console.log(cnt)
+                console.log(commentId)
+                const updateCnt = cnt += 1;
+
+                $(`.unreplysLikes[data-reply-id=${replyId}]`).empty();
+                $(`.likecnt[data-reply-id=${replyId}]`).empty();
+
+                const temp_html = `
+                    <a class="replysLikes" style="cursor: pointer" data-reply-id="${replyId}" onclick="replyUnlikesClick(${postId}, ${commentId}, ${replyId}, ${cnt})">❤️</a>
+                    <span class="likecnt" data-reply-id="${replyId}">${updateCnt}</span>
+                `
+
+                $(`.replyslikes[data-reply-id=${replyId}]`).append(temp_html);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
+    // 답글 좋아요 취소
+    function replyUnlikesClick(postId, commentId, replyId, cnt) {
+        const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTU4NzEsImlhdCI6MTY5MjY5NTg3MX0.Hj386tCG4ZqUmkJkWg99V2DrWHJl_wXKLju__7q6t6E";
+
+        console.log(token);
+        $.ajax({
+            type: 'PUT',
+            url: `/api/posts/${postId}/comments/${commentId}/reply/${replyId}/likes`,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            data: {},
+            success: function (data) {
+                // console.log(data);
+                // console.log(cnt)
+                console.log(commentId)
+
+                const updateCnt = cnt -= 1;
+
+                $(`.replysLikes[data-reply-id=${replyId}]`).empty();
+                $(`.likecnt[data-reply-id=${replyId}]`).empty();
+
+                const temp_html = `
+                    <a class="unreplysLikes" style="cursor: pointer" data-reply-id="${replyId}" onclick="replyLikesClick(${postId}, ${commentId}, ${replyId}, ${cnt})">🤍</a>
+                    <span class="likecnt" data-reply-id="${replyId}">${updateCnt}</span>
+                `
+
+                $(`.replyslikes[data-reply-id=${replyId}]`).append(temp_html);
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
+    $('#createComments').click(function () {
+        const postId = getPostIdFromUrl();
+        const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTU4NzEsImlhdCI6MTY5MjY5NTg3MX0.Hj386tCG4ZqUmkJkWg99V2DrWHJl_wXKLju__7q6t6E";
+
+        console.log(token)
+        $.ajax({
+            type: 'POST',
+            url: `/api/posts/${postId}/comments`,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            data: JSON.stringify({
+                content: $('#userComment').val()
+            }),
+            success: function (data) {
+                console.log(data)
+                alert(data.success)
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        })
+    })
+
+
+    // 답글 열기버튼
     function openReply(commentId) {
         $(`.commentbox[data-comment-id="${commentId}"] #replyList`).show();
         $(`.commentbox[data-comment-id="${commentId}"] .replyRead`).hide();
         $(`.commentbox[data-comment-id="${commentId}"] .replyClose`).show();
     }
 
+    // 답글 닫기버튼
     function closeReply(commentId) {
         $(`.commentbox[data-comment-id="${commentId}"] #replyList`).hide();
         $(`.commentbox[data-comment-id="${commentId}"] .replyRead`).show();
