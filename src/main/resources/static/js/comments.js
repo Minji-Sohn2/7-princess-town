@@ -8,6 +8,8 @@ function getPostIdFromUrl() {
 // 화면이 띄워질경우 실행되는 메소드
 $(document).ready(function () {
 
+    let usernames = "testid3";
+
     const postId = getPostIdFromUrl();
 
     // 페이징
@@ -36,6 +38,22 @@ $(document).ready(function () {
         });
     }
 
+    function maskingName(username) {
+        if (username.length >= 8) {
+            return (
+                username.slice(0, 3) +
+                "*".repeat(Math.max(0, username.length - 5)) +
+                username.slice(-3)
+            );
+        } else {
+            return (
+                username.slice(0, 2) +
+                "*".repeat(Math.max(0, username.length - 3)) +
+                username.slice(-1)
+            );
+        }
+    }
+
     function displayCommentsAndReplies(comments, page) {
         // console.log("페이지 로딩")
         // 이전에 표시된 댓글과 답글 제거
@@ -56,7 +74,6 @@ $(document).ready(function () {
                     dataType: "json",
                     success: function (likesval) {
                         let likesData = likesval.result;
-                        let usernames = "testid3";
 
                         data.forEach(function (comment) {
 
@@ -82,10 +99,11 @@ $(document).ready(function () {
                                     <div class="grid_img">
                                         <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
                                     </div>
-                                    <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}</a></h4>
+                                    <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}(${maskingName(comment.username)})</a></h4>
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
                                     <br/>
                                     <h4 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h4>
+                                    <img class="emoji" src="${comment.emoji}" alt="emoji" style="display:none;">
                                     <br/>
                                     <div class="commentsLikes" data-comment-id="${comment.id}">
                                         <a class="commentunLikes" style="cursor: pointer" data-comment-id="${comment.id}" onclick="likesClick(${postId}, ${comment.id}, ${comment.likeCnt})">🤍</a>
@@ -100,13 +118,13 @@ $(document).ready(function () {
                                     <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
                                 <div class="grid_text userCommentEdit-Form" style="display: none" data-comment-id="${comment.id}">
-                                    <label for="userCommentEdit" style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
-                                    <textarea type="text" id="userCommentEdit" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
+                                    <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
+                                    <textarea type="text" class="userCommentEdit" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
                                     <button class="btn btn-secondary userEditCommentsComplete" type="button" data-comment-id="${comment.id}">댓글 수정</button>
                                 </div>
                                 <div class="grid_text userReply-Form" style="display: none" data-comment-id="${comment.id}">
-                                    <label for="userReply" style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
-                                    <textarea type="text" id="userReply" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
+                                    <label style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
+                                    <textarea type="text" class="userReply" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
                                     <button class="btn btn-secondary" type="button" data-comment-id="${comment.id}">답글 작성</button>
                                 </div>
 
@@ -126,10 +144,11 @@ $(document).ready(function () {
                                     <div class="grid_img">
                                         <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
                                     </div>
-                                    <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}</a></h4>
+                                    <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}(${maskingName(comment.username)})</a></h4>
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
                                     <br/>
                                     <h4 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h4>
+                                    <img class="emoji" src="${comment.emoji}" alt="emoji" style="display:none;">
                                     <br/>
                                     <div class="commentsLikes" data-comment-id="${comment.id}">
                                         <a class="commentLikes" style="cursor: pointer" data-comment-id="${comment.id}" onclick="unlikesClick(${postId}, ${comment.id}, ${comment.likeCnt})">❤️</a>
@@ -144,19 +163,21 @@ $(document).ready(function () {
                                     <a class="btn1 replyClose" style="font-family: 'Jua', sans-serif; cursor: pointer; display: none" data-comment-id="${comment.id}" onclick="closeReply(${comment.id})">답글 닫기</a>
                                 </div>
                                 <div class="grid_text userCommentEdit-Form" style="display: none" data-comment-id="${comment.id}">
-                                    <label for="userCommentEdit" style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
-                                    <textarea type="text" id="userCommentEdit" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
+                                    <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
+                                    <textarea type="text" class="userCommentEdit" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
                                     <button class="btn btn-secondary userEditCommentsComplete" type="button" data-comment-id="${comment.id}">댓글 수정</button>
                                 </div>
                                 <div class="grid_text userReply-Form" style="display: none" data-comment-id="${comment.id}">
-                                    <label for="userReply" style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
-                                    <textarea type="text" id="userReply" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
+                                    <label style="font-family: 'Jua', sans-serif;">답글창<span>*</span></label>
+                                    <textarea type="text" class="userReply" name="content" placeholder="내용을 입력해주세요." data-comment-id="${comment.id}"></textarea>
                                     <button class="btn btn-secondary" type="button" data-comment-id="${comment.id}">답글 작성</button>
                                 </div>
                             `
                             }
 
                             let commentWrapper = $(`<div class="commentbox" data-comment-id="${comment.id}">${temp_html}</div>`);
+
+                            // console.log(comment.username)
 
                             // 답글 가져오기
                             $.ajax({
@@ -174,7 +195,6 @@ $(document).ready(function () {
                                         success: function (replylikesval) {
                                             let replyLikesData = replylikesval.result;
                                             // console.log(replyLikesData)
-                                            let usernames2 = "testid3";
 
                                             data2.forEach(function (reply) {
                                                 const createdAt = reply.createdAt;
@@ -199,24 +219,27 @@ $(document).ready(function () {
                                                             <div class="grid_img">
                                                                 <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
                                                             </div>
-                                                            <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}</a></h4>
+                                                            <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}(${maskingName(reply.username)})</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
-                                                            <h4 class="style1 list" data-reply-id="${reply.id}"> ${reply.content}</h4>
+                                                            <h4 class="style1 list replayContents" data-reply-id="${reply.id}"> ${reply.content}</h4>
                                                             <div class="replyslikes" data-reply-id="${reply.id}">
                                                                 <a class="unreplysLikes" style="cursor: pointer" data-reply-id="${reply.id}" onclick="replyLikesClick(${postId}, ${commentId}, ${reply.id}, ${reply.likeCnt})">🤍</a>
                                                                 <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
-                                                            <textarea type="text"  placeholder="답글을 입력해주세요" style="display: none"/></textarea>
-                                                            <button type="button" style="display: none">reply 수정</button>
-                                                            <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif;">수정</a>
-                                                            <a class="btn1" style="font-family: 'Jua', sans-serif;">삭제</a>
+                                                            <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">수정</a>
+                                                            <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">삭제</a>
+                                                        </div>
+                                                        <div class="grid_text userReplyEdit-Form" style="display: none" data-reply-id="${reply.id}">
+                                                            <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
+                                                            <textarea type="text" class="userReplyEdit" name="content" placeholder="수정내용을 입력해주세요." data-reply-id="${reply.id}"></textarea>
+                                                            <button class="btn btn-secondary userEditReplyComplete" type="button" data-reply-id="${reply.id}">답글 수정</button>
                                                         </div>
                                                     </div>
                                                 `
 
                                                 // 해당 댓글에 대한 좋아요 정보 검사
                                                 var replylikeInfo = replyLikesData.find(function (replylike) {
-                                                    return replylike.comment_id === comment.id && replylike.reply_id === reply.id && replylike.username === usernames2;
+                                                    return replylike.comment_id === comment.id && replylike.reply_id === reply.id && replylike.username === usernames;
                                                 });
 
                                                 if (replylikeInfo && replylikeInfo.likes) {
@@ -227,17 +250,20 @@ $(document).ready(function () {
                                                             <div class="grid_img">
                                                                 <img src="/img/20230812_215821.jpg" alt="My Image" style="border-radius: 50%;">
                                                             </div>
-                                                            <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}</a></h4>
+                                                            <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}(${maskingName(reply.username)})</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
-                                                            <h4 class="style1 list" data-reply-id="${reply.id}">${reply.content}</h4>
+                                                            <h4 class="style1 list replayContents" data-reply-id="${reply.id}">${reply.content}</h4>
                                                             <div class="replyslikes" data-reply-id="${reply.id}">
                                                                 <a class="replysLikes" style="cursor: pointer" data-reply-id="${reply.id}" onclick="replyUnlikesClick(${postId}, ${commentId}, ${reply.id}, ${reply.likeCnt})">❤️</a>
                                                                 <span class="likecnt" data-reply-id="${reply.id}">${reply.likeCnt}</span>
                                                             </div>
-                                                            <textarea type="text"  placeholder="답글을 입력해주세요" style="display: none"/></textarea>
-                                                            <button type="button" style="display: none">reply 수정</button>
-                                                            <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif;">수정</a>
-                                                            <a class="btn1" style="font-family: 'Jua', sans-serif;">삭제</a>
+                                                            <a id="testid" class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">수정</a>
+                                                            <a class="btn1" style="font-family: 'Jua', sans-serif; cursor: pointer">삭제</a>
+                                                        </div>
+                                                        <div class="grid_text userReplyEdit-Form" style="display: none" data-reply-id="${reply.id}">
+                                                            <label style="font-family: 'Jua', sans-serif;">수정창<span>*</span></label>
+                                                            <textarea type="text" class="userReplyEdit" name="content" placeholder="수정내용을 입력해주세요." data-reply-id="${reply.id}"></textarea>
+                                                            <button class="btn btn-secondary userEditReplyComplete" type="button" data-reply-id="${reply.id}">답글 수정</button>
                                                         </div>
                                                         </div>
                                                     `
@@ -259,6 +285,18 @@ $(document).ready(function () {
                             });
 
                             commentsContainer.append(commentWrapper);
+
+                            // 만약 로그인한 유저와 댓글을 단 유저가 일치하지 않을경우 버튼 삭제
+                            if (comment.username !== usernames) {
+                                $(`.editComments[data-comment-id="${comment.id}"]`).remove();
+                            }
+
+                            if (comment.username !== usernames) {
+                                $(`.deleteComments[data-comment-id="${comment.id}"]`).remove();
+                            }
+
+                            // 이모지 할때 넣을 공간
+                            // $('.emoji).show();
                         });
                     }
                 });
@@ -397,6 +435,7 @@ $(document).ready(function () {
             })
     })
 
+    // 댓글 수정
     $(document).on('click', '.userEditCommentsComplete', function () {
         const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
         const postId = getPostIdFromUrl();
@@ -412,12 +451,12 @@ $(document).ready(function () {
                 "Authorization": token
             },
             data: JSON.stringify({
-                content: $(`#userCommentEdit[data-comment-id="${commentId}"]`).val()
+                content: $(`.userCommentEdit[data-comment-id="${commentId}"]`).val()
             }),
             success: function (data) {
-                const content = $(`#userCommentEdit[data-comment-id="${commentId}"]`).val();
+                const content = $(`.userCommentEdit[data-comment-id="${commentId}"]`).val();
                 console.log(data);
-                alert(data.success)
+                alert(data.message)
                 $(`.userComment[data-comment-id="${commentId}"]`).text(content);
                 $(`.userReply-Form[data-comment-id="${commentId}"]`).hide();
                 $(`.replyCreateClose[data-comment-id="${commentId}"]`).hide();
@@ -428,10 +467,12 @@ $(document).ready(function () {
             },
             error: function (e) {
                 console.log(e)
+                alert(e.responseJSON.message)
             }
         })
     })
 
+    // 댓글 삭제
     $(document).on('click', '.deleteComments', function () {
         const token = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0aWQzIiwibmlja25hbWUiOiJ0ZXN0bmljazMiLCJleHAiOjE2OTMwNTk4MjgsImlhdCI6MTY5MjY5OTgyOH0.5YwkvHbbFWWDQC2rckVG0Dmc2XpSYaEuNoYEKYXNUtY";
         const postId = getPostIdFromUrl();
@@ -447,7 +488,17 @@ $(document).ready(function () {
             },
             success: function (data) {
                 console.log(data);
-                alert(data.success)
+                alert(data.message)
+                $(`.commentbox[data-comment-id="${commentId}"]`).remove()
+
+                if($('.commentbox').length === 0) {
+                    --currentPage;
+                    console.log("commentIndex = " + currentPage)
+                    startPage = currentPage.toString().slice(0, -1) * 10;
+                    endPage = startPage + 9;
+                    updatePagination();
+                    loadCommentsAndReplies(currentPage);
+                }
             },
             error: function (e) {
                 console.log(e)
@@ -615,16 +666,15 @@ function closeReply(commentId) {
     $(`.commentbox[data-comment-id="${commentId}"] .replyClose`).hide();
 }
 
+// 댓글 수정버튼클릭
 $(document).on('click', '.editComments',function(){
     const commentId = $(this).data('comment-id');
     $(`.userCommentEdit-Form[data-comment-id="${commentId}"]`).show();
     $(`.editCommentsClose[data-comment-id="${commentId}"]`).show();
     $(`.editComments[data-comment-id="${commentId}"]`).hide();
-    $(`.userReply-Form[data-comment-id="${commentId}"]`).hide();
-    $(`.replyCreateClose[data-comment-id="${commentId}"]`).hide();
-    $(`.replyCreate[data-comment-id="${commentId}"]`).show();
 })
 
+// 댓글 수정취소버튼 클릭
 $(document).on('click', '.editCommentsClose',function(){
     const commentId = $(this).data('comment-id');
     $(`.userCommentEdit-Form[data-comment-id="${commentId}"]`).hide();
@@ -632,16 +682,15 @@ $(document).on('click', '.editCommentsClose',function(){
     $(`.editComments[data-comment-id="${commentId}"]`).show();
 })
 
+// 답글 생성버튼 클릭
 $(document).on('click', '.replyCreate',function(){
     const commentId = $(this).data('comment-id');
     $(`.userReply-Form[data-comment-id="${commentId}"]`).show();
     $(`.replyCreateClose[data-comment-id="${commentId}"]`).show();
     $(`.replyCreate[data-comment-id="${commentId}"]`).hide();
-    $(`.userCommentEdit-Form[data-comment-id="${commentId}"]`).hide();
-    $(`.editCommentsClose[data-comment-id="${commentId}"]`).hide();
-    $(`.editComments[data-comment-id="${commentId}"]`).show()
 })
 
+// 답글 생성취소버튼 클릭
 $(document).on('click', '.replyCreateClose',function(){
     const commentId = $(this).data('comment-id');
     $(`.userReply-Form[data-comment-id="${commentId}"]`).hide();

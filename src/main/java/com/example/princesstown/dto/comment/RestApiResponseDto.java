@@ -10,12 +10,12 @@ import lombok.Setter;
 public class RestApiResponseDto {
 
     private int status;
-    private String success;
+    private String message;
 
     private Object result;
 
-    public RestApiResponseDto(int status, String success) {
+    public RestApiResponseDto(int status, String message) {
         this.status = status;
-        this.success = success;
+        this.message = message;
     }
 }
