@@ -1,5 +1,6 @@
 package com.example.princesstown.service.chatRoom;
 
+import com.example.princesstown.chat.repository.ChatRoomRedisRepository;
 import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.entity.ChatRoom;
 import com.example.princesstown.entity.ChatUser;
@@ -24,7 +25,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatUserRepository chatUserRepository;
     // redis 추가 후 사용
-    // private final ChatRoomRedisRepository chatRoomRedisRepository;
+    private final ChatRoomRedisRepository chatRoomRedisRepository;
 
     @Override
     @Transactional
@@ -36,12 +37,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         userList.add(user);
 
         for (User u : userList) {
-            ChatUser chatUser = chatUserRepository.save(new ChatUser(u, newChatRoom));
-            u.addChatUser(chatUser);
+            chatUserRepository.save(new ChatUser(u, newChatRoom));
         }
 
         chatRoomRepository.save(newChatRoom);
-        // chatRoomRedisRepository.saveChatRoomRedis(newChatRoom);
+        chatRoomRedisRepository.saveChatRoomRedis(newChatRoom);
         return new ChatRoomInfoResponseDto(newChatRoom);
     }
 
@@ -56,7 +56,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         chatRoom.updateChatRoomName(requestDto.getNewChatRoomName());
-        // chatRoomRedisRepository.saveChatRoomRedis(chatRoom);
+        chatRoomRedisRepository.saveChatRoomRedis(chatRoom);
         return new ChatRoomInfoResponseDto(chatRoom);
     }
 
@@ -69,7 +69,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new IllegalArgumentException("채팅방은 호스트만 삭제할 수 있습니다.");
         }
 
-        // chatRoomRedisRepository.deleteChatRoomRedis(chatRoom);
+        chatRoomRedisRepository.deleteChatRoomRedis(chatRoom);
         chatRoomRepository.delete(chatRoom);
     }
 
