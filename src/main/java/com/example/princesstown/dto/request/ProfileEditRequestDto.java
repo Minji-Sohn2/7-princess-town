@@ -13,4 +13,6 @@ public class ProfileEditRequestDto {
     private String email;
     private String phoneNumber;
     private MultipartFile profileImage;
+    private Double latitude;
+    private Double longitude;
 }
