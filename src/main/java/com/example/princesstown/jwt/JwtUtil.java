@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -22,7 +23,7 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 100000L; // 100시간, 기준은 밀리세컨드
+    private final long TOKEN_TIME = 100 * 60 * 60 * 100000L; // 100시간, 기준은 밀리세컨드
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -57,7 +58,7 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        logger.error("Not Found Token");
+        logger.error("substringToken 실패");
         throw new NullPointerException("Not Found Token");
     }
 
@@ -81,5 +82,13 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     // Jwt토큰에서 사용자 정보 추출
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    // Jwt 토큰에서 사용자 이름 추출
+    // Stomp header 에서 가져옴
+    public String getUsernameFromJwt(String rawToken) {
+        String tokenValue = substringToken(rawToken);
+        Claims info = getUserInfoFromToken(tokenValue);
+        return info.getSubject();
     }
 }

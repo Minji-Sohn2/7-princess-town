@@ -31,7 +31,7 @@ public class WebSecurityConfig {
 
     // 비밀번호 암호화를 위한 Bean 설정
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -74,14 +74,18 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/ws-stomp/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
+
 
         // 로그인 페이지 설정
         http.formLogin((formLogin) ->
                 formLogin
                         .loginPage("/auth/login-page").permitAll()
         );
+
 
         // JWT 관련 필터를 Spring Security 필터 체인에 추가
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
