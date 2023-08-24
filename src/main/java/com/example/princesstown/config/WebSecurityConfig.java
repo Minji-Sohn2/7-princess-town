@@ -76,8 +76,12 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
+                        .requestMatchers("/send/**").permitAll()
+                        .requestMatchers("/modify/**").permitAll()
+                        .requestMatchers("/find/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
+
 
         // 로그인 페이지 설정
         http.formLogin((formLogin) ->
