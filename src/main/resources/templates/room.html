@@ -11,6 +11,9 @@
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
+  <!-- js Cookie -->
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
   <style>
     [v-cloak] {
       display: none;
@@ -42,62 +45,65 @@
     </li>
   </ul>
 </div>
+
 <!-- JavaScript -->
 <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
 <script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+
 <script>
-  const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImV4cCI6MTY5MzA3NDE3NywiaWF0IjoxNjkyNzE0MTc3fQ.mOkqS3KKeWwcRzVQelGxjnl4bk-Cicly9NCKlK_Ldwc';
+  const token = Cookies.get('Authorization');
 
   const config = {
     headers: {
-      'Authorization':`Bearer ${token}`
+      'Authorization':`${token}`
     }
   };
 
-  var vm = new Vue({
+  const vm = new Vue({
     el: '#app',
     data: {
-      room_name : '',
-      chatrooms: [
-      ]
+      room_name: '',
+      chatrooms: []
     },
     created() {
       this.findAllRoom();
     },
     methods: {
-      findAllRoom: function() {           // 모든 채팅방 보기
+      findAllRoom: function () {           // 모든 채팅방 보기
         axios.get('/api/chatRooms/myRooms', config)
                 .then(response => {
                   console.log(response);
                   this.chatrooms = response.data.myChatRoomList;
                 });
       },
-      createRoom: function() {
-        if("" === this.room_name) {
+      createRoom: function () {
+        if ("" === this.room_name) {
           alert("방 제목을 입력해 주십시요.");
           return;
         } else {
           var params = new URLSearchParams();
-          params.append("name",this.room_name);
+          params.append("name", this.room_name);
           axios.post('/chat/room', params)
                   .then(
                           response => {
-                            alert(response.data.name+"방 개설에 성공하였습니다.")
+                            alert(response.data.name + "방 개설에 성공하였습니다.")
                             this.room_name = '';
                             this.findAllRoom();
                           }
                   )
-                  .catch( response => { alert("채팅방 개설에 실패하였습니다."); } );
+                  .catch(response => {
+                    alert("채팅방 개설에 실패하였습니다.");
+                  });
         }
       },
-      enterRoom: function(roomId, roomName) {
+      enterRoom: function (roomId, roomName) {
         console.log('enterRoom clicked roomId : ' + roomId)
         console.log('enterRoom clicked roomName : ' + roomName)
 
-        localStorage.setItem('wschat.roomId',roomId);
-        localStorage.setItem('wschat.roomName',roomName);
+        localStorage.setItem('wschat.roomId', roomId);
+        localStorage.setItem('wschat.roomName', roomName);
         alert('이동');
-        location.href="/chat/room/enter/"+roomId;
+        location.href = "/chat/room/enter/" + roomId;
       }
     }
   });
