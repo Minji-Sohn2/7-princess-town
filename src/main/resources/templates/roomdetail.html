@@ -29,7 +29,6 @@
             <h4>{{roomName}} <span class="badge badge-info badge-pill"></span></h4>
         </div>
         <div class="col-md-6 text-right">
-            <a class="btn btn-primary btn-sm" href="/logout">로그아웃</a>
             <a class="btn btn-info btn-sm" href="/chat/room">채팅방 나가기</a>
         </div>
     </div>
@@ -44,7 +43,15 @@
     </div>
     <ul class="list-group">
         <li class="list-group-item" v-for="message in messages">
-            {{message.sender}} - {{message.message}}
+            <div>
+                {{message.sender}}
+            </div>
+            <h5>
+                {{message.message}}
+            </h5>
+            <div>
+                {{message.createdAt}}
+            </div>
         </li>
     </ul>
 </div>
@@ -56,6 +63,7 @@
 <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
 
 <script>
+    // ----------------------- 실시간 채팅 ---------------------------
     const token = Cookies.get('Authorization');
 
     const headers = {
@@ -107,7 +115,8 @@
                 this.messages.unshift({
                     "type": recv.type,
                     "sender": recv.sender,
-                    "message": recv.message
+                    "message": recv.message,
+                    "createdAt": recv.createdAt
                 })
             }
         }
