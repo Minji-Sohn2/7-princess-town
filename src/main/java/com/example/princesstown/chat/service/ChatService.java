@@ -7,6 +7,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j(topic = "ChatService")
@@ -27,6 +30,7 @@ public class ChatService {
      * 채팅방에 메시지 발송
      */
     public void sendChatMessage(ChatMessage chatMessage) {
+        log.info("sendMessage 메서드 시작");
 
         if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에 입장했습니다.");
@@ -35,7 +39,8 @@ public class ChatService {
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
         }
-
+        chatMessage.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm")));
+        log.info("메세지 발송 시각? " + chatMessage.getCreatedAt());
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
     }
 }

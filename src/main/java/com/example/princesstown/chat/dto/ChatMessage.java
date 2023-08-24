@@ -1,5 +1,6 @@
 package com.example.princesstown.chat.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,9 @@ public class ChatMessage {
     private String roomId;
     private String sender;  // username
     private String message;
-    //private String createdAt;
+
+    @JsonFormat(pattern = "yy-MM-dd HH:mm")
+    private String createdAt;
 
     @Builder
     public ChatMessage (MessageType type, String roomId, String senderNickname, String message) {
