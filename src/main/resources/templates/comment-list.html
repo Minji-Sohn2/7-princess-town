@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko-kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="shortcut icon" href="#">
     <title>댓글 리스트</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -19,9 +21,8 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
     <link rel='stylesheet' href="/css/comment.css"/>
-
-    <!-- ajax , cookies 사용 lib -->
 </head>
 <body>
 <br/><br/><br/><br/><br/>
@@ -36,14 +37,66 @@
             <hr style="border-top: 1px solid #6c757d;">
             <h2 class="comment-h2" style="font-family: 'Jua', sans-serif">댓글</h2>
             <div class="table-form">
-                <form name="post_comment">
+                <form name="post_comment" style="position: relative">
                     <div>
                         <label style="font-family: 'Jua', sans-serif;">닉네임<span>*</span></label>
-                        <h4 id="loginUserName">testid3</h4>
+                        <h4 id="loginUserName"></h4>
                     </div>
                     <div>
                         <label for="userComment" style="font-family: 'Jua', sans-serif;">댓글창<span>*</span></label>
+                        <button id="show" type="button">😀</button>
                         <textarea type="text" id="userComment" name="content" placeholder="내용을 입력해주세요."></textarea>
+                    </div>
+                    <div class="background">
+                        <div class="window">
+                            <div class="popup">
+                                <button id="close" type="button">X</button>
+                                <div id="imglist">
+                                    <img id="airplane" src="/img/free-sticker-airplane-7496612.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="birthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="cauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="coffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="confused" src="/img/free-sticker-confused-6684479.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="couple" src="/img/free-sticker-couple-7173075.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="eggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="hate" src="/img/free-sticker-hate-7598095.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="hate2" src="/img/free-sticker-hate-7598096.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="heartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="inspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="lazy" src="/img/free-sticker-lazy-7470569.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="patient" src="/img/free-sticker-patient-7268641.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="pet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="pet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="read" src="/img/free-sticker-read-7182833.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="sad" src="/img/free-sticker-sad-7598102.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="stay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="stir" src="/img/free-sticker-stir-fry-7554151.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="worker" src="/img/free-sticker-worker-7546325.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 <button id="createComments" class="btn btn-secondary" type="button">댓글 작성</button>

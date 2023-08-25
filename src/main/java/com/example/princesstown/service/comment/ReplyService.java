@@ -88,8 +88,13 @@ public class ReplyService {
             Reply reply = replyRepository.findById(replyId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 답글이 존재하지 않습니다."));
 
+            List<ReplyLikes> replyLikes = replyLikesRepository.findAllByCommentIdAndReplyId(commentId, replyId);
+
             replysValid(reply, user);
 
+            if (replyLikes != null) {
+                replyLikesRepository.deleteAll(replyLikes);
+            }
             replyRepository.delete(reply);
 
             return this.resultResponse(HttpStatus.OK, "답글 삭제", new ReplyResponseDto(reply));

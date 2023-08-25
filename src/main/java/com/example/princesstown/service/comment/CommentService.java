@@ -30,11 +30,11 @@ public class CommentService {
     // 댓글 가져오기
     public ResponseEntity<RestApiResponseDto> getComments(Long postId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-            Page<Comment> commentsList = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId, pageable);
+        Page<Comment> commentsList = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId, pageable);
 
-            List<CommentResponseDto> commentResponseDtoList = commentsList.stream()
-                    .map(CommentResponseDto::new)
-                    .toList();
+        List<CommentResponseDto> commentResponseDtoList = commentsList.stream()
+                .map(CommentResponseDto::new)
+                .toList();
 
         PaginationInfo paginationInfo = new PaginationInfo(
                 page,
@@ -43,7 +43,7 @@ public class CommentService {
                 commentsList.getTotalElements()
         );
 
-            return this.resultResponse(HttpStatus.OK, "댓글 조회", new PagedCommentResponseDto(commentResponseDtoList, paginationInfo));
+        return this.resultResponse(HttpStatus.OK, "댓글 조회", new PagedCommentResponseDto(commentResponseDtoList, paginationInfo));
     }
 
     // 댓글 생성
@@ -92,9 +92,13 @@ public class CommentService {
 
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+            List<CommentLikes> commentLikes = commentLikesRepository.findAllByCommentId(commentId);
 
             commentsValid(comment, user);
 
+            if (commentLikes != null) {
+                commentLikesRepository.deleteAll(commentLikes);
+            }
             commentRepository.delete(comment);
 
             return this.resultResponse(HttpStatus.OK, "댓글 삭제", new CommentResponseDto(comment));
@@ -111,7 +115,7 @@ public class CommentService {
             List<CommentLikes> likesList = commentLikesRepository.findAllByPostId(postId);
 
             List<CommentLikesResponseDto> commentLikesResponseDtoList = likesList.stream()
-                    .map(CommentLikesResponseDto :: new)
+                    .map(CommentLikesResponseDto::new)
                     .toList();
 
             return this.resultResponse(HttpStatus.OK, "좋아요 조회", commentLikesResponseDtoList);
@@ -194,7 +198,7 @@ public class CommentService {
 
     // 게시물Id 가져오는 메소드 분리
     private void getPostId(Long postId) {
-       postRepository.findById(postId).orElseThrow(
+        postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
     }
 

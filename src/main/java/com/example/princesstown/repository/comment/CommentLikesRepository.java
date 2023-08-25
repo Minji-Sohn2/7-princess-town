@@ -10,4 +10,6 @@ public interface CommentLikesRepository extends JpaRepository<CommentLikes, Long
     Optional<CommentLikes> findByCommentIdAndUserUserId(Long commentId, Long userId);
 
     List<CommentLikes> findAllByPostId(Long postId);
+
+    List<CommentLikes> findAllByCommentId(Long commentId);
 }
