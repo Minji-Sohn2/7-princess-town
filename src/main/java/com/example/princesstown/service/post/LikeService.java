@@ -34,7 +34,7 @@ public class LikeService {
             likeRepository.save(like);
         }
 
-        // 블로그 게시글의 좋아요 개수 처리
+        //게시글의 좋아요 개수 처리
         post.setLikeCount((long) likeRepository.findByPostId(id).size());
 
         return new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 눌렀습니다.");

@@ -36,10 +36,12 @@ public class PostController {
         return postService.getAllPostsByBoardId(boardId);
     }
 
-
     //게시글 선택 조회 API
     @GetMapping("/board/{boardId}/posts/{postId}")
     public PostResponseDto getPost(@PathVariable Long boardId, @PathVariable Long postId){
+
+        postService.incrementViewCount(postId);
+
         return postService.getPost(postId);
     }
 

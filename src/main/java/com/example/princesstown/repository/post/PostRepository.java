@@ -2,7 +2,11 @@ package com.example.princesstown.repository.post;
 
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -14,5 +18,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByUserOrderByCreatedAtDesc(User user);
 
     List<Post> findByBoardIdOrderByCreatedAtDesc(Long boardId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
+    int incrementViewCount(@Param("postId") Long postId);
 
 }

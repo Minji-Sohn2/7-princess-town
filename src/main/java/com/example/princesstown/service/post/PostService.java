@@ -45,12 +45,11 @@ public class PostService {
     }
 
     // 게시글 선택 조회 API
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public PostResponseDto getPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("선택하신 게시물은 존재하지 않습니다.")
         );
-
         return new PostResponseDto(post);
 
     }
@@ -98,4 +97,10 @@ public class PostService {
         }
         return new ApiResponseDto(200, "삭제가 완료되었습니다.");
     }
+
+    @Transactional
+    public void incrementViewCount(Long postId) {
+        postRepository.incrementViewCount(postId);
+    }
+
 }

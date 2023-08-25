@@ -26,11 +26,11 @@ public class Post extends Timestamped{
     @Column(length = 500)
     private String contents;
 
-    @Column
-    private String image;
-
     @Column(name = "like_count")
     private Long likeCount;
+
+    @Column(name = "view_count", columnDefinition = "int default 0", nullable = false)
+    private int viewCount;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -56,13 +56,11 @@ public class Post extends Timestamped{
         this.likeCount = likeCount;
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
-        this.image = postRequestDto.getImage();
     }
 
     public void update(PostRequestDto postRequestDto){
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
-        this.image = postRequestDto.getImage();
     }
 
     public void setLikeCount(Long likeCount) {
