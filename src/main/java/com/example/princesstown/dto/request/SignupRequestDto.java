@@ -13,5 +13,5 @@ public class SignupRequestDto {
     private String email;
     private String phoneNumber;
     private MultipartFile profileImage;
-    private String profileImageUrl;  // 새로운 필드 추가
+    private String phoneVerifyCode;
 }

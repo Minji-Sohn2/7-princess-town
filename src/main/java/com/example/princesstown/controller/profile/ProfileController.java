@@ -2,8 +2,11 @@ package com.example.princesstown.controller.profile;
 
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
-import com.example.princesstown.dto.response.UserResponseDto;
+import com.example.princesstown.dto.response.ProfileResponseDto;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.location.LocationService;
+import com.example.princesstown.service.profile.ProfileService;
 import com.example.princesstown.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,19 +28,22 @@ import java.io.IOException;
 public class ProfileController {
 
     private final UserService userService;
+    private final LocationService locationService;
+    private final ProfileService profileService;
 
     // 프로필 조회 메서드
     @GetMapping("/api/auth/profile")
     @ResponseBody
-    public UserResponseDto lookupUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ProfileResponseDto lookupUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long userId = userDetails.getUser().getUserId();
-        UserResponseDto userResponse = userService.lookupUser(userId);
+        ProfileResponseDto userResponse = userService.lookupUser(userId);
 
         return userResponse;
     }
 
 
 
+    // 프로필 수정
     @PutMapping("/api/auth/profile")
     @ResponseBody
     public ApiResponseDto updateUser(
@@ -44,14 +53,17 @@ public class ProfileController {
 
         Long userId = userDetails.getUser().getUserId();
 
-        // JSON 문자열을 ProfileEditRequestDto 객체로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         ProfileEditRequestDto editRequestDto = objectMapper.readValue(editRequestJson, ProfileEditRequestDto.class);
 
-        // MultipartFile을 DTO에 설정
+        // 위치설정 업데이트 로직
+        if (editRequestDto.getLatitude() != null && editRequestDto.getLongitude() != null) {
+            locationService.updateLocationAndRelatedEntities(userId, editRequestDto.getLatitude(), editRequestDto.getLongitude());
+        }
+
         editRequestDto.setProfileImage(profileImage);
 
-        return userService.updateUser(userId, editRequestDto);
+        return profileService.updateUser(userId, editRequestDto);
     }
 
 

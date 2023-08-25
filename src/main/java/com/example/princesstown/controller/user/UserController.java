@@ -30,7 +30,6 @@ public class UserController {
             @RequestPart("signupRequest") String signupRequestJson,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
 
-
         // JSON 문자열을 SignupRequestDto 객체로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         SignupRequestDto signupRequestDto = objectMapper.readValue(signupRequestJson, SignupRequestDto.class);
@@ -49,37 +48,28 @@ public class UserController {
         return userService.deleteAccount(userId);
     }
 
-
     // 로그인
     @PostMapping("/login")
     public void login(@RequestBody LoginRequestDto requestDto) {
+        log.error("start");
         userService.login(requestDto);
+        log.error("login메서드 호출완료");
     }
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponseDto> logout(
-            @RequestHeader("Authorization") String token,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        // 로그인된 사용자의 username 가져오기
-        String username = userDetails.getUsername();
-
+    public ResponseEntity<ApiResponseDto> logout(@RequestHeader("Authorization") String token) {
         // UserService의 로그아웃 로직 호출
-        ApiResponseDto response = userService.logout(token, username);
+        ApiResponseDto response = userService.logout(token);
 
         return ResponseEntity.ok(response);
     }
-
-
 
     // view.html 부분
     @GetMapping("/login-page")
     public String loginAndsignupPage() {
         return "loginAndSignup";
     } // loginAndsignup.html view
-
-
 }
 
 
