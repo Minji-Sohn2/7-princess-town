@@ -13,6 +13,7 @@ public class PostResponseDto {
     private String contents; // 게시글 내용
     private Long likeCount; // 좋아요 수
     private int viewCount;
+    private String postImageUrl;
     private LocalDateTime createAt; // 게시글 생성시간
     private LocalDateTime modifiedAt; // 게시글 수정시간
 //    private List<CommentResponseDto> commentList; // 게시글에 포함된 댓글목록
@@ -27,6 +28,8 @@ public class PostResponseDto {
         this.createAt = post.getCreatedAt();
         this.modifiedAt = post.getCreatedAt();
         this.viewCount = post.getViewCount();
+        this.postImageUrl = post.getPostImageUrl();
+
         // 댓글목록
 //        this.commentList = post.getCommentList().stream()
 //                .map(CommentResponseDto::new).collect(Collectors.toList());
