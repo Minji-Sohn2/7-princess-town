@@ -19,7 +19,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ChatRoomInfoResponseDto> createChatRoom(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CreateChatRoomRequestDto createChatRoomRequestDto
