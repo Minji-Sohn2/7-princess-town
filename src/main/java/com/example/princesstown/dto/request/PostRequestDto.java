@@ -2,6 +2,7 @@ package com.example.princesstown.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class PostRequestDto {
@@ -10,5 +11,9 @@ public class PostRequestDto {
     private String title; // 게시글 제목
     @NotBlank(message = "필수 입력 값입니다.")
     private String contents; // 게시글 내용
+
+    private MultipartFile postImage; // 업로드된 이미지 파일
+
+    private String postImageUrl; // 이미지 URL
 
 }

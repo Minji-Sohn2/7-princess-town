@@ -32,6 +32,9 @@ public class Post extends Timestamped{
     @Column(name = "view_count", columnDefinition = "int default 0", nullable = false)
     private int viewCount;
 
+    @Column // 이미지 URL 저장을 위한 컬럼 추가
+    private String postImageUrl;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_userId", nullable = false)
@@ -50,13 +53,16 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Like> likeList = new ArrayList<>();
 
-    public Post(PostRequestDto postRequestDto, User user, Board board, Long likeCount){
+    public Post(PostRequestDto postRequestDto, User user, Board board, Long likeCount, String postImageUrl){
         this.user = user;
         this.board = board;
         this.likeCount = likeCount;
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
+        this.postImageUrl = postImageUrl;
     }
+
+
 
     public void update(PostRequestDto postRequestDto){
         this.title = postRequestDto.getTitle();
@@ -65,5 +71,9 @@ public class Post extends Timestamped{
 
     public void setLikeCount(Long likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.postImageUrl = postImageUrl;
     }
 }

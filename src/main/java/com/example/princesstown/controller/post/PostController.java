@@ -5,6 +5,7 @@ import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.S3Uploader;
 import com.example.princesstown.service.post.LikeService;
 import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,6 +26,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final LikeService likeService;
+    private final S3Uploader s3Uploader; // S3Uploader 주입
 
     //게시글 전체 조회 API
     @GetMapping("/board/posts")
@@ -48,15 +52,29 @@ public class PostController {
     // 게시글 등록 API
     @PostMapping("/board/{boardId}/posts")
     @ResponseBody
-    public ResponseEntity<ApiResponseDto> createPost(@RequestBody PostRequestDto postRequestDto,
+    public ResponseEntity<ApiResponseDto> createPost(@ModelAttribute PostRequestDto postRequestDto,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                     @PathVariable Long boardId){
+                                                     @PathVariable Long boardId,
+                                                     @RequestPart(value = "imageFile", required = false) MultipartFile postImage){
+
         log.info("title : " + postRequestDto.getTitle());
         log.info("contents : " + postRequestDto.getContents());
 
-        postService.createPost(postRequestDto, userDetails.getUser(), boardId);
+        if (postImage != null && !postImage.isEmpty()) {
+            try {
+                String imageUrl = s3Uploader.upload(postImage, "post-images");
+                postRequestDto.setPostImageUrl(imageUrl);
+            } catch (IOException e) {
+                log.error("이미지 업로드 실패: " + e.getMessage());
+                return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패했습니다."));
+            }
+        }
+
+        postService.createPost(postRequestDto, userDetails.getUser(), boardId, postImage);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));
+
     }
+
     // 게시글 수정 API
     @PutMapping("/board/{boardId}/posts/{postId}")
     public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long boardId,
