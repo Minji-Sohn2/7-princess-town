@@ -21,6 +21,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(String title);
 
+    //top10 인기검색어
+    @Query("SELECT p FROM Post p WHERE p.likeCount > 0 ORDER BY p.likeCount DESC")
+    List<Post> findTop10LikedPostsWithDuplicates();
+
     @Transactional
     @Modifying
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")

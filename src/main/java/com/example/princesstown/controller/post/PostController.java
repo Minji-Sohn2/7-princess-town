@@ -55,6 +55,13 @@ public class PostController {
         return postService.searchPostsByTitle(title);
     }
 
+    // 인기검색어 top10
+    @GetMapping("/top")
+    public ResponseEntity<List<PostResponseDto>> getTop10LikedPostsWithDuplicates() {
+        List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
+        return ResponseEntity.ok(topPosts);
+    }
+
     // 게시글 등록 API
     @PostMapping("/board/{boardId}/posts")
     @ResponseBody

@@ -72,6 +72,23 @@ public class PostService {
         return postResponseDtos;
     }
 
+    // 인기검색어 top10
+    public List<PostResponseDto> getTop10LikedPostsWithDuplicates() {
+        List<Post> top10Posts = postRepository.findTop10LikedPostsWithDuplicates();
+        List<PostResponseDto> postResponseDto = new ArrayList<>();
+
+        int count = 0;
+        for (Post post : top10Posts) {
+            if (count >= 10) {
+                break;
+            }
+            postResponseDto.add(new PostResponseDto(post));
+            count++;
+        }
+
+        return postResponseDto;
+    }
+
     // 게시글 등록 API
     public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId, MultipartFile postImage) {
         Board board =boardRepository.findById(boardId).orElseThrow();
