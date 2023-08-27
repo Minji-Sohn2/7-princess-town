@@ -49,6 +49,12 @@ public class PostController {
         return postService.getPost(postId);
     }
 
+    //게시글 제목으로 검색
+    @GetMapping("/search")
+    public List<PostResponseDto> searchPostsByTitle(@RequestParam String title) {
+        return postService.searchPostsByTitle(title);
+    }
+
     // 게시글 등록 API
     @PostMapping("/board/{boardId}/posts")
     @ResponseBody

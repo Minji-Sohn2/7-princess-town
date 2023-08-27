@@ -19,6 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByBoardIdOrderByCreatedAtDesc(Long boardId);
 
+    List<Post> findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(String title);
+
     @Transactional
     @Modifying
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")

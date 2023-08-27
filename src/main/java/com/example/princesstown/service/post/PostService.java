@@ -60,6 +60,18 @@ public class PostService {
 
     }
 
+    //게시글 제목으로 검색
+    public List<PostResponseDto> searchPostsByTitle(String title) {
+        List<Post> posts = postRepository.findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(title);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtos;
+    }
+
     // 게시글 등록 API
     public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId, MultipartFile postImage) {
         Board board =boardRepository.findById(boardId).orElseThrow();
