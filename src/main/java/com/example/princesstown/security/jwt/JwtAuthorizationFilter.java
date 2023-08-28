@@ -56,10 +56,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            String username = info.getSubject();
 
             try {
                 Map<String, Object> authStatus = info.get("authStatus", Map.class);
-                String username = null;
+
                 if (authStatus != null) {
                     username = (String) authStatus.get("username");
                 }
