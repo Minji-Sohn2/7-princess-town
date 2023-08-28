@@ -2,37 +2,36 @@ package com.example.princesstown.dto.response;
 
 import com.example.princesstown.entity.Post;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
-@RequiredArgsConstructor
 public class PostResponseDto {
-    private Long id;
-    private String title;
-    private String contents;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
-    private Long user_id;
-    private String username;
-    private String nickname;
-//    private Integer postLikeCount;
-//    private List<CommentResponseDto> postCommentList;
+    private Long id; // 게시글 번호
+    private String nickname; // 유저이름
+    private String title; // 게시글 제목
+    private String contents; // 게시글 내용
+    private Long likeCount; // 좋아요 수
+    private int viewCount;
+    private String postImageUrl;
+    private LocalDateTime createAt; // 게시글 생성시간
+    private LocalDateTime modifiedAt; // 게시글 수정시간
+//    private List<CommentResponseDto> commentList; // 게시글에 포함된 댓글목록
 
-    // 리스트 C 대문자로 수정
+
     public PostResponseDto(Post post) {
         this.id = post.getId();
+        this.nickname = post.getUser().getNickname();
         this.title = post.getTitle();
         this.contents = post.getContents();
-        this.createdAt = post.getCreatedAt();
-        this.modifiedAt = post.getModifiedAt();
-        this.user_id = post.getUser().getUserId();
-        this.username = post.getUsername();
-        this.nickname = post.getNickname();
-//        this.postLikeCount = post.getPostLikeCount();
-//        this.postCommentList = post.getCommentList().stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        this.likeCount = post.getLikeCount();
+        this.createAt = post.getCreatedAt();
+        this.modifiedAt = post.getCreatedAt();
+        this.viewCount = post.getViewCount();
+        this.postImageUrl = post.getPostImageUrl();
+
+        // 댓글목록
+//        this.commentList = post.getCommentList().stream()
+//                .map(CommentResponseDto::new).collect(Collectors.toList());
     }
 }

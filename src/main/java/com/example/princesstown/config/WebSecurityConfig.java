@@ -1,5 +1,6 @@
 package com.example.princesstown.config;
 
+
 import com.example.princesstown.security.jwt.JwtAuthenticationFilter;
 import com.example.princesstown.security.jwt.JwtAuthorizationFilter;
 import com.example.princesstown.security.jwt.JwtUtil;
@@ -70,11 +71,15 @@ public class WebSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
+//        http.authorizeHttpRequests().anyRequest().permitAll();
+
         // HTTP 요청에 대한 접근 제어 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
+
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스에 대한 접근 허용
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/board/{boardId}/posts/{postId}/**").authenticated() //좋아요는 사용자 인증이 필요
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
                         .requestMatchers("/send/**").permitAll()
@@ -83,7 +88,6 @@ public class WebSecurityConfig {
                         .requestMatchers("/verify/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
-
 
         // 로그인 페이지 설정
         http.formLogin((formLogin) ->
