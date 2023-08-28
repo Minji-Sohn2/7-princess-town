@@ -5,7 +5,8 @@ import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.user.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -27,19 +26,18 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(
-            @RequestPart("signupRequest") String signupRequestJson,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
-
-        // JSON 문자열을 SignupRequestDto 객체로 변환
-        ObjectMapper objectMapper = new ObjectMapper();
-        SignupRequestDto signupRequestDto = objectMapper.readValue(signupRequestJson, SignupRequestDto.class);
+            @ModelAttribute @Valid SignupRequestDto signupRequestDto,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            HttpServletRequest request) {
 
         if (profileImage != null && !profileImage.isEmpty()) {
             signupRequestDto.setProfileImage(profileImage);
         }
 
-        return userService.signup(signupRequestDto);
+        return userService.signup(signupRequestDto, request);
     }
+
+
 
     // 회원탈퇴
     @DeleteMapping("/delete")

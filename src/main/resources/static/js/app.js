@@ -1,14 +1,120 @@
-jQuery(document).ready(function($){
+jQuery(document).ready(function($) {
+	// $form_modal은 .cd-user-modal 클래스를 가진 요소를 참조하고,
+	// $form_modal이 참조하는 cd-**라는 id형태를 가진 요소를 참조할 수 있게 함
 	var $form_modal = $('.cd-user-modal'),
 		$form_login = $form_modal.find('#cd-login'),
 		$form_signup = $form_modal.find('#cd-signup'),
+		$signup_submit = $form_signup.find('#signup-submit'),
 		$form_forgot_password = $form_modal.find('#cd-reset-password'),
 		$form_modal_tab = $('.cd-switcher'),
 		$tab_login = $form_modal_tab.children('li').eq(0).children('a'),
 		$tab_signup = $form_modal_tab.children('li').eq(1).children('a'),
 		$forgot_password_link = $form_login.find('.cd-form-bottom-message a'),
 		$back_to_login_link = $form_forgot_password.find('.cd-form-bottom-message a'),
-		$main_nav = $('.main-nav');
+		$main_nav = $('.main-nav'),
+		$signup_username = $form_signup.find('#signup-username'),
+		$signup_email = $form_signup.find('#signup-email'),
+		$signup_password = $form_signup.find('#signup-password'),
+		$signup_nickname = $form_signup.find('#signup-nickname'),
+		$signup_phoneNumber = $form_signup.find('#signup-phoneNumber'),
+		$signup_profileImage = $form_signup.find('#signup-profileImage'),
+		$signup_phoneVerifyCode = $form_signup.find('#signup-phoneVerifyCode');
+
+
+
+
+	// 회원가입 버튼 클릭 이벤트
+	$signup_submit.on('click', function(event) {
+		event.preventDefault();
+
+		var formData = new FormData($form_signup[0]);
+
+		$.ajax({
+			url: "/auth/signup",
+			type: "POST",
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function(response) {
+				window.location.href = 'auth/login-page';
+			},
+			error: function(error) {
+				alert("회원가입 실패. 다시 확인해주세요.");
+			}
+		});
+	});
+
+	// 인증번호 전송 버튼 클릭 이벤트
+	$('#sendVerificationCode').on('click', function(event){
+		event.preventDefault();
+
+		var phoneNumber = $signup_phoneNumber.val();
+
+		$.ajax({
+			url: "/send/code",
+			type: "POST",
+			data: { phoneNumber: phoneNumber },
+			success: function(response) {
+				alert("인증번호가 전송되었습니다.");
+			},
+			error: function(error) {
+				alert("인증번호 전송 실패. 다시 시도해주세요.");
+			}
+		});
+	});
+
+	// 인증번호 확인 버튼 클릭 이벤트
+	$('#verifyCodeButton').on('click', function(event){
+		event.preventDefault();
+
+		var phoneNumber = $signup_phoneNumber.val();
+		var inputCode = $signup_phoneVerifyCode.val();
+
+		console.log("Input Code:", inputCode);
+
+		$.ajax({
+			url: "/verify/code",
+			type: "POST",
+			data: { phoneNumber: phoneNumber, inputCode: inputCode },
+			success: function(response) {
+				alert("인증 성공");
+			},
+			error: function(error) {
+				alert("인증 실패. 다시 시도해주세요.");
+			}
+		});
+	});
+
+
+	// 로그인 버튼 클릭 이벤트
+	$form_login.find('input[type="submit"]').on('click', function(event){
+		event.preventDefault();
+
+		var usenname = $signup_username.val();
+		var password = $signup_password.val();
+
+		$.ajax({
+			url: "/auth/login",
+			type: "POST",
+			contentType: "application/json",
+			data: JSON.stringify({ username: username, password: password }),
+			success: function(response) {
+				// 로그인 성공시 처리 로직 (예: 페이지 리디렉션)
+
+				// 토큰을 쿠키에 저장
+				Cookies.set('authToken', response.token);
+
+				// 다른 로직 추가 (예: 메인 페이지로 리디렉션)
+				window.location.href = '/';
+			},
+			error: function(error) {
+				// 로그인 실패시 처리 로직
+				alert("Login failed. Please check your email and password.");
+			}
+		});
+	});
+
+
 
 	//open modal
 	$main_nav.on('click', function(event){
@@ -91,15 +197,7 @@ jQuery(document).ready(function($){
 		$form_forgot_password.addClass('is-selected');
 	}
 
-	//REMOVE THIS - it's just to show error messages 
-	$form_login.find('input[type="submit"]').on('click', function(event){
-		event.preventDefault();
-		$form_login.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');
-	});
-	$form_signup.find('input[type="submit"]').on('click', function(event){
-		event.preventDefault();
-		$form_signup.find('input[type="email"]').toggleClass('has-error').next('span').toggleClass('is-visible');
-	});
+
 
 
 	//IE9 placeholder fallback

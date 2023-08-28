@@ -24,8 +24,12 @@ repositories {
 
 dependencies {
 
+    //auth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -37,6 +41,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+    annotationProcessor 'org.projectlombok:lombok'
 
     // JWT
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
@@ -51,6 +58,8 @@ dependencies {
 
     // coolsms
     implementation 'net.nurigo:sdk:4.2.7'
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.0'
 }
 
 tasks.named('test') {

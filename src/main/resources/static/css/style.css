@@ -393,3 +393,81 @@ xsigin/signup popup
 
 #cd-login.is-selected, #cd-signup.is-selected, #cd-reset-password.is-selected {
   display: block; }
+
+/* 카카오 로그인 버튼 css */
+#login-kakao-btn {
+  padding: 0.6em 1em;
+  border: none;
+  border-radius: 5px;
+  background-color: #f7e600; /* 카카오 브랜드 컬러 */
+  color: #000; /* 버튼 텍스트 색상 */
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#login-kakao-btn:hover {
+  background-color: #ffeb3b; /* 호버 시 색상 변경 */
+}
+
+.login-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 오른쪽에 버튼을 위치시키기 위한 스타일 */
+.input-with-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10px; /* 상단 간격 조절 */
+  margin-bottom: 30px; /* 하단 간격 조절 */
+}
+
+.input-with-button input {
+  margin-right: 15px; /* 입력창과 버튼 사이의 간격 조절 */
+}
+
+/* 인증번호 전송 버튼 스타일 변경 */
+#sendVerificationCode {
+  padding: 0.2em 0.6em;
+  border: 1px solid #2f889a;
+  border-radius: 30em;
+  background: #2f889a;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 인증번호 확인 버튼 스타일 변경 */
+#verifyCodeButton {
+  padding: 0.2em 0.6em;
+  border: 1px solid #d2d8d8;
+  border-radius: 30em;
+  font-weight: bold;
+  color: #2f889a;
+  cursor: pointer;
+}
+
+.file-input-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #2f889a;
+  border-radius: 5px;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.file-input-label .icon {
+  font-size: 24px;
+  color: #2f889a;
+  margin-right: 10px;
+}
+
+
+.cd-form input#signup-profileImage {
+  display: none; /* 기본 파일 선택 창 숨김 */
+}

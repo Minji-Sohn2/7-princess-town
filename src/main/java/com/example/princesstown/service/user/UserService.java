@@ -11,6 +11,8 @@ import com.example.princesstown.service.awsS3.S3Uploader;
 import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.message.MessageService;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +44,7 @@ public class UserService {
     private final MessageService messageService;
     public Map<String, Object> authNumMap = new HashMap<>();
 
-    public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
+    public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto, HttpServletRequest request) {
         String username = requestDto.getUsername();
         String notEncodingPassword = requestDto.getPassword();
         String getPhoneVerifyCode = requestDto.getPhoneVerifyCode();
@@ -58,8 +60,8 @@ public class UserService {
 
         // email 중복 확인
         String email = requestDto.getEmail();
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
+        User checkEmail = userRepository.findByEmail(email);
+        if (checkEmail != null) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 Email 입니다."));
         }
 
@@ -74,9 +76,19 @@ public class UserService {
         }
 
         // 휴대폰 인증 코드 검증
-        if (!getPhoneVerifyCode.equals(messageService.getNumStr())) {
+        HttpSession session = request.getSession();
+        String storedCode = (String) session.getAttribute(requestDto.getPhoneNumber());
+
+        if (storedCode == null) {
+            return ResponseEntity.status(400).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "인증 번호가 만료되었거나 없습니다."));
+        }
+
+        if (!getPhoneVerifyCode.equals(storedCode)) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 코드가 올바르지 않습니다."));
         }
+
+        // 인증 성공한 경우, 세션에서 인증 번호 삭제
+        session.removeAttribute(requestDto.getPhoneNumber());
 
 
         // 비밀번호 인코딩
@@ -148,7 +160,8 @@ public class UserService {
 
     // 유저조회
     public ProfileResponseDto lookupUser(Long userId) {
-        return userRepository.findById(userId).map(ProfileResponseDto::new).orElseThrow(() -> new IllegalArgumentException("선택한 게시물은 존재하지 않습니다."));
+        return userRepository.findById(userId).map(ProfileResponseDto::new).orElseThrow(
+                () -> new IllegalArgumentException("선택한 게시물은 존재하지 않습니다."));
     }
 
     // email로 id찾기

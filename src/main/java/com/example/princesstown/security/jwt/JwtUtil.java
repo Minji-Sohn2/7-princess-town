@@ -60,6 +60,23 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
                         .compact();
     }
 
+    // 토큰 생성
+    public String createToken(String username, String nickname) {
+        Date date = new Date();
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("nickname", nickname);
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setClaims(claims) // 클레임 설정
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
+                        .setIssuedAt(date) // 발급일
+                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .compact();
+    }
+
     // 인증정보(createTime,endTime,authNum,username)이 담긴 Map을 Claims에 저장
     public String createToken(Map<String, Object> authNumMap) {
         Date date = new Date();

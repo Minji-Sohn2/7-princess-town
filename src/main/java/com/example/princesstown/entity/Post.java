@@ -35,11 +35,11 @@ public class Post extends Timestamped { // 상속받아서 createdAt, modifiedAt
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name="user_userId", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_locationId")
     private Location location;
 
 //    @OneToMany( mappedBy = "post",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
