@@ -3,21 +3,16 @@ package com.example.princesstown.controller.profile;
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.ProfileResponseDto;
-import com.example.princesstown.entity.Location;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.location.LocationService;
 import com.example.princesstown.service.profile.ProfileService;
 import com.example.princesstown.service.user.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,20 +36,15 @@ public class ProfileController {
         return userResponse;
     }
 
-
-
     // 프로필 수정
     @PutMapping("/api/auth/profile")
     @ResponseBody
     public ApiResponseDto updateUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestPart("editRequest") String editRequestJson,
+            @RequestBody ProfileEditRequestDto editRequestDto,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
 
         Long userId = userDetails.getUser().getUserId();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProfileEditRequestDto editRequestDto = objectMapper.readValue(editRequestJson, ProfileEditRequestDto.class);
 
         // 위치설정 업데이트 로직
         if (editRequestDto.getLatitude() != null && editRequestDto.getLongitude() != null) {
