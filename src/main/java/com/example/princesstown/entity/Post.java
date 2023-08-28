@@ -73,7 +73,7 @@ public class Post extends Timestamped{
         this.likeCount = likeCount;
     }
 
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(String postImageUrl) {
         this.postImageUrl = postImageUrl;
     }
 }

@@ -72,7 +72,7 @@ public class PostService {
         return postResponseDtos;
     }
 
-    // 인기검색어 top10
+    // 인기 검색어 top10
     public List<PostResponseDto> getTop10LikedPostsWithDuplicates() {
         List<Post> top10Posts = postRepository.findTop10LikedPostsWithDuplicates();
         List<PostResponseDto> postResponseDto = new ArrayList<>();
@@ -127,8 +127,23 @@ public class PostService {
                 () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
         );
 
-        if(post.getUser().getUserId().equals(user.getUserId())){ // || user.getRole().equals(UserRoleEnum.ADMIN)
+        if (post.getUser().getUserId().equals(user.getUserId())) {
             post.update(postRequestDto);
+
+            MultipartFile newPostImage = postRequestDto.getNewPostImage();
+            if (newPostImage != null && !newPostImage.isEmpty()) {
+                try {
+                    String imageUrl = s3Uploader.upload(newPostImage, "post-images");
+                    post.setImageUrl(imageUrl); // setImageUrl 메서드를 사용하여 이미지 URL 업데이트
+                } catch (IOException e) {
+                    log.info("업로드 실패");
+                    throw new IllegalArgumentException("이미지 업로드 중 오류가 발생했습니다.");
+                }
+            } else if (postRequestDto.getPostImage() == null && postRequestDto.getPostImageUrl() == null) {
+                // 이미지를 변경하지 않을 경우 이미지 관련 내용을 초기화
+                post.setImageUrl(null);
+            }
+
         } else {
             throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
         }

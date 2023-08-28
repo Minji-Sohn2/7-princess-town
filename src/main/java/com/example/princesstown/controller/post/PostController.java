@@ -92,14 +92,14 @@ public class PostController {
     @PutMapping("/board/{boardId}/posts/{postId}")
     public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long boardId,
                                                      @PathVariable Long postId,
-                                                     @RequestBody PostRequestDto postRequestDto,
-                                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                                     @ModelAttribute PostRequestDto postRequestDto,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             postService.updatePost(postId, postRequestDto, userDetails.getUser());
         } catch (IllegalArgumentException e) {
-            return  ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "글 수정에 실패했습니다."));
+            return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "글 수정에 실패했습니다."));
         }
-        return  ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "글 수정에 성공했습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "글 수정에 성공했습니다."));
     }
 
 

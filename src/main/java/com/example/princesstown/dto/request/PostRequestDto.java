@@ -14,6 +14,8 @@ public class PostRequestDto {
 
     private MultipartFile postImage; // 업로드된 이미지 파일
 
+    private MultipartFile newPostImage;
+
     private String postImageUrl; // 이미지 URL
 
 }
