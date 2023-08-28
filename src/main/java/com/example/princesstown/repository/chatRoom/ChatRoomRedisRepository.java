@@ -1,4 +1,4 @@
-package com.example.princesstown.chat.repository;
+package com.example.princesstown.repository.chatRoom;
 
 import com.example.princesstown.entity.ChatRoom;
 import jakarta.annotation.Resource;

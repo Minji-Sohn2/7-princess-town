@@ -1,8 +1,8 @@
-package com.example.princesstown.chat.controller;
+package com.example.princesstown.controller.chat;
 
-import com.example.princesstown.chat.dto.ChatMessage;
-import com.example.princesstown.chat.service.ChatService;
+import com.example.princesstown.dto.chat.ChatMessage;
 import com.example.princesstown.jwt.JwtUtil;
+import com.example.princesstown.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.Header;

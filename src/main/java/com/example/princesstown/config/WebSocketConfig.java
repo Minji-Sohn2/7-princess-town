@@ -1,6 +1,6 @@
-package com.example.princesstown.chat.config;
+package com.example.princesstown.config;
 
-import com.example.princesstown.chat.service.StompHandler;
+import com.example.princesstown.service.chat.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

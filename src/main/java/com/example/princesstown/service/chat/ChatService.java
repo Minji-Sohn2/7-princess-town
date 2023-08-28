@@ -1,6 +1,6 @@
-package com.example.princesstown.chat.service;
+package com.example.princesstown.service.chat;
 
-import com.example.princesstown.chat.dto.ChatMessage;
+import com.example.princesstown.dto.chat.ChatMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;

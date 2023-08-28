@@ -1,4 +1,4 @@
-package com.example.princesstown.chat.dto;
+package com.example.princesstown.dto.chat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

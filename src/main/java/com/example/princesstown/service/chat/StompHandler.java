@@ -1,7 +1,7 @@
-package com.example.princesstown.chat.service;
+package com.example.princesstown.service.chat;
 
-import com.example.princesstown.chat.repository.ChatRoomRedisRepository;
 import com.example.princesstown.jwt.JwtUtil;
+import com.example.princesstown.repository.chatRoom.ChatRoomRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
