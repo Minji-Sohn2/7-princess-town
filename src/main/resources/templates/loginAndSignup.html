@@ -28,8 +28,9 @@
     <nav class="main-nav">
       <ul>
         <!-- inser more links here -->
-        <li><a class="cd-signin" href="#0">Sign in</a></li>
-        <li><a class="cd-signup" href="#0">Sign up</a></li>
+        <li><a class="cd-signin" href="#0">로그인</a></li>
+        <li><a class="cd-signup" href="#0">회원가입</a></li>
+        <li><a class="cd-logout" href="#0">로그아웃</a></li>
       </ul>
     </nav>
   </header>
@@ -45,7 +46,7 @@
 
       <div id="cd-login">
         <!-- log in form -->
-        <form class="cd-form">
+        <form class="cd-form" action="/auth/login" method="post">
           <p class="fieldset">
             <label class="image-replace cd-email" for="signin-email">E-mail</label>
             <input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="E-mail">
@@ -60,8 +61,13 @@
           </p>
 
           <p class="fieldset">
+          <div class="login-buttons">
             <input type="checkbox" id="remember-me">
             <label for="remember-me">Remember me</label>
+            <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=09f2acecd9cd8bf7b7d3f6951daf4548&redirect_uri=http://localhost:8080/api/user/kakao/callback&response_type=code'">
+              카카오로 로그인하기
+            </button>
+          </div>
           </p>
 
           <p class="fieldset">
@@ -75,24 +81,52 @@
 
       <div id="cd-signup">
         <!-- sign up form -->
-        <form class="cd-form">
-          <p class="fieldset">
-            <label class="image-replace cd-username" for="signup-username">Username</label>
-            <input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Username">
+        <form class="cd-form" action="/auth/signup" method="post" enctype="multipart/form-data">
+        <p class="fieldset">
+            <label class="image-replace cd-username" for="signup-username">아이디</label>
+            <input class="full-width has-padding has-border" id="signup-username" name="username" type="text" placeholder="Username">
             <span class="cd-error-message">Error message here!</span>
           </p>
 
           <p class="fieldset">
-            <label class="image-replace cd-email" for="signup-email">E-mail</label>
-            <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="E-mail">
-            <span class="cd-error-message">Error message here!</span>
-          </p>
-
-          <p class="fieldset">
-            <label class="image-replace cd-password" for="signup-password">Password</label>
-            <input class="full-width has-padding has-border" id="signup-password" type="password" placeholder="Password">
+            <label class="image-replace cd-password" for="signup-password">비밀번호</label>
+            <input class="full-width has-padding has-border" id="signup-password" name="password" type="password" placeholder="Password">
             <a href="#0" class="hide-password">Show</a>
             <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <p class="fieldset">
+            <label class="image-replace cd-nickname" for="signup-nickname">닉네임</label>
+            <input class="full-width has-padding has-border" id="signup-nickname" name="nickname" type="text" placeholder="Nickname">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="signup-email">이메일</label>
+            <input class="full-width has-padding has-border" id="signup-email" name="email" type="email" placeholder="E-mail">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <!-- 휴대폰 번호 입력 -->
+          <div class="input-with-button">
+            <label class="image-replace cd-phoneNumber" for="signup-phoneNumber">전화번호</label>
+            <input class="full-width has-padding has-border" id="signup-phoneNumber" name="phoneNumber" type="text" placeholder="PhoneNumber">
+            <button id="sendVerificationCode">인증번호 전송</button>
+          </div>
+
+          <!-- 인증 코드 입력 -->
+          <div class="input-with-button">
+            <label class="image-replace cd-phoneVerifyCode" for="signup-phoneVerifyCode">인증번호</label>
+            <input class="full-width has-padding has-border" id="signup-phoneVerifyCode" name="phoneVerifyCode" type="text" placeholder="Enter Verification Code">
+            <button id="verifyCodeButton">인증번호 확인</button>
+          </div>
+
+          <!-- 프로필 이미지 업로드 -->
+          <p class="fieldset">
+            <label for="signup-profileImage" class="file-input-label">
+              <span class="icon">+</span> 파일 선택
+            </label>
+            <input type="file" id="signup-profileImage" name="profileImage" class="file-input">
           </p>
 
           <p class="fieldset">
@@ -131,4 +165,8 @@
   </div> <!-- cd-user-modal -->
 </body>
 <script src="/js/app.js"></script>
+<script>
+
+</script>
+
 </html>
