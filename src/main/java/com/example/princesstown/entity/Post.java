@@ -1,3 +1,4 @@
+
 package com.example.princesstown.entity;
 
 import com.example.princesstown.dto.request.PostRequestDto;
@@ -23,7 +24,7 @@ public class Post extends Timestamped { // 상속받아서 createdAt, modifiedAt
     @Column(nullable = false, length = 3000)
     private String contents;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
@@ -34,21 +35,25 @@ public class Post extends Timestamped { // 상속받아서 createdAt, modifiedAt
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name="user_userId", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "location_locationId")
+    private Location location;
 
 //    @OneToMany( mappedBy = "post",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    private List<Comment> commentList = new ArrayList<>();
 
-
-    public Post(PostRequestDto requestDto, User user) {
+    public Post(PostRequestDto requestDto, User user) { //
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.nickname = user.getNickname();
         this.username = user.getUsername();
         this.postLikeCount = 0;
+        this.user = user;
     }
+
 
     public void updatePost(PostRequestDto postRequestDto) {
         this.title = postRequestDto.getTitle();

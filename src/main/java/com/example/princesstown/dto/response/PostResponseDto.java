@@ -1,4 +1,4 @@
-package com.example.princesstown.dto;
+package com.example.princesstown.dto.response;
 
 import com.example.princesstown.entity.Post;
 import lombok.Getter;
@@ -22,8 +22,7 @@ public class PostResponseDto {
 //    private Integer postLikeCount;
 //    private List<CommentResponseDto> postCommentList;
 
-    //    private List<CommentResponseDto> postCommentList;
-// 리스트 C 대문자로 수정
+    // 리스트 C 대문자로 수정
     public PostResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();

@@ -1,15 +1,18 @@
 package com.example.princesstown.service.post;
 
-import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.request.PostRequestDto;
-import com.example.princesstown.dto.PostResponseDto;
+import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.dto.response.PostResponseDto;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.post.PostRepository;
+import com.example.princesstown.security.user.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,20 +25,26 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-//    private final PostLikedInfoRepository postLikedInfoRepository;
+//  private final PostLikedInfoRepository postLikedInfoRepository;
 
-    public PostResponseDto createPost(PostRequestDto requestDto, User user) {
+    public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
+
+        User currentUser = userDetails.getUser(); // 현재 사용자 정보
+        Location userLocation = currentUser.getLocation(); // 현재 사용자의 위치 정보
 
         // RequestDto -> Entity ( 받아온 rqeustDto를 entity에 저장하여 새로운 Post만들기)
-        Post post = new Post(requestDto, user);
+        Post newPost = new Post(requestDto, currentUser);
 
-        // DB 저장 (새로운 Post를 DB에 저장하고 그 Post의 참조변수 savePost를 따로 정의)
-        Post savePost = postRepository.save(post);
+        // Post의 location_id 설정
+        newPost.setLocation(userLocation);
 
-        // Entity -> ResponseDto( 저장된 post를 responseBody로 클라이언트에 반환하게 만드는 과정)
-        PostResponseDto postResponseDto = new PostResponseDto(savePost);
+        // 게시글 저장 등의 로직
+        Post savedPost = postRepository.save(newPost);
 
-        return postResponseDto;
+        // PostResponseDto 생성 등의 로직
+        PostResponseDto responseDto = new PostResponseDto(savedPost);
+
+        return responseDto;
     }
 
 
@@ -56,7 +65,7 @@ public class PostService {
 
 
     @Transactional
-    public ResponseEntity<ApiResponseDto> updatePost(Long id, PostRequestDto postRequestDto, User user) {
+    public ResponseEntity<ApiResponseDto> updatePost(Long id, PostRequestDto postRequestDto, User user) { //
         // ResponseEntity :  HTTP 응답의 상태 코드, 헤더, 본문 등을 포함시킬 수 있는 클래스
         // ApiResponseDto로 객체를 저장하여 status, message, data를 하나의 객체로 만듬
 
@@ -76,7 +85,7 @@ public class PostService {
 
 
     @Transactional
-    public ResponseEntity<ApiResponseDto> deletePost(Long id, User user) {
+    public ResponseEntity<ApiResponseDto> deletePost(Long id, User user) { //
         Optional<Post> post = postRepository.findById(id);
 
 //        if (!post.isPresent() || !Objects.equals(post.get().getUser().getUsername(), user.getUsername())

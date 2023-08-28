@@ -4,6 +4,8 @@ import com.example.princesstown.security.jwt.JwtAuthenticationFilter;
 import com.example.princesstown.security.jwt.JwtAuthorizationFilter;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
+import com.example.princesstown.service.KakaoService;
+import com.example.princesstown.service.user.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +30,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final TokenBlacklistService tokenBlacklistService;
 
     // 비밀번호 암호화를 위한 Bean 설정
     @Bean
@@ -52,7 +55,7 @@ public class WebSecurityConfig {
     // JWT 권한 검사 필터 Bean 설정
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, tokenBlacklistService);
     }
 
     // Spring Security 설정
@@ -74,26 +77,30 @@ public class WebSecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
-                        .requestMatchers("/img/**").permitAll()
+                        .requestMatchers("/send/**").permitAll()
+                        .requestMatchers("/modify/**").permitAll()
+                        .requestMatchers("/find/**").permitAll()
+                        .requestMatchers("/verify/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 
-//        // 로그인 페이지 설정
-//        http.formLogin((formLogin) ->
-//                formLogin
-//                        .loginPage("/auth/login-page").permitAll()
-//        );
+
+        // 로그인 페이지 설정
+        http.formLogin((formLogin) ->
+                formLogin
+                        .loginPage("/auth/login-page").permitAll()
+        );
 
         // JWT 관련 필터를 Spring Security 필터 체인에 추가
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-//        // 예외 처리 설정: 접근 거부 페이지 설정
-//        http.exceptionHandling((exceptionHandling) ->
-//                exceptionHandling
-//                        .accessDeniedPage("/forbidden.html")
-//        );
-//
+        // 예외 처리 설정: 접근 거부 페이지 설정
+        http.exceptionHandling((exceptionHandling) ->
+                exceptionHandling
+                        .accessDeniedPage("/forbidden.html")
+        );
+
 
         return http.build();
     }

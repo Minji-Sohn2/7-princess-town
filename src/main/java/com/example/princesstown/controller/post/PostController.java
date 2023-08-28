@@ -1,11 +1,18 @@
 package com.example.princesstown.controller.post;
 
-import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.dto.request.PostByLocationRequestDto;
 import com.example.princesstown.dto.request.PostRequestDto;
-import com.example.princesstown.dto.PostResponseDto;
+import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.dto.response.PostResponseDto;
+import com.example.princesstown.entity.Location;
+import com.example.princesstown.entity.User;
+import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.location.LocationService;
+import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +25,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-    private PostController postService;
+    private final PostService postService;
+    private final LocationService locationService;
 
     @PostMapping("/posts") // 글 작성
     @ResponseBody
-    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto) { // , @AuthenticationPrincipal UserDetailsImpl userDetails
-        return postService.createPost(requestDto); // , userDetails.getUser()
-    }
+    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PostResponseDto responseDto = postService.createPost(requestDto, userDetails);
 
+        return responseDto;
+    }
 
     @GetMapping("/posts") // 전체 게시글 조회
     @ResponseBody
@@ -33,6 +42,11 @@ public class PostController {
         return postService.getPosts();
     }
 
+    @GetMapping("/auth/location/posts/{id}") // 위치반경 내 게시글 조회
+    @ResponseBody
+    public List<PostResponseDto> getPostsByLocation( @PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
+        return locationService.getPostsInRadius(id, requestDto);
+    }
 
     @GetMapping("/post/{id}") // 상세 게시글 조회
     @ResponseBody
@@ -44,14 +58,14 @@ public class PostController {
     }
 
     @PutMapping("/posts/{id}") // 상세 게시글 수정
-    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto) { // , @AuthenticationPrincipal UserDetailsImpl userDetails
-        return postService.updatePost(id, postRequestDto); //,userDetails.getUser()
+    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) { //
+        return postService.updatePost(id, postRequestDto, userDetails.getUser()); //
     }
 
     @DeleteMapping("/posts/{id}") // 상세 게시글 삭제
     @ResponseBody
-    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long id) { //, @AuthenticationPrincipal UserDetailsImpl userDetails
-        return postService.deletePost(id); // , userDetails.getUser()
+    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) { //
+        return postService.deletePost(id, userDetails.getUser()); //
     }
 
     // 좋아요

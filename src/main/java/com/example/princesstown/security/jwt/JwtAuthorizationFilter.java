@@ -1,12 +1,14 @@
 package com.example.princesstown.security.jwt;
 
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
+import com.example.princesstown.service.user.TokenBlacklistService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -28,36 +31,44 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    private final TokenBlacklistService tokenBlacklistService;
+
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, TokenBlacklistService tokenBlacklistService) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-
         // 헤더에서 JWT 토큰 가져오기
         String tokenValue = req.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
-            log.info(tokenValue);
+            log.info("Extracted token: " + tokenValue);
 
             // 유효성 검증
-            if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("Token Error");
+            if (!jwtUtil.validateToken(tokenValue) || tokenBlacklistService.isBlacklisted(tokenValue)) {
+                log.error("Token Error: Invalid token or blacklisted");
                 return;
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
-                setAuthentication(info.getSubject());
+                Map<String, Object> authStatus = info.get("authStatus", Map.class);
+                String username = null;
+                if (authStatus != null) {
+                    username = (String) authStatus.get("username");
+                }
+
+                // 실제 사용자의 username을 가져오는 코드
+                log.info("Setting authentication for username: " + username);
+                setAuthentication(username);
             } catch (Exception e) {
-                log.error(e.getMessage());
+                log.error("Error while setting authentication: " + e.getMessage());
                 return;
             }
         }
@@ -67,11 +78,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     // 인증 처리
     public void setAuthentication(String username) {
+        log.info("Setting authentication for username: " + username);
+
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
 
         SecurityContextHolder.setContext(context);
+
+        log.info("Authentication set for username: " + username);
     }
 
     // 인증 객체 생성
