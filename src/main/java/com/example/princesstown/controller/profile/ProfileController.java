@@ -47,9 +47,9 @@ public class ProfileController {
         Long userId = userDetails.getUser().getUserId();
 
         // 위치설정 업데이트 로직
-        if (editRequestDto.getLatitude() != null && editRequestDto.getLongitude() != null) {
-            locationService.updateLocationAndRelatedEntities(userId, editRequestDto.getLatitude(), editRequestDto.getLongitude());
-        }
+//        if (editRequestDto.getLatitude() != null && editRequestDto.getLongitude() != null) {
+//            locationService.updateLocationAndRelatedEntities(userId, editRequestDto.getLatitude(), editRequestDto.getLongitude());
+//        }
 
         editRequestDto.setProfileImage(profileImage);
 

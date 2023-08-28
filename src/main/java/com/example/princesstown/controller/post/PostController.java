@@ -5,7 +5,7 @@ import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.security.user.UserDetailsImpl;
-import com.example.princesstown.service.S3Uploader;
+import com.example.princesstown.service.awsS3.S3Uploader;
 import com.example.princesstown.service.post.LikeService;
 import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;

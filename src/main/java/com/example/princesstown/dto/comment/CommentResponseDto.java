@@ -30,7 +30,7 @@ public class CommentResponseDto {
         this.user_id = comment.getUser().getUserId();
         this.username = comment.getUser().getUsername();
         this.nickname = comment.getUser().getNickname();
-        this.img = comment.getUser().getProfile_image_url();
+        this.img = comment.getUser().getProfileImage();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }

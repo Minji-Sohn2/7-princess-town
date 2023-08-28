@@ -1,5 +1,6 @@
 package com.example.princesstown.repository.post;
 
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.entity.User;
 import jakarta.transaction.Transactional;
@@ -15,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 전체 게시글 조회
     List<Post> findAllByOrderByCreatedAtDesc();
 
-    List<Post> findAllByUserOrderByCreatedAtDesc(User user);
+//    List<Post> findAllByUserOrderByCreatedAtDesc(User user);
 
     //특정 게시판 게시글 전체 조회
     List<Post> findByBoardIdOrderByCreatedAtDesc(Long boardId);
@@ -38,4 +39,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     int incrementViewCount(@Param("postId") Long postId);
 
+//    List<Post> findByLocationLatitudeBetweenAndLocationLongitudeBetween(Double minLat, Double maxLat, Double minLon, Double maxLon);
+
+//    List<Post> findByLocation(Location updatedLocation);
 }
