@@ -1,4 +1,4 @@
-package com.example.princesstown.jwt;
+package com.example.princesstown.security.jwt;
 
 import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.security.user.UserDetailsImpl;

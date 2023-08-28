@@ -2,14 +2,12 @@ package com.example.princesstown.controller.comment;
 
 import com.example.princesstown.dto.comment.CommentRequestDto;
 import com.example.princesstown.dto.comment.RestApiResponseDto;
-import com.example.princesstown.exception.TokenNotValidateException;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.comment.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +25,13 @@ public class CommentController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return commentService.getComments(postId, page, size);
+    }
+
+    @GetMapping("/posts/{postId}/commentlist")
+    public ResponseEntity<RestApiResponseDto> getAllComments(
+            @PathVariable Long postId
+    ) {
+        return commentService.getAllComments(postId);
     }
 
      // 댓글 작성
@@ -91,5 +96,12 @@ public class CommentController {
     ) {
 
         return commentService.deleteLikes(postId, commentId, userDetails.getUser());
+    }
+
+    @GetMapping("/nickname")
+    public ResponseEntity<RestApiResponseDto> getNickname(
+            @RequestParam String username
+    ) {
+        return commentService.getNickname(username);
     }
 }

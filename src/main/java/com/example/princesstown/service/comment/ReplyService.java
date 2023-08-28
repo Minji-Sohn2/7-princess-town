@@ -48,10 +48,14 @@ public class ReplyService {
 
             Reply reply = new Reply(requestDto, post, comment, user);
 
+            if (reply.getContent().isBlank() && reply.getEmoji().isBlank()) {
+                throw new IllegalArgumentException("답글은 이모티콘이 없으면 공백이 될 수 없습니다.");
+            }
+
             reply.setLikeCnt(0L);
 
             replyRepository.save(reply);
-            return this.resultResponse(HttpStatus.CREATED, "답글 생성", new ReplyResponseDto(reply));
+            return this.resultResponse(HttpStatus.CREATED, "답글이 생성되었습니다.", new ReplyResponseDto(reply));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }
@@ -67,13 +71,17 @@ public class ReplyService {
 
             replysValid(reply, user);
 
+            if (reply.getContent().isBlank() && reply.getEmoji().isBlank()) {
+                throw new IllegalArgumentException("답글은 이모티콘이 없으면 공백이 될 수 없습니다.");
+            }
+
             reply.setContent(requestDto.getContent());
 
             reply.setEmoji(requestDto.getEmoji());
 
             replyRepository.save(reply);
 
-            return this.resultResponse(HttpStatus.OK, "답글 수정", new ReplyResponseDto(reply));
+            return this.resultResponse(HttpStatus.OK, "답글을 수정하였습니다.", new ReplyResponseDto(reply));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
@@ -97,7 +105,7 @@ public class ReplyService {
             }
             replyRepository.delete(reply);
 
-            return this.resultResponse(HttpStatus.OK, "답글 삭제", new ReplyResponseDto(reply));
+            return this.resultResponse(HttpStatus.OK, "답글이 삭제되었습니다.", new ReplyResponseDto(reply));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }

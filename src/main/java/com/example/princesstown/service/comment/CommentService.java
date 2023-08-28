@@ -1,13 +1,13 @@
 package com.example.princesstown.service.comment;
 
 import com.example.princesstown.dto.comment.*;
-import com.example.princesstown.entity.Comment;
-import com.example.princesstown.entity.CommentLikes;
-import com.example.princesstown.entity.Post;
-import com.example.princesstown.entity.User;
+import com.example.princesstown.entity.*;
 import com.example.princesstown.repository.comment.CommentLikesRepository;
 import com.example.princesstown.repository.comment.CommentRepository;
+import com.example.princesstown.repository.comment.ReplyLikesRepository;
+import com.example.princesstown.repository.comment.ReplyRepository;
 import com.example.princesstown.repository.post.PostRepository;
+import com.example.princesstown.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,8 +22,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    private final UserRepository userRepository;
 
     private final CommentRepository commentRepository;
+    private final ReplyRepository replyRepository;
+    private final ReplyLikesRepository replyLikesRepository;
     private final PostRepository postRepository;
     private final CommentLikesRepository commentLikesRepository;
 
@@ -43,21 +46,38 @@ public class CommentService {
                 commentsList.getTotalElements()
         );
 
-        return this.resultResponse(HttpStatus.OK, "댓글 조회", new PagedCommentResponseDto(commentResponseDtoList, paginationInfo));
+        return this.resultResponse(HttpStatus.OK, "페이지 댓글 조회", new PagedCommentResponseDto(commentResponseDtoList, paginationInfo));
     }
+
+    public ResponseEntity<RestApiResponseDto> getAllComments(Long postId) {
+        List<Comment> commentsList = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId);
+
+        List<CommentResponseDto> commentResponseDtoList = commentsList.stream()
+                .map(CommentResponseDto::new)
+                .toList();
+
+        return this.resultResponse(HttpStatus.OK, "모든댓글 조회", new PagedCommentResponseDto(commentResponseDtoList));
+    }
+
 
     // 댓글 생성
     public ResponseEntity<RestApiResponseDto> createComments(Long postId, CommentRequestDto requestDto, User user) {
         try {
+
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
 
+
             Comment comment = new Comment(requestDto, post, user);
+
+            if (comment.getContent().isBlank() && comment.getEmoji().isBlank()) {
+                throw new IllegalArgumentException("댓글은 이모티콘이 없으면 공백이 될 수 없습니다.");
+            }
 
             comment.setLikeCnt(0L);
 
             commentRepository.save(comment);
-            return this.resultResponse(HttpStatus.CREATED, "댓글 생성", new CommentResponseDto(comment));
+            return this.resultResponse(HttpStatus.CREATED, "댓글이 생성되었습니다.", new CommentResponseDto(comment));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }
@@ -73,12 +93,16 @@ public class CommentService {
 
             commentsValid(comment, user);
 
+            if (comment.getContent().isBlank() && comment.getEmoji().isBlank()) {
+                throw new IllegalArgumentException("댓글은 이모티콘이 없으면 공백이 될 수 없습니다.");
+            }
+
             comment.setContent(requestDto.getContent());
             comment.setEmoji(requestDto.getEmoji());
 
             commentRepository.save(comment);
 
-            return this.resultResponse(HttpStatus.OK, "댓글 수정", new CommentResponseDto(comment));
+            return this.resultResponse(HttpStatus.OK, "댓글을 수정하였습니다.", new CommentResponseDto(comment));
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
@@ -92,16 +116,30 @@ public class CommentService {
 
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+
+            List<Reply> reply = replyRepository.findAllByCommentId(commentId);
+
             List<CommentLikes> commentLikes = commentLikesRepository.findAllByCommentId(commentId);
 
+            List<ReplyLikes> replyLikes = replyLikesRepository.findAllByCommentId(commentId);
+
             commentsValid(comment, user);
+
+            if (replyLikes != null) {
+                replyLikesRepository.deleteAll(replyLikes);
+            }
+
+            if (reply != null) {
+                replyRepository.deleteAll(reply);
+            }
 
             if (commentLikes != null) {
                 commentLikesRepository.deleteAll(commentLikes);
             }
+
             commentRepository.delete(comment);
 
-            return this.resultResponse(HttpStatus.OK, "댓글 삭제", new CommentResponseDto(comment));
+            return this.resultResponse(HttpStatus.OK, "댓글을 삭제하였습니다.", new CommentResponseDto(comment));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
         }
@@ -159,7 +197,6 @@ public class CommentService {
         }
     }
 
-
     // 좋아요 취소
     public ResponseEntity<RestApiResponseDto> deleteLikes(Long postId, Long commentId, User user) {
         try {
@@ -184,6 +221,18 @@ public class CommentService {
             return this.resultResponse(HttpStatus.OK, "좋아요 취소", new CommentLikesResponseDto(commentLikes));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
+    }
+
+    public ResponseEntity<RestApiResponseDto> getNickname(String username) {
+
+        Optional<User> user = userRepository.findByUsername(username);
+
+        if (user.isPresent()) {
+            String nickname = user.get().getNickname();
+            return this.resultResponse(HttpStatus.OK, "닉네임 가져오기 완료", nickname);
+        } else {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), "가져오기 실패"));
         }
     }
 
@@ -212,6 +261,7 @@ public class CommentService {
     }
 
     // 좋아요 사용자 검증
+
     private void likesValid(CommentLikes commentLikes, User user) {
         Long writerId = commentLikes.getUser().getUserId();
         Long loginId = user.getUserId();

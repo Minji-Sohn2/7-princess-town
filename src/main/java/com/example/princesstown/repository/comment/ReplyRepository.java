@@ -13,4 +13,7 @@ import java.util.List;
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     List<Reply> findAllByPostIdAndCommentIdOrderByCreatedAtAsc(Long postId, Long commentId);
+
+    List<Reply> findAllByCommentId(Long commentId);
+
 }
