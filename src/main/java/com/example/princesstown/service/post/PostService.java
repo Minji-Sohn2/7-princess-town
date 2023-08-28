@@ -5,10 +5,12 @@ import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
 import com.example.princesstown.entity.Board;
 import com.example.princesstown.entity.Post;
+import com.example.princesstown.entity.SearchHistory;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.board.BoardRepository;
 import com.example.princesstown.repository.post.LikeRepository;
 import com.example.princesstown.repository.post.PostRepository;
+import com.example.princesstown.repository.post.SearchHistoryRepository;
 import com.example.princesstown.service.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ public class PostService {
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final SearchHistoryRepository searchHistoryRepository;
 //    private final JwtUtil jwtUtil;
 
     // 게시글 전체 조회 API
@@ -62,6 +65,9 @@ public class PostService {
 
     //게시글 제목으로 검색
     public List<PostResponseDto> searchPostsByTitle(String title) {
+
+        saveSearchHistory(title);
+
         List<Post> posts = postRepository.findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(title);
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
 
@@ -73,8 +79,11 @@ public class PostService {
     }
 
     //게시글 내용으로 검색
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PostResponseDto> searchPostsByContents(String contents) {
+
+        saveSearchHistory(contents);
+
         List<Post> posts = postRepository.findAllByContentsContainingIgnoreCaseOrderByCreatedAtDesc(contents);
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
 
@@ -86,8 +95,11 @@ public class PostService {
     }
 
     //게시글 제목 + 내용으로 검색
-    @Transactional(readOnly = true)
+    @Transactional
     public List<PostResponseDto> searchPostsByTitleOrContents(String keyword) {
+
+        saveSearchHistory(keyword);
+
         List<Post> posts = postRepository.findAllByTitleContainingIgnoreCaseOrContentsContainingIgnoreCaseOrderByCreatedAtDesc(keyword, keyword);
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
 
@@ -195,6 +207,12 @@ public class PostService {
     @Transactional
     public void incrementViewCount(Long postId) {
         postRepository.incrementViewCount(postId);
+    }
+
+    private void saveSearchHistory(String keyword) {
+        SearchHistory searchHistory = new SearchHistory();
+        searchHistory.setKeyword(keyword);
+        searchHistoryRepository.save(searchHistory);
     }
 
 }
