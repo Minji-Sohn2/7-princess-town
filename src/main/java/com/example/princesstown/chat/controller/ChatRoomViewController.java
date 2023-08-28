@@ -18,14 +18,14 @@ public class ChatRoomViewController {
     @GetMapping("/room")
     public String rooms() {
         log.info("rooms 보이기");
-        return "chatListTryNoVue";
+        return "chat/myChatRooms";
     }
 
     // 채팅방 입장 화면
     @GetMapping("/room/enter/{roomId}")
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
-        return "roomdetailPlus";
+        return "chat/chatRoomDetail";
     }
 
 }
