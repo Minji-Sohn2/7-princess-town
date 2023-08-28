@@ -72,6 +72,32 @@ public class PostService {
         return postResponseDtos;
     }
 
+    //게시글 내용으로 검색
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> searchPostsByContents(String contents) {
+        List<Post> posts = postRepository.findAllByContentsContainingIgnoreCaseOrderByCreatedAtDesc(contents);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtos;
+    }
+
+    //게시글 제목 + 내용으로 검색
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> searchPostsByTitleOrContents(String keyword) {
+        List<Post> posts = postRepository.findAllByTitleContainingIgnoreCaseOrContentsContainingIgnoreCaseOrderByCreatedAtDesc(keyword, keyword);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtos;
+    }
+
     // 인기 검색어 top10
     public List<PostResponseDto> getTop10LikedPostsWithDuplicates() {
         List<Post> top10Posts = postRepository.findTop10LikedPostsWithDuplicates();

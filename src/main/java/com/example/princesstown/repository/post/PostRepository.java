@@ -12,14 +12,22 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    // 게시글을 생성된 시간순으로 내림차순해서 가져옴
+    // 전체 게시글 조회
     List<Post> findAllByOrderByCreatedAtDesc();
 
     List<Post> findAllByUserOrderByCreatedAtDesc(User user);
 
+    //특정 게시판 게시글 전체 조회
     List<Post> findByBoardIdOrderByCreatedAtDesc(Long boardId);
 
+    //제목으로 검색
     List<Post> findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(String title);
+
+    //내용으로 검색
+    List<Post> findAllByContentsContainingIgnoreCaseOrderByCreatedAtDesc(String contents);
+
+    //제목과 내용으로 검색
+    List<Post> findAllByTitleContainingIgnoreCaseOrContentsContainingIgnoreCaseOrderByCreatedAtDesc(String title, String contents);
 
     //top10 인기검색어
     @Query("SELECT p FROM Post p WHERE p.likeCount > 0 ORDER BY p.likeCount DESC")
