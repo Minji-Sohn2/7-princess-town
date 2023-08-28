@@ -1,8 +1,8 @@
 package com.example.princesstown.service.message;
 
 import com.example.princesstown.dto.response.ApiResponseDto;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
@@ -16,11 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 
 @Slf4j
-@Getter
-@Setter
 @Service
 public class MessageService {
-
     @Value("${nurigo.app.key}")
     private String appKey;
 
@@ -30,10 +27,8 @@ public class MessageService {
     @Value("${nurigo.api.url}")
     private String apiUrl;
 
-    private String numStr;
-
-    public ResponseEntity<ApiResponseDto> sendVerificationCode(String phoneNumber) {
-        DefaultMessageService messageService =  NurigoApp.INSTANCE.initialize(appKey, appSecret, apiUrl);
+    public ResponseEntity<ApiResponseDto> sendVerificationCode(String phoneNumber, HttpServletRequest request) {
+        DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(appKey, appSecret, apiUrl);
 
         Random ran = new Random();
         StringBuilder numStr = new StringBuilder();
@@ -42,7 +37,8 @@ public class MessageService {
             numStr.append(random);
         }
 
-        setNumStr(numStr.toString());
+        HttpSession session = request.getSession();
+        session.setAttribute(phoneNumber, numStr.toString());
 
         Message message = new Message();
         message.setFrom("01046358930");
@@ -58,6 +54,6 @@ public class MessageService {
             log.error("발송한 메세지" + exception.getMessage());
         }
 
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "메세지 전송 성공", numStr));
+        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "메세지 전송 성공", null));
     }
 }
