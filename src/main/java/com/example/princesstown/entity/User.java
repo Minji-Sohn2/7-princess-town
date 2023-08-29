@@ -37,9 +37,6 @@ public class User {
     @Column
     private String profileImage;
 
-    @Column(nullable = false)
-    private String PhoneVerifyCode;
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "location_locationId")
     private Location location;
@@ -50,7 +47,6 @@ public class User {
         this.nickname = signupRequestDto.getNickname();
         this.email = signupRequestDto.getEmail();
         this.phoneNumber = signupRequestDto.getPhoneNumber();
-        this.PhoneVerifyCode = signupRequestDto.getPhoneVerifyCode();
     }
 
     public User(KakaoUserInfoDto kakaoUserInfoDto, String encodedPassword) {
