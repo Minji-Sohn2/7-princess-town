@@ -1,8 +1,10 @@
-package com.example.princesstown.jwt;
+package com.example.princesstown.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +14,11 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtUtil { // JWT와 관련된 주요 기능을 제공
 
@@ -23,7 +29,7 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 100 * 60 * 60 * 100000L; // 100시간, 기준은 밀리세컨드
+    private final long TOKEN_TIME = 60 * 60 * 100000L; // 100시간, 기준은 밀리세컨드
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -52,13 +58,46 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
                         .compact();
     }
 
+    // 토큰 생성
+    public String createToken(String username, String nickname) {
+        Date date = new Date();
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("nickname", nickname);
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setClaims(claims) // 클레임 설정
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
+                        .setIssuedAt(date) // 발급일
+                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .compact();
+    }
+
+    // 인증정보(createTime,endTime,authNum,username)이 담긴 Map을 Claims에 저장
+    public String createToken(Map<String, Object> authNumMap) {
+        Date date = new Date();
+        log.info("Received authNumMap: " + authNumMap);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("authStatus", authNumMap);
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setClaims(claims) // authMap의 정보를 Claims로 설정
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
+                        .setIssuedAt(date) // 발급일
+                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .compact();
+    }
 
     // JWT 토큰 substring
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        logger.error("substringToken 실패");
+        logger.error("Not Found Token");
         throw new NullPointerException("Not Found Token");
     }
 

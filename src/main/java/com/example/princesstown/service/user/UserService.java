@@ -4,7 +4,6 @@ import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.ProfileResponseDto;
-import com.example.princesstown.dto.response.UserResponseDto;
 import com.example.princesstown.dto.search.SearchUserResponseDto;
 import com.example.princesstown.dto.search.SimpleUserInfoDto;
 import com.example.princesstown.dto.search.UserSearchCond;
@@ -16,8 +15,6 @@ import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.message.MessageService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,9 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Slf4j(topic = "UserService")
 @RequiredArgsConstructor

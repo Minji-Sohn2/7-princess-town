@@ -1,7 +1,7 @@
 package com.example.princesstown.controller.chat;
 
 import com.example.princesstown.dto.chat.ChatMessage;
-import com.example.princesstown.jwt.JwtUtil;
+import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

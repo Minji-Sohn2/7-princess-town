@@ -5,7 +5,6 @@ import com.example.princesstown.security.jwt.JwtAuthenticationFilter;
 import com.example.princesstown.security.jwt.JwtAuthorizationFilter;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
-import com.example.princesstown.service.KakaoService;
 import com.example.princesstown.service.user.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
