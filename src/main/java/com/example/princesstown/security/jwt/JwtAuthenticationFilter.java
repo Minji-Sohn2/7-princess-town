@@ -15,8 +15,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     //  사용자의 로그인 요청을 처리하고, 인증에 성공한 경우 JWT 토큰을 생성하여 응답 헤더에 추가하는 필터
@@ -53,12 +51,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+       // username 받아오기
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-
-        // 사용자 이름을 받아와서 JWT 토큰을 생성하고, 인증 상태를 관리하는 맵에 사용자 이름과 인증 상태를 저장
-        Map<String, Object> authStatusMap = new HashMap<>();
-        authStatusMap.put("username", username);
-        authStatusMap.put("status", false); // 초기에는 false로 설정
 
         // JWT 생성 후 Response 객체의 헤더에 추가함
         String token = jwtUtil.createToken(username);
