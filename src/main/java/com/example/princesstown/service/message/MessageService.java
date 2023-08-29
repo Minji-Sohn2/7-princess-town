@@ -31,7 +31,7 @@ public class MessageService {
     private String apiUrl;
 
     @Value("${phoneNumber}")
-    private String phoneNumber;
+    private String sendPhoneNumber;
 
     private final StringRedisTemplate redisTemplate;
 
@@ -49,7 +49,7 @@ public class MessageService {
         redisTemplate.opsForValue().set(phoneNumber, numStr.toString(), 5, TimeUnit.MINUTES); // 5분 후 만료
 
         Message message = new Message();
-        message.setFrom(phoneNumber);
+        message.setFrom(sendPhoneNumber);
         message.setTo(phoneNumber);
         message.setText(" 인증번호는 [" + numStr + "] 입니다.");
 

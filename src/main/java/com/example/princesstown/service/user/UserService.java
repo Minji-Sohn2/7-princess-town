@@ -11,6 +11,7 @@ import com.example.princesstown.service.awsS3.S3Uploader;
 import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.message.MessageService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class UserService {
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto, HttpServletRequest request) {
         String username = requestDto.getUsername();
         String notEncodingPassword = requestDto.getPassword();
-//        String getPhoneVerifyCode = requestDto.getPhoneVerifyCode();
+        String getPhoneVerifyCode = requestDto.getPhoneVerifyCode();
 
         // user 테이블에 입력받은 username과 동일한 데이터가 있는지 확인
         Optional<User> checkUser = userRepository.findByUsername(username);
@@ -73,22 +74,22 @@ public class UserService {
         if (!Pattern.matches("^[a-zA-Z0-9!@#$%^&*()_+{}:\"<>?,.\\\\/]{8,15}$", notEncodingPassword)) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "비밀번호는 최소 8자 이상, 15자 이하이며 알파벳 대소문자, 숫자로 구성되어야 합니다."));
         }
-//
-//        // 휴대폰 인증 코드 검증
-//        HttpSession session = request.getSession();
-//        String storedCode = (String) session.getAttribute(requestDto.getPhoneNumber());
-//
-//        if (storedCode == null) {
-//            return ResponseEntity.status(400).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "인증 번호가 만료되었거나 없습니다."));
-//        }
-//
-//        if (!getPhoneVerifyCode.equals(storedCode)) {
-//            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 코드가 올바르지 않습니다."));
-//        }
-//
-//        // 인증 성공한 경우, 세션에서 인증 번호 삭제
-//        session.removeAttribute(requestDto.getPhoneNumber());
-//
+
+        // 휴대폰 인증 코드 검증
+        HttpSession session = request.getSession();
+        String storedCode = (String) session.getAttribute(requestDto.getPhoneNumber());
+
+        if (storedCode == null) {
+            return ResponseEntity.status(400).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "인증 번호가 만료되었거나 없습니다."));
+        }
+
+        if (!getPhoneVerifyCode.equals(storedCode)) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 코드가 올바르지 않습니다."));
+        }
+
+        // 인증 성공한 경우, 세션에서 인증 번호 삭제
+        session.removeAttribute(requestDto.getPhoneNumber());
+
 
         // 비밀번호 인코딩
         String encodedPassword = passwordEncoder.encode(notEncodingPassword);
