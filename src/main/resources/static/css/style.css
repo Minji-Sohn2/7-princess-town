@@ -391,8 +391,32 @@ xsigin/signup popup
   display: none; 
   text-decoration: none;}
 
-#cd-login.is-selected, #cd-signup.is-selected, #cd-reset-password.is-selected {
-  display: block; }
+#cd-login.is-selected, #cd-signup.is-selected, #cd-reset-password.is-selected {display: block; }
+
+
+/* 환영 메시지 스타일 */
+.welcome-msg {
+  color: #fff; /* 글씨 색상을 하얀색으로 */
+  font-size: 1.2em; /* 기본 글꼴 크기의 1.5배 */
+  font-family: 'Arial', sans-serif; /* 예쁜 글꼴을 원한다면 원하는 글꼴로 변경 */
+}
+
+ /* 로그아웃 버튼 css */
+.main-nav a.cd-logout {
+  display: inline-block;
+  padding: .6em 1em;
+  margin-left: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50em;
+  text-decoration: none;
+  background: #d76666; /* 로그아웃 버튼에 빨간색 배경을 사용 */
+  color: #FFF;
+}
+
+.main-nav a.cd-logout:hover, .main-nav a.cd-logout:focus {
+  background: #e07777; /* 호버 시 연한 빨간색으로 변경 */
+  outline: none;
+}
 
 /* 카카오 로그인 버튼 css */
 #login-kakao-btn {
@@ -451,6 +475,7 @@ xsigin/signup popup
   cursor: pointer;
 }
 
+/* 이미지 업로드 */
 .file-input-label {
   display: flex;
   align-items: center;
