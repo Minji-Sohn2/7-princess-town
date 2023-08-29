@@ -19,5 +19,5 @@ public class SignupRequestDto {
 
     private String phoneNumber;
     private MultipartFile profileImage;
-//    private String phoneVerifyCode;
+    private String phoneVerifyCode;
 }

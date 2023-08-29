@@ -206,46 +206,46 @@ jQuery(document).ready(function($) {
 	});
 
 
-	// // 인증번호 전송 버튼 클릭 이벤트
-	// $('#sendVerificationCode').on('click', function(event){
-	// 	event.preventDefault();
-	//
-	// 	var phoneNumber = $signup_phoneNumber.val();
-	//
-	// 	$.ajax({
-	// 		url: "/send/code",
-	// 		type: "POST",
-	// 		data: { phoneNumber: phoneNumber },
-	// 		success: function(response) {
-	// 			alert("인증번호가 전송되었습니다.");
-	// 		},
-	// 		error: function(error) {
-	// 			alert("인증번호 전송 실패. 다시 시도해주세요.");
-	// 		}
-	// 	});
-	// });
-	//
-	// // 인증번호 확인 버튼 클릭 이벤트
-	// $('#verifyCodeButton').on('click', function(event){
-	// 	event.preventDefault();
-	//
-	// 	var phoneNumber = $signup_phoneNumber.val();
-	// 	var inputCode = $signup_phoneVerifyCode.val();
-	//
-	// 	console.log("Input Code:", inputCode);
-	//
-	// 	$.ajax({
-	// 		url: "/verify/code",
-	// 		type: "POST",
-	// 		data: { phoneNumber: phoneNumber, inputCode: inputCode },
-	// 		success: function(response) {
-	// 			alert("인증 성공");
-	// 		},
-	// 		error: function(error) {
-	// 			alert("인증 실패. 다시 시도해주세요.");
-	// 		}
-	// 	});
-	// });
+	// 인증번호 전송 버튼 클릭 이벤트
+	$('#sendVerificationCode').on('click', function(event){
+		event.preventDefault();
+
+		var phoneNumber = $signup_phoneNumber.val();
+
+		$.ajax({
+			url: "/send/code",
+			type: "POST",
+			data: { phoneNumber: phoneNumber },
+			success: function(response) {
+				alert("인증번호가 전송되었습니다.");
+			},
+			error: function(error) {
+				alert("인증번호 전송 실패. 다시 시도해주세요.");
+			}
+		});
+	});
+
+	// 인증번호 확인 버튼 클릭 이벤트
+	$('#verifyCodeButton').on('click', function(event){
+		event.preventDefault();
+
+		var phoneNumber = $signup_phoneNumber.val();
+		var inputCode = $signup_phoneVerifyCode.val();
+
+		console.log("Input Code:", inputCode);
+
+		$.ajax({
+			url: "/verify/code",
+			type: "POST",
+			data: { phoneNumber: phoneNumber, inputCode: inputCode },
+			success: function(response) {
+				alert("인증 성공");
+			},
+			error: function(error) {
+				alert("인증 실패. 다시 시도해주세요.");
+			}
+		});
+	});
 
 
 	//open modal
