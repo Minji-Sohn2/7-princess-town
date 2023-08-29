@@ -4,6 +4,7 @@ import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.entity.ChatRoom;
 import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.exception.NoPermissionsException;
 import com.example.princesstown.repository.chatRoom.ChatRoomRepository;
 import com.example.princesstown.repository.chatRoom.ChatUserRepository;
 import com.example.princesstown.repository.user.UserRepository;
@@ -48,7 +49,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
         if (!chatRoom.getHostUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
+            throw new NoPermissionsException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
         }
 
         chatRoom.updateChatRoomName(requestDto.getNewChatRoomName());
@@ -61,7 +62,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
         if (!chatRoom.getHostUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("채팅방은 호스트만 삭제할 수 있습니다.");
+            throw new NoPermissionsException("채팅방은 호스트만 삭제할 수 있습니다.");
         }
 
         chatRoomRepository.delete(chatRoom);
@@ -93,7 +94,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
         if (chatUser == null) {
-            throw new IllegalArgumentException("해당 채팅방에 속해있지 않습니다.");
+            throw new NoPermissionsException("해당 채팅방에 속해있지 않습니다.");
         }
 
         // user가 해당 채팅방의 host인 경우 채팅방 삭제
@@ -110,7 +111,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
         if (chatUser == null) {
-            throw new IllegalArgumentException("해당 채팅방으로의 초대 권한이 없습니다.");
+            throw new NoPermissionsException("해당 채팅방으로의 초대 권한이 없습니다.");
         }
 
         List<User> userList = dtoToUserList(memberIdListDto.getMemberIdList());
