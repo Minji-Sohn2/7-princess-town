@@ -56,6 +56,7 @@
     <h3 class="modal-title" id="createRoomModalTitle">채팅방 만들기</h3>
     <div class="modal-content">
 
+        <!-- 채팅방 생성 1. 초대할 사용자 선택 -->
         <div id="search-container">
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="초대할 대화상대 검색" id="searchInput">
@@ -68,8 +69,21 @@
             </div>
         </div>
 
+        <!-- 채팅방 생성 2. 채팅방 이름 입력 -->
+        <div id="new-roomname-container" style="display: none">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="새로운 채팅방 이름 입력" id="newChatRoomNameInput">
+            </div>
+        </div>
+
+        <!-- 채팅방 생성 3. 완료 -->
+        <div id="complete-creating" style="display: none">
+            <h4 style="">채팅방 생성 완료</h4>
+        </div>
+
         <div class="modal-buttons">
             <button class="submit-modal-button" id="submitSelectUser">초대</button>
+            <button class="submit-modal-button" id="registerNewChatRoom" style="display: none">만들기</button>
             <button class="close-modal-button" id="closeCreateRoomModal">닫기</button>
         </div>
     </div>

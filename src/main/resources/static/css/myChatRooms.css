@@ -195,3 +195,11 @@ body {
 .checkbox-label {
     margin-left: 5px;
 }
+
+/* 채팅방 생성 완료 문구 */
+#complete-creating h4{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
