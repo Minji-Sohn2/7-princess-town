@@ -26,18 +26,14 @@ public class UserController {
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(
-            @ModelAttribute @Valid SignupRequestDto signupRequestDto,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            HttpServletRequest request) {
-
+            @ModelAttribute @Valid SignupRequestDto signupRequestDto, HttpServletRequest request) {
+        MultipartFile profileImage = signupRequestDto.getProfileImage();
         if (profileImage != null && !profileImage.isEmpty()) {
             signupRequestDto.setProfileImage(profileImage);
         }
 
         return userService.signup(signupRequestDto, request);
     }
-
-
 
     // 회원탈퇴
     @DeleteMapping("/delete")
@@ -48,7 +44,7 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public void login(@RequestBody LoginRequestDto requestDto) {
+    public void login(@ModelAttribute LoginRequestDto requestDto) {
         log.error("start");
         userService.login(requestDto);
         log.error("login메서드 호출완료");
