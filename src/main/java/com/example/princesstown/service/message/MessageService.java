@@ -30,6 +30,9 @@ public class MessageService {
     @Value("${nurigo.api.url}")
     private String apiUrl;
 
+    @Value("${phoneNumber}")
+    private String phoneNumber;
+
     private final StringRedisTemplate redisTemplate;
 
     public ResponseEntity<ApiResponseDto> sendVerificationCode(String phoneNumber) {
@@ -46,7 +49,7 @@ public class MessageService {
         redisTemplate.opsForValue().set(phoneNumber, numStr.toString(), 5, TimeUnit.MINUTES); // 5분 후 만료
 
         Message message = new Message();
-        message.setFrom("01046358930");
+        message.setFrom(phoneNumber);
         message.setTo(phoneNumber);
         message.setText(" 인증번호는 [" + numStr + "] 입니다.");
 
