@@ -1,23 +1,26 @@
 package com.example.princesstown.service.message;
 
 import com.example.princesstown.dto.response.ApiResponseDto;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MessageService {
+
     @Value("${nurigo.app.key}")
     private String appKey;
 
@@ -27,7 +30,9 @@ public class MessageService {
     @Value("${nurigo.api.url}")
     private String apiUrl;
 
-    public ResponseEntity<ApiResponseDto> sendVerificationCode(String phoneNumber, HttpServletRequest request) {
+    private final StringRedisTemplate redisTemplate;
+
+    public ResponseEntity<ApiResponseDto> sendVerificationCode(String phoneNumber) {
         DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(appKey, appSecret, apiUrl);
 
         Random ran = new Random();
@@ -37,8 +42,8 @@ public class MessageService {
             numStr.append(random);
         }
 
-        HttpSession session = request.getSession();
-        session.setAttribute(phoneNumber, numStr.toString());
+        // Redis를 사용하여 "key" : phoneNumber, "value" : numStr.toString(), "양" : 5, "단위" : minute로 설정
+        redisTemplate.opsForValue().set(phoneNumber, numStr.toString(), 5, TimeUnit.MINUTES); // 5분 후 만료
 
         Message message = new Message();
         message.setFrom("01046358930");
@@ -55,5 +60,20 @@ public class MessageService {
         }
 
         return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "메세지 전송 성공", null));
+    }
+
+    public ResponseEntity<ApiResponseDto> verifyCode(String phoneNumber, String inputCode) {
+        String storedCode = redisTemplate.opsForValue().get(phoneNumber);
+
+        if (storedCode == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "인증 번호가 만료되었거나 없습니다.", null));
+        }
+
+        if (inputCode.equals(storedCode)) {
+            redisTemplate.delete(phoneNumber); // 인증 성공 후 인증 코드 삭제
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(HttpStatus.OK.value(), "인증 성공", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "인증 실패", null));
+        }
     }
 }
