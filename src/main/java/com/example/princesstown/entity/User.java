@@ -5,9 +5,8 @@ import com.example.princesstown.dto.getInfo.NaverUserInfoDto;
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import java.util.*;
 
 @Entity
 @Getter
@@ -15,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -39,6 +39,10 @@ public class User {
 
 //    @Column(nullable = false)
 //    private String PhoneVerifyCode;
+
+    /* 연관관계 */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatUser> chatUserList = new ArrayList<>();
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "location_locationId")

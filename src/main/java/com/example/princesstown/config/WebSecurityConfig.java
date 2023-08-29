@@ -35,7 +35,7 @@ public class WebSecurityConfig {
 
     // 비밀번호 암호화를 위한 Bean 설정
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -71,12 +71,9 @@ public class WebSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-//        http.authorizeHttpRequests().anyRequest().permitAll();
-
         // HTTP 요청에 대한 접근 제어 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스에 대한 접근 허용
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/board/{boardId}/posts/{postId}/**").authenticated() //좋아요는 사용자 인증이 필요
@@ -87,6 +84,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/find/**").permitAll()
                         .requestMatchers("/verify/**").permitAll()
                         .requestMatchers("/img/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/ws-stomp/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 

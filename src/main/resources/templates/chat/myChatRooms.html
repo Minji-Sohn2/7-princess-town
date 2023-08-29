@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room List</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <!-- js Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <!-- JavaScript -->
+    <script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/myChatRooms.css">
+
+</head>
+<body>
+<!--  상단바  -->
+<div id="header">
+    <div id="header-info">
+        <div id="header-name">
+            <h2>상단바<span class="badge badge-info badge-pill"></span></h2>
+        </div>
+
+        <div class="header-buttons">
+            <button class="header-button myPage" id="myPageButton">마이페이지</button>
+            <button class="header-button logout" id="logoutButton">로그아웃</button>
+        </div>
+    </div>
+</div>
+<!--  상단바 끝  -->
+
+<div id="room-list-container">
+    <div class="room-list-header">
+        <h1>내 채팅방 리스트</h1>
+        <button id="createRoomButton">채팅방 만들기</button>
+    </div>
+
+    <!-- 내가 속한 채팅방 -->
+    <div id="roomCardsContainer">
+
+    </div>
+</div>
+
+<!-- 채팅방 만들기 모달 -->
+<div class="modal-overlay" id="createRoomModalOverlay"></div>
+<div class="register-modal" id="registerCreateRoomModal">
+    <h3 class="modal-title" id="createRoomModalTitle">채팅방 만들기</h3>
+    <div class="modal-content">
+
+        <div id="search-container">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="초대할 대화상대 검색" id="searchInput">
+                <button class="btn btn-outline-secondary" type="button" id="submitSearchKeyword">검색</button>
+            </div>
+
+            <!-- 대화상대 검색 결과 -->
+            <div class="search-result" id="searchResultsContainer">
+
+            </div>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitSelectUser">초대</button>
+            <button class="close-modal-button" id="closeCreateRoomModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- static js -->
+<script src="/js/myChatRooms.js"></script>
+
+</body>
+</html>

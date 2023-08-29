@@ -4,6 +4,10 @@ import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.ProfileResponseDto;
+import com.example.princesstown.dto.response.UserResponseDto;
+import com.example.princesstown.dto.search.SearchUserResponseDto;
+import com.example.princesstown.dto.search.SimpleUserInfoDto;
+import com.example.princesstown.dto.search.UserSearchCond;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
@@ -23,17 +27,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import java.util.*;
 
 @Slf4j(topic = "UserService")
 @RequiredArgsConstructor
-@Getter
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -334,5 +334,38 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    // 사용자 검색
+    @Transactional(readOnly = true)
+    public SearchUserResponseDto searchUserByKeyword(UserSearchCond userSearchCond) {
+        List<User> searchByUsername
+                = userRepository.searchUserByKeyword(userSearchCond);
+
+
+        List<User> searchByNickname
+                = userRepository.searchNickByKeyword(userSearchCond);
+
+        List<SimpleUserInfoDto> result = mergeUserResultLists(searchByUsername, searchByNickname)
+                .stream()
+                .map(SimpleUserInfoDto::new)
+                .toList();
+
+        return new SearchUserResponseDto(result);
+    }
+
+    // 검색 후 겹치는 아이디 제거
+    private List<User> mergeUserResultLists(List<User> list1, List<User> list2) {
+        Map<Long, User> map = new HashMap<>();
+
+        for (User user1 : list1) {
+            map.put(user1.getUserId(), user1);
+        }
+
+        for (User user2 : list2) {
+            map.putIfAbsent(user2.getUserId(), user2);
+        }
+
+        return new ArrayList<>(map.values());
     }
 }
