@@ -1,7 +1,6 @@
 package com.example.princesstown.controller.chat;
 
-import com.example.princesstown.dto.chat.ChatMessage;
-import com.example.princesstown.security.jwt.JwtUtil;
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,23 +16,16 @@ import org.springframework.stereotype.Controller;
 @Slf4j(topic = "ChatController")
 public class ChatController {
 
-    private final JwtUtil jwtUtil;
     private final ChatService ChatService;
 
     /*
         Websocket "/pub/chat/message"로 들어오는 메세지 처리
      */
     @MessageMapping("/chat/message")
-    public void message(ChatMessage message, @Header("Authorization") String token) {
+    public void message(ChatMessageDto message, @Header("Authorization") String token) {
         log.info("ChatController - message 전송");
 
-        String username = jwtUtil.getUsernameFromJwt(token);
-        log.info("받은 메세지 토큰으로 찾은 username : " + username);
-
-        // 로그인 회원 정보로 대화명 설정
-        message.setSender(username);
-
         // Websocket 에 발행된 메세지 redis 로 발행 (publish)
-        ChatService.sendChatMessage(message);
+        ChatService.sendChatMessage(message, token);
     }
 }

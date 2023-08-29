@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ChatMessage {
+public class ChatMessageDto {
 
     // 메세지 타입 : 입장, 채팅
     public enum MessageType {
@@ -25,7 +25,7 @@ public class ChatMessage {
     private String createdAt;
 
     @Builder
-    public ChatMessage (MessageType type, String roomId, String senderNickname, String message) {
+    public ChatMessageDto(MessageType type, String roomId, String senderNickname, String message) {
         this.type = type;
         this.roomId = roomId;
         this.sender = senderNickname;

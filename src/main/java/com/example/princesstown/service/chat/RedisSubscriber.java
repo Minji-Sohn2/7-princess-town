@@ -1,6 +1,6 @@
 package com.example.princesstown.service.chat;
 
-import com.example.princesstown.dto.chat.ChatMessage;
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class RedisSubscriber {
     public void sendMessage(String publishMessage) {
         try {
             // ChatMessage 객체로 매핑
-            ChatMessage roomMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
+            ChatMessageDto roomMessage = objectMapper.readValue(publishMessage, ChatMessageDto.class);
             // Websocket 구독자에게 ChatMessage 발송
             messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), roomMessage);
         } catch (Exception e) {
