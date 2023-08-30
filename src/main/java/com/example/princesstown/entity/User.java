@@ -61,6 +61,11 @@ public class User {
         this.userId = Long.valueOf(naverUserInfoDto.getId());
     }
 
+    public User(String storedUsername, String encodedTempPassword) {
+        this.username = storedUsername;
+        this.password = encodedTempPassword;
+    }
+
     public void editProfile(ProfileEditRequestDto profileEditRequestDto, String password) {
         this.username = profileEditRequestDto.getUsername();
         this.password = password;

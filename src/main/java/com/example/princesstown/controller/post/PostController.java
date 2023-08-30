@@ -4,8 +4,6 @@ import com.example.princesstown.dto.request.PostByLocationRequestDto;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
-import com.example.princesstown.entity.Location;
-import com.example.princesstown.entity.User;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.location.LocationService;
 import com.example.princesstown.service.post.PostService;
@@ -42,9 +40,9 @@ public class PostController {
         return postService.getPosts();
     }
 
+
     @GetMapping("/auth/location/posts/{id}") // 위치반경 내 게시글 조회
-    @ResponseBody
-    public List<PostResponseDto> getPostsByLocation( @PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
+    public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
         return locationService.getPostsInRadius(id, requestDto);
     }
 
