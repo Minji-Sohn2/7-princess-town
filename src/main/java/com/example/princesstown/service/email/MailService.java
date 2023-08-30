@@ -7,7 +7,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -47,13 +46,10 @@ public class MailService {
         }).start();
     }
 
-    public void sendTemporaryPassword(String email) {
+    public void sendTemporaryPassword(String email, String tempPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("비밀번호 찾기 임시 비밀번호");
-
-        // 난수 생성
-        String tempPassword = UUID.randomUUID().toString().substring(0, 11);
 
         String text = "임시 비밀번호는 " + tempPassword + "입니다";
 
