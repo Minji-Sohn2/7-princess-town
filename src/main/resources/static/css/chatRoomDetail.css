@@ -1,0 +1,66 @@
+/*[v-cloak] {*/
+/*    display: none;*/
+/*}*/
+
+/* 상단바 */
+#header {
+    background-color: #3f3d6c;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+#room-info {
+    display: flex;
+    flex-direction: column;
+}
+
+#room-name {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+/* 상단바 아래 컨테이너 */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+/*  메세지 1개  */
+.list-group-item {
+    margin-top: 10px;
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+    /* Add any additional styling you need */
+}
+
+.sender-profile {
+    flex : 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-right: 10px; /* Adjust spacing as needed */
+}
+
+.user-img {
+    width: 30px; /* Adjust image size as needed */
+    height: 30px; /* Adjust image size as needed */
+    margin-right: 10px; /* Adjust spacing as needed */
+}
+
+.sender-message-info {
+    flex: 9; /* Allow the message info to take remaining space */
+}

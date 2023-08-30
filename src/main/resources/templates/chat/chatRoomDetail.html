@@ -16,74 +16,9 @@
     <!-- js Cookie -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 
-    <style>
-        [v-cloak] {
-            display: none;
-        }
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/chatRoomDetail.css">
 
-        /* 상단바 */
-        #header {
-            background-color: #3f3d6c;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-        }
-
-        #room-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #room-name {
-            font-size: 1.5rem;
-            margin: 0;
-        }
-
-        /* 상단바 아래 컨테이너 */
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        /*  메세지 1개  */
-        .list-group-item {
-            margin-top: 10px;
-        }
-
-        .message-container {
-            display: flex;
-            align-items: center;
-            /* Add any additional styling you need */
-        }
-
-        .sender-profile {
-            flex : 1;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            margin-right: 10px; /* Adjust spacing as needed */
-        }
-
-        .user-img {
-            width: 30px; /* Adjust image size as needed */
-            height: 30px; /* Adjust image size as needed */
-            margin-right: 10px; /* Adjust spacing as needed */
-        }
-
-        .sender-message-info {
-            flex: 9; /* Allow the message info to take remaining space */
-        }
-    </style>
 </head>
 <body>
 <!--  상단바  -->
@@ -103,15 +38,15 @@
         </div>
         <div class="col-md-6 text-right">
             <button class="btn btn-info btn-sm">초대</button>
-            <button class="btn btn-info btn-sm" @click="leaveChatRoom()">채팅방 나가기</button>
+            <button class="btn btn-info btn-sm" @click="leaveChatRoom">채팅방 나가기</button>
         </div>
     </div>
 
     <!--  채팅 내용  -->
-    <ul class="list-group">
+    <ul class="list-group" id="message-upper-container">
         <li class="list-group-item" v-for="message in messages">
             <div class="message-container">
-                <div class = "sender-profile">
+                <div class="sender-profile">
                     <img class="user-img" id="user-other"
                          src="//gravatar.com/avatar/00034587632094500000000000000000?d=retro"/>
                     {{message.sender}}
@@ -146,100 +81,8 @@
 <script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
 
-<script>
-    // ----------------------- 실시간 채팅 ---------------------------
-    const token = Cookies.get('Authorization');
+<!-- static js -->
+<script src="/js/chatRoomDetail.js"></script>
 
-    const headers = {
-        Authorization: token
-    };
-
-    const config = {
-        headers: {
-            'Authorization': `${token}`
-        }
-    };
-
-    // websocket & stomp initialize
-    const sock = new SockJS("/ws-stomp");
-    const ws = Stomp.over(sock);
-    // vue.js
-    const vm = new Vue({
-        el: '#app',
-        data: {
-            roomId: '',
-            roomName: '',
-            message: '',
-            messages: [],
-            token: '',
-            userCount: 0
-        },
-        created() {
-            this.initializeWebSocket();
-        },
-        methods: {
-            initializeWebSocket() {
-                this.roomId = localStorage.getItem('wschat.roomId');
-                this.roomName = localStorage.getItem('wschat.roomName');
-                this.username = localStorage.getItem('username');
-                const _this = this;
-
-                ws.connect(headers, function (frame) {
-                    ws.subscribe("/sub/chat/room/" + _this.roomId, function (message) {
-                        const recv = JSON.parse(message.body);
-                        _this.recvMessage(recv);
-                    });
-                }, function (error) {
-                    _this.handleConnectionError();
-                });
-            },
-            sendMessage: function (type) {
-
-                if(this.message === '') {
-                    alert('내용을 입력하세요.');
-                    return;
-                }
-
-                ws.send("/pub/chat/message", headers,
-                    JSON.stringify({
-                        type: type,
-                        roomId: this.roomId,
-                        message: this.message
-                    })
-                );
-                this.message = '';
-            },
-            recvMessage: function (recv) {
-
-                this.messages.push({
-                    "type": recv.type,
-                    "sender": recv.sender,
-                    "message": recv.message,
-                    "createdAt": recv.createdAt
-                })
-
-            },
-            leaveChatRoom : function () {
-                this.message = '.';
-                this.sendMessage('QUIT');
-
-                axios.delete('/api/chatRooms/'+ this.roomId + '/members', config)
-                    .then(response => {
-                        console.log(response);
-                        alert('채팅방을 나갔습니다.');
-                        location.href = "/chat/room";
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        alert('채팅방 나가기 실패');
-                    });
-            },
-            handleConnectionError() {
-                alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
-                location.href = "/chat/room";
-            }
-        }
-    });
-</script>
 </body>
 </html>
