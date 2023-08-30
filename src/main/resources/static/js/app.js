@@ -129,7 +129,7 @@ jQuery(document).ready(function($) {
 	}
 
 	// 로그아웃 버튼 클릭 이벤트
-	$('.cd-logout').on('click', function(event) {
+	$('.cd-logout').on('click', function (event) {
 		event.preventDefault();
 
 		// 쿠키에서 토큰 가져오기
@@ -139,10 +139,10 @@ jQuery(document).ready(function($) {
 			url: "/auth/logout",
 			type: "POST",
 			// ajax요청이 전송되기 직전에 헤더에 토큰을 전달
-			beforeSend: function(xhr) {
+			beforeSend: function (xhr) {
 				xhr.setRequestHeader("Authorization", token);
 			},
-			success: function(response) {
+			success: function (response) {
 				if (response.status === 200) {  // 성공적으로 로그아웃되었을 때의 HTTP 상태 코드
 					// 로그아웃 성공 메시지
 					alert(response.message);
@@ -152,7 +152,7 @@ jQuery(document).ready(function($) {
 					Cookies.remove('Username');
 
 					// 3초 후에 '/'로 리다이렉트
-					setTimeout(function() {
+					setTimeout(function () {
 						window.location.href = '/';
 					}, 3000);
 				} else {
@@ -160,7 +160,7 @@ jQuery(document).ready(function($) {
 					alert("로그아웃 실패: " + response.message);
 				}
 			},
-			error: function(error) {
+			error: function (error) {
 				// 로그아웃 요청 실패시 처리 로직
 				alert("로그아웃 요청 실패: " + error.statusText);
 			}
@@ -179,6 +179,7 @@ jQuery(document).ready(function($) {
 		alert("세션이 만료되었습니다. 다시 로그인해주세요.");
 		window.location.href = '/auth/login-page';
 	}
+
 // 로그인 성공 후에 아래 코드 실행
 	setTimeout(autoLogout, 24 * 60 * 60 * 1000);  // 24시간 후에 autoLogout 함수 실행
 
@@ -190,7 +191,7 @@ jQuery(document).ready(function($) {
 	const selectedImage = document.getElementById('selectedImage');
 
 	// 파일을 선택할 때 실행되는 함수
-	fileInput.addEventListener('change', function() {
+	fileInput.addEventListener('change', function () {
 
 		// 선택한 파일 가져오기
 		const selectedFile = fileInput.files[0];
@@ -207,7 +208,7 @@ jQuery(document).ready(function($) {
 
 
 	// 인증번호 전송 버튼 클릭 이벤트
-	$('#sendVerificationCode').on('click', function(event){
+	$('#sendVerificationCode').on('click', function (event) {
 		event.preventDefault();
 
 		var phoneNumber = $signup_phoneNumber.val();
@@ -215,18 +216,18 @@ jQuery(document).ready(function($) {
 		$.ajax({
 			url: "/send/code",
 			type: "POST",
-			data: { phoneNumber: phoneNumber },
-			success: function(response) {
+			data: {phoneNumber: phoneNumber},
+			success: function (response) {
 				alert("인증번호가 전송되었습니다.");
 			},
-			error: function(error) {
+			error: function (error) {
 				alert("인증번호 전송 실패. 다시 시도해주세요.");
 			}
 		});
 	});
 
 	// 인증번호 확인 버튼 클릭 이벤트
-	$('#verifyCodeButton').on('click', function(event){
+	$('#verifyCodeButton').on('click', function (event) {
 		event.preventDefault();
 
 		var phoneNumber = $signup_phoneNumber.val();
@@ -237,83 +238,89 @@ jQuery(document).ready(function($) {
 		$.ajax({
 			url: "/verify/code",
 			type: "POST",
-			data: { phoneNumber: phoneNumber, inputCode: inputCode },
-			success: function(response) {
+			data: {phoneNumber: phoneNumber, inputCode: inputCode},
+			success: function (response) {
 				alert("인증 성공");
 			},
-			error: function(error) {
+			error: function (error) {
 				alert("인증 실패. 다시 시도해주세요.");
 			}
 		});
 	});
 
 
-	//open modal
-	$main_nav.on('click', function(event){
-		// 로그인 후 '***님 환영합니다.' 메시지 클릭 방지
-		if($(event.target).is('.welcome-msg')) {
+	// 메인 네비게이션 메뉴를 클릭한 경우의 동작
+	$main_nav.on('click', function (event) {
+		// 이미 로그인한 상태에서 '***님 환영합니다.' 메시지를 클릭하는 경우 이벤트 전파를 막음
+		if ($(event.target).is('.welcome-msg')) {
 			event.stopPropagation();
 			return;
 		}
 
-		// 추가: 로그아웃 버튼 클릭 시 이벤트 전파 중단
-		if($(event.target).is('.cd-logout')) {
+		// 추가: 로그아웃 버튼을 클릭한 경우 이벤트 전파를 막음
+		if ($(event.target).is('.cd-logout')) {
 			event.stopPropagation();
 			return;
 		}
 
-		if( $(event.target).is($main_nav) ) {
+		// 메인 네비게이션을 클릭했을 때
+		if ($(event.target).is($main_nav)) {
+			// 서브 메뉴를 보이거나 감춤
 			$(this).children('ul').toggleClass('is-visible');
 		} else {
+			// 메인 네비게이션에서 다른 요소를 클릭한 경우
+			// 서브 메뉴 감추고 로그인/회원가입 폼을 보여줌
 			$main_nav.children('ul').removeClass('is-visible');
-			$form_modal.addClass('is-visible');
-			( $(event.target).is('.cd-signup') ) ? signup_selected() : login_selected();
+			($event.target).is('.cd-signup') ? signup_selected() : login_selected();
 		}
 	});
 
-	//close modal
-	$('.cd-user-modal').on('click', function(event){
-		if( $(event.target).is($form_modal) || $(event.target).is('.cd-close-form') ) {
+
+	// 모달 창을 클릭한 경우 모달을 닫음
+	$('.cd-user-modal').on('click', function (event) {
+		if ($(event.target).is($form_modal) || $(event.target).is('.cd-close-form')) {
 			$form_modal.removeClass('is-visible');
 		}
 	});
-	//close modal when clicking the esc keyboard button
-	$(document).keyup(function(event){
-    	if(event.which=='27'){
-    		$form_modal.removeClass('is-visible');
-	    }
-    });
 
-	//switch from a tab to another
-	$form_modal_tab.on('click', function(event) {
-		event.preventDefault();
-		( $(event.target).is( $tab_login ) ) ? login_selected() : signup_selected();
+// ESC 키를 누른 경우 모달을 닫음
+	$(document).keyup(function (event) {
+		if (event.which == '27') {
+			$form_modal.removeClass('is-visible');
+		}
 	});
 
-	//hide or show password
-	$('.hide-password').on('click', function(){
-		var $this= $(this),
+// 탭 전환 버튼을 클릭한 경우 해당 탭으로 전환
+	$form_modal_tab.on('click', function (event) {
+		event.preventDefault();
+		($(event.target).is($tab_login)) ? login_selected() : signup_selected();
+	});
+
+// 비밀번호 숨김/표시 버튼을 클릭한 경우 비밀번호 필드를 숨기거나 표시
+	$('.hide-password').on('click', function () {
+		var $this = $(this),
 			$password_field = $this.prev('input');
 
-		( 'password' == $password_field.attr('type') ) ? $password_field.attr('type', 'text') : $password_field.attr('type', 'password');
-		( 'Hide' == $this.text() ) ? $this.text('Show') : $this.text('Hide');
-		//focus and move cursor to the end of input field
+		('password' == $password_field.attr('type')) ? $password_field.attr('type', 'text') : $password_field.attr('type', 'password');
+		('Hide' == $this.text()) ? $this.text('Show') : $this.text('Hide');
+		// 비밀번호 입력 필드에 포커스를 주고 커서를 끝으로 이동
 		$password_field.putCursorAtEnd();
 	});
 
-	//show forgot-password form
-	$forgot_password_link.on('click', function(event){
+// "비밀번호를 잊으셨나요?" 링크를 클릭한 경우 비밀번호 복구 폼 표시
+	$forgot_password_link.on('click', function (event) {
 		event.preventDefault();
 		forgot_password_selected();
 	});
 
-	//back to login from the forgot-password form
-	$back_to_login_link.on('click', function(event){
+// 비밀번호 복구 폼에서 "로그인 화면으로 돌아가기" 링크를 클릭한 경우 로그인 폼 표시
+	$back_to_login_link.on('click', function (event) {
 		event.preventDefault();
 		login_selected();
 	});
 
-	function login_selected(){
+// 로그인 폼을 선택한 경우 해당 폼을 선택한 상태로 변경
+	function login_selected() {
 		$form_login.addClass('is-selected');
 		$form_signup.removeClass('is-selected');
 		$form_forgot_password.removeClass('is-selected');
@@ -321,7 +328,8 @@ jQuery(document).ready(function($) {
 		$tab_signup.removeClass('selected');
 	}
 
-	function signup_selected(){
+// 회원가입 폼을 선택한 경우 해당 폼을 선택한 상태로 변경
+	function signup_selected() {
 		$form_login.removeClass('is-selected');
 		$form_signup.addClass('is-selected');
 		$form_forgot_password.removeClass('is-selected');
@@ -329,52 +337,51 @@ jQuery(document).ready(function($) {
 		$tab_signup.addClass('selected');
 	}
 
-	function forgot_password_selected(){
+// 비밀번호 복구 폼을 선택한 경우 해당 폼을 선택한 상태로 변경
+	function forgot_password_selected() {
 		$form_login.removeClass('is-selected');
 		$form_signup.removeClass('is-selected');
 		$form_forgot_password.addClass('is-selected');
 	}
 
-	//IE9 placeholder fallback
-	//credits http://www.hagenburger.net/BLOG/HTML5-Input-Placeholder-Fix-With-jQuery.html
-	if(!Modernizr.input.placeholder){
-		$('[placeholder]').focus(function() {
+// IE9에서 placeholder 속성의 폴백 처리
+// 참고: http://www.hagenburger.net/BLOG/HTML5-Input-Placeholder-Fix-With-jQuery.html
+	if (!Modernizr.input.placeholder) {
+		$('[placeholder]').focus(function () {
 			var input = $(this);
 			if (input.val() == input.attr('placeholder')) {
 				input.val('');
-		  	}
-		}).blur(function() {
-		 	var input = $(this);
-		  	if (input.val() == '' || input.val() == input.attr('placeholder')) {
+			}
+		}).blur(function () {
+			var input = $(this);
+			if (input.val() == '' || input.val() == input.attr('placeholder')) {
 				input.val(input.attr('placeholder'));
-		  	}
+			}
 		}).blur();
-		$('[placeholder]').parents('form').submit(function() {
-		  	$(this).find('[placeholder]').each(function() {
+		$('[placeholder]').parents('form').submit(function () {
+			$(this).find('[placeholder]').each(function () {
 				var input = $(this);
 				if (input.val() == input.attr('placeholder')) {
-			 		input.val('');
+					input.val('');
 				}
-		  	})
+			})
 		});
 	}
 
+// 커서를 입력 필드의 끝으로 이동시키는 기능
+// 참고: https://css-tricks.com/snippets/jquery/move-cursor-to-end-of-textarea-or-input/
+	jQuery.fn.putCursorAtEnd = function () {
+		return this.each(function () {
+			// 만약 이 함수가 존재한다면...
+			if (this.setSelectionRange) {
+				// ... 사용 (IE에서는 작동하지 않음)
+				// Opera의 경우 개행 문자가 한 문자 또는 두 문자인지에 따라 길이를 두 배로 설정
+				var len = $(this).val().length * 2;
+				this.setSelectionRange(len, len);
+			} else {
+				// ... 그렇지 않으면 내용을 자체로 바꿈 (Google Chrome에서는 작동하지 않음)
+				$(this).val($(this).val());
+			}
+		});
+	};
 });
-
-
-//credits https://css-tricks.com/snippets/jquery/move-cursor-to-end-of-textarea-or-input/
-jQuery.fn.putCursorAtEnd = function() {
-	return this.each(function() {
-    	// If this function exists...
-    	if (this.setSelectionRange) {
-      		// ... then use it (Doesn't work in IE)
-      		// Double the length because Opera is inconsistent about whether a carriage return is one character or two. Sigh.
-      		var len = $(this).val().length * 2;
-      		this.setSelectionRange(len, len);
-    	} else {
-    		// ... otherwise replace the contents with itself
-    		// (Doesn't work in Google Chrome)
-      		$(this).val($(this).val());
-    	}
-	});
-};
