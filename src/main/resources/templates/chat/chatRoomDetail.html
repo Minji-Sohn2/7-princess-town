@@ -38,12 +38,15 @@
         </div>
         <div class="col-md-6 text-right">
             <button class="btn btn-info btn-sm">초대</button>
-            <button class="btn btn-info btn-sm" @click="leaveChatRoom">채팅방 나가기</button>
+            <button class="btn btn-info btn-sm btn-danger" @click="leaveChatRoom">채팅방 나가기</button>
         </div>
     </div>
 
     <!--  채팅 내용  -->
-    <ul class="list-group" id="message-upper-container">
+    <ul class="list-group" id="message-upper-container" @scroll="handleScroll">
+
+        <button class="btn btn-info btn-block" @click="loadMoreChatHistory">More</button>
+
         <li class="list-group-item" v-for="message in messages">
             <div class="message-container">
                 <div class="sender-profile">
@@ -64,13 +67,44 @@
     </ul>
 
     <!--  입력칸  -->
-    <div class="input-group fixed-bottom">
+    <div class="input-group fixed-bottom" id="input-container">
         <div class="input-group-prepend">
             <label class="input-group-text">내용</label>
         </div>
         <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('TALK')">
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" @click="sendMessage('TALK')">보내기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 대화상대 초대하기 모달 -->
+<div class="modal-overlay" id="createRoomModalOverlay"></div>
+<div class="register-modal" id="registerCreateRoomModal">
+    <h3 class="modal-title" id="createRoomModalTitle">대화상대 초대하기</h3>
+    <div class="modal-content">
+
+        <!-- 채팅방 생성 1. 초대할 사용자 선택 -->
+        <div id="search-container">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="초대할 대화상대 검색" id="searchInput">
+                <button class="btn btn-outline-secondary" type="button" id="submitSearchKeyword">검색</button>
+            </div>
+
+            <!-- 대화상대 검색 결과 -->
+            <div class="search-result" id="searchResultsContainer">
+
+            </div>
+        </div>
+
+        <!-- 채팅방 생성 2. 완료 -->
+        <div id="complete-creating" style="display: none">
+            <h4 style="">채팅방 생성 완료</h4>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitSelectUser">초대</button>
+            <button class="close-modal-button" id="closeCreateRoomModal">닫기</button>
         </div>
     </div>
 </div>

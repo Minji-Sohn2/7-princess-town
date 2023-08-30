@@ -11,7 +11,10 @@ const config = {
     }
 };
 
-const params = []
+let page = 0;
+let bottomFlag = true;
+
+const containerDiv = document.getElementById("app");
 
 // websocket & stomp initialize
 const sock = new SockJS("/ws-stomp");
@@ -25,12 +28,19 @@ const vm = new Vue({
         message: '',
         messages: [],
         token: '',
-        userCount: 0
     },
     created() {
-        this.initializeWebSocket();
-        this.getChatHistory();
-        this.scrollToBottom();
+        this.initializeWebSocket();     // 접속 시 웹소켓 연결
+        this.getChatHistory(page);         // 접속 시 가장 최근 채팅들 로드
+        //this.$nextTick(() => {      // 접속 시 스크롤 가장 아래로 (안됨)
+            this.scrollToBottom();
+        //})
+    },
+    updated () {
+
+        if(bottomFlag) {
+            this.containerDiv.scrollTop = this.containerDiv.scrollHeight;
+        }
     },
     methods: {
         initializeWebSocket() {
@@ -48,11 +58,11 @@ const vm = new Vue({
                 _this.handleConnectionError();
             });
         },
-        getChatHistory() {
+        getChatHistory(page) {
             console.log('getChatHistory 시작');
             this.roomId = localStorage.getItem('wschat.roomId');
             const _this = this;
-            let page = 0;
+            // let page = 0;
             axios.get(`/api/chatRooms/${_this.roomId}?page=${page}`, config)
                 .then(response => {
                     console.log(response);
@@ -95,7 +105,9 @@ const vm = new Vue({
                 "message": recv.message,
                 "createdAt": recv.createdAt
             })
-            this.scrollToBottom();
+            this.$nextTick(() => {      // 스크롤 가장 아래로
+                this.scrollToBottom();
+            })
         },
         leaveChatRoom() {
             this.message = '.';
@@ -113,8 +125,19 @@ const vm = new Vue({
                 });
         },
         scrollToBottom: function () {
-            const messageContainer = document.getElementById('message-upper-container');
-            messageContainer.scrollTop = messageContainer.scrollHeight;
+            if(bottomFlag) {
+                this.containerDiv.scrollTop = this.containerDiv.scrollHeight;
+            }
+        },
+        handleScroll(event) {
+            const messageContainer = event.target;
+            if (messageContainer.scrollTop === 0) {
+                this.loadMoreChatHistory();
+            }
+        },
+        loadMoreChatHistory() {
+            page++; // Increment the page counter
+            this.getChatHistory(page);
         },
         handleConnectionError() {
             alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
