@@ -1,4 +1,3 @@
-
 package com.example.princesstown.entity;
 
 import com.example.princesstown.dto.request.PostRequestDto;
@@ -6,63 +5,73 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Getter
-@Setter
-@Table(name = "post")
 @NoArgsConstructor
-public class Post extends Timestamped { // 상속받아서 createdAt, modifiedAt column 가져옴
+@Table(name = "posts")
+public class Post extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
-    @Column(nullable = false, length = 3000)
+    @Column(length = 500)
     private String contents;
 
-    @Column(nullable = false)
-    private String nickname;
+    @Column(name = "like_count")
+    private Long likeCount;
 
-    @Column(nullable = false)
-    private String username;
+    @Column(name = "view_count", columnDefinition = "int default 0", nullable = false)
+    private int viewCount;
 
-    @Column(nullable = false)
-    private Integer postLikeCount;
+    @Column // 이미지 URL 저장을 위한 컬럼 추가
+    private String postImageUrl;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_userId", nullable = false)
+    private User user;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="user_userId", nullable = false)
-    private User user;
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
 
-    @ManyToOne
-    @JoinColumn(name = "location_locationId")
-    private Location location;
-
-//    @OneToMany( mappedBy = "post",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // post를 연관관계의 주인으로 설정. post 엔티티 제거시 연관된 comment 제거.
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
 //    private List<Comment> commentList = new ArrayList<>();
 
-    public Post(PostRequestDto requestDto, User user) { //
-        this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
-        this.nickname = user.getNickname();
-        this.username = user.getUsername();
-        this.postLikeCount = 0;
+    // post를 연관관계의 주인으로 설정. post 엔티티 제거시 연관된 like 제거.
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Like> likeList = new ArrayList<>();
+
+    public Post(PostRequestDto postRequestDto, User user, Board board, Long likeCount, String postImageUrl){
         this.user = user;
-    }
-
-
-    public void updatePost(PostRequestDto postRequestDto) {
+        this.board = board;
+        this.likeCount = likeCount;
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
-        this.username = user.getUsername();
-        this.nickname = user.getNickname();
+        this.postImageUrl = postImageUrl;
     }
 
-    public void setPostLikedCount(Integer postLikedCount) {
-        this.postLikeCount = postLikedCount;
+    public void update(PostRequestDto postRequestDto){
+        this.title = postRequestDto.getTitle();
+        this.contents = postRequestDto.getContents();
+    }
+
+    public void setLikeCount(Long likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public void setImageUrl(String postImageUrl) {
+        this.postImageUrl = postImageUrl;
     }
 }

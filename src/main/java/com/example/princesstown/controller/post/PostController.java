@@ -1,42 +1,36 @@
 package com.example.princesstown.controller.post;
 
-import com.example.princesstown.dto.request.PostByLocationRequestDto;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
+import com.example.princesstown.entity.Post;
 import com.example.princesstown.security.user.UserDetailsImpl;
-import com.example.princesstown.service.location.LocationService;
+import com.example.princesstown.service.awsS3.S3Uploader;
+import com.example.princesstown.service.post.LikeService;
 import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
-@Slf4j
-@Controller
 @RestController
-@RequestMapping("/api")
+@Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class PostController {
-
     private final PostService postService;
-    private final LocationService locationService;
+    private final LikeService likeService;
+    private final S3Uploader s3Uploader; // S3Uploader 주입
 
-    @PostMapping("/posts") // 글 작성
-    @ResponseBody
-    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PostResponseDto responseDto = postService.createPost(requestDto, userDetails);
-
-        return responseDto;
-    }
-
-    @GetMapping("/posts") // 전체 게시글 조회
-    @ResponseBody
-    public List<PostResponseDto> getPosts() { // 전체 게시글이므로 List형식으로 받아오기
+    //게시글 전체 조회 API
+    @GetMapping("/board/posts")
+    public List<PostResponseDto> getPosts(){
         return postService.getPosts();
     }
 
@@ -44,38 +38,108 @@ public class PostController {
     @GetMapping("/auth/location/posts/{id}") // 위치반경 내 게시글 조회
     public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
         return locationService.getPostsInRadius(id, requestDto);
+    //선택 게시판 게시글 전체 조회
+    @GetMapping("/board/{boardId}/posts")
+    public List<Post> getAllPostsByBoardId(@PathVariable Long boardId) {
+        return postService.getAllPostsByBoardId(boardId);
     }
 
-    @GetMapping("/post/{id}") // 상세 게시글 조회
+    //게시글 선택 조회 API
+    @GetMapping("/board/{boardId}/posts/{postId}")
+    public PostResponseDto getPost(@PathVariable Long boardId, @PathVariable Long postId){
+
+        postService.incrementViewCount(postId);
+
+        return postService.getPost(postId);
+    }
+
+    //게시글 제목 또는 내용으로 검색
+    @GetMapping("/search")
+    public List<PostResponseDto> searchPostsByTitleOrContents(@RequestParam String keyword) {
+        return postService.searchPostsByTitleOrContents(keyword);
+    }
+
+    @GetMapping("/search/contents")
+    public List<PostResponseDto> searchPostsByContents(@RequestParam String contents) {
+        return postService.searchPostsByContents(contents);
+    }
+
+    //게시글 제목으로 검색
+    @GetMapping("/search/title")
+    public List<PostResponseDto> searchPostsByTitle(@RequestParam String title) {
+        return postService.searchPostsByTitle(title);
+    }
+
+    // 인기검색어 top10
+    @GetMapping("/top")
+    public ResponseEntity<List<PostResponseDto>> getTop10LikedPostsWithDuplicates() {
+        List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
+        return ResponseEntity.ok(topPosts);
+    }
+
+    // 게시글 등록 API
+    @PostMapping("/board/{boardId}/posts")
     @ResponseBody
-    public PostResponseDto lookupPost(@PathVariable Long id) {
-        return postService.lookupPost(id);
-        // 1. 해당 id의 Post를 받아오는 메서드 호출
-        // 2. 찾아온 Post를 반환시켜주기 위해 PostResponseDto에 넣어줌
-        // 3. 저장된 commentList를 CommentResponseDtoList에 복사하여 PostResponseDto를 가져와 클라이언트에 반환
+    public ResponseEntity<ApiResponseDto> createPost(@ModelAttribute PostRequestDto postRequestDto,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                     @PathVariable Long boardId,
+                                                     @RequestPart(value = "imageFile", required = false) MultipartFile postImage){
+
+        log.info("title : " + postRequestDto.getTitle());
+        log.info("contents : " + postRequestDto.getContents());
+
+        if (postImage != null && !postImage.isEmpty()) {
+            try {
+                String imageUrl = s3Uploader.upload(postImage, "post-images");
+                postRequestDto.setPostImageUrl(imageUrl);
+            } catch (IOException e) {
+                log.error("이미지 업로드 실패: " + e.getMessage());
+                return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패했습니다."));
+            }
+        }
+
+        postService.createPost(postRequestDto, userDetails.getUser(), boardId, postImage);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));
+
     }
 
-    @PutMapping("/posts/{id}") // 상세 게시글 수정
-    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) { //
-        return postService.updatePost(id, postRequestDto, userDetails.getUser()); //
+    // 게시글 수정 API
+    @PutMapping("/board/{boardId}/posts/{postId}")
+    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long boardId,
+                                                     @PathVariable Long postId,
+                                                     @ModelAttribute PostRequestDto postRequestDto,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            postService.updatePost(postId, postRequestDto, userDetails.getUser());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "글 수정에 실패했습니다."));
+        }
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "글 수정에 성공했습니다."));
     }
 
-    @DeleteMapping("/posts/{id}") // 상세 게시글 삭제
-    @ResponseBody
-    public ResponseEntity<ApiResponseDto> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) { //
-        return postService.deletePost(id, userDetails.getUser()); //
+
+    // 게시글 삭제 API
+    @DeleteMapping("/board/{boardId}/posts/{postId}")
+    public ApiResponseDto deletePost(@PathVariable Long boardId,
+                                     @PathVariable Long postId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return postService.deletePost(postId, userDetails.getUser());
     }
 
-    // 좋아요
-//    @PutMapping("/post/{id}/like")
-//    public ResponseEntity<ApiResponseDto> addLikePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-//        try {
-//            ApiResponseDto responseDto = postService.addLikePost(id, userDetails);
-//            return ResponseEntity.ok().body(responseDto);
-//        } catch (ResponseStatusException e) {
-//            return ResponseEntity.notFound().build();
-//        } catch (RejectedExecutionException e) {
-//            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "자신의 게시글에는 좋아요를 할 수 없습니다."));
-//        }
-//    }
+    //게시글 좋아요 API
+    @PostMapping("/board/{boardId}/posts/{postId}/like")
+    public ResponseEntity<ApiResponseDto> likeBlog(@PathVariable Long boardId,
+                                                   @PathVariable Long postId,
+                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(likeService.likePost(postId, userDetails.getUser()));
+    }
+
+    //게시글 좋아요 취소 API
+    @DeleteMapping("/board/{boardId}/posts/{postId}/like")
+    public ResponseEntity<ApiResponseDto> deleteLikeBlog(@PathVariable Long boardId,
+                                                         @PathVariable Long postId,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(likeService.deleteLikePost(postId, userDetails.getUser()));
+    }
+
 }

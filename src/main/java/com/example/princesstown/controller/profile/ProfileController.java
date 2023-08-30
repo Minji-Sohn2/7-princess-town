@@ -38,8 +38,11 @@ public class ProfileController {
     // 프로필 수정
     @PutMapping("/api/auth/profile")
     @ResponseBody
-    public ResponseEntity<ApiResponseDto> updateUser(
-            @AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfileEditRequestDto editRequestDto) {
+    public ApiResponseDto updateUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody ProfileEditRequestDto editRequestDto,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+
         Long userId = userDetails.getUser().getUserId();
 
         return profileService.updateUser(userId, editRequestDto);

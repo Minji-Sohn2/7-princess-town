@@ -3,142 +3,216 @@ package com.example.princesstown.service.post;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
-import com.example.princesstown.entity.Location;
+import com.example.princesstown.entity.Board;
 import com.example.princesstown.entity.Post;
+import com.example.princesstown.entity.SearchHistory;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.repository.board.BoardRepository;
+import com.example.princesstown.repository.post.LikeRepository;
 import com.example.princesstown.repository.post.PostRepository;
-import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.repository.post.SearchHistoryRepository;
+import com.example.princesstown.service.awsS3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j(topic = "게시글 Service")
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
+    private final S3Uploader s3Uploader;
+    private final BoardRepository boardRepository;
     private final PostRepository postRepository;
-//  private final PostLikedInfoRepository postLikedInfoRepository;
+    private final LikeRepository likeRepository;
+    private final SearchHistoryRepository searchHistoryRepository;
+//    private final JwtUtil jwtUtil;
 
-    public PostResponseDto createPost(PostRequestDto requestDto, UserDetailsImpl userDetails) {
-
-        User currentUser = userDetails.getUser(); // 현재 사용자 정보
-        Location userLocation = currentUser.getLocation(); // 현재 사용자의 위치 정보
-
-        // RequestDto -> Entity ( 받아온 rqeustDto를 entity에 저장하여 새로운 Post만들기)
-        Post newPost = new Post(requestDto, currentUser);
-
-        // Post의 location_id 설정
-        newPost.setLocation(userLocation);
-
-        // 게시글 저장 등의 로직
-        Post savedPost = postRepository.save(newPost);
-
-        // PostResponseDto 생성 등의 로직
-        PostResponseDto responseDto = new PostResponseDto(savedPost);
-
-        return responseDto;
-    }
-
-
-    // 전체 게시글 조회
+    // 게시글 전체 조회 API
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getPosts() {
-        return postRepository.findAllByOrderByModifiedAtDesc().stream().map(PostResponseDto::new).toList();
-    } // 게시물을 가져와서 최신 수정일자 기준으로 내림차순으로 정렬한 후, 각 게시물을 리스트로 만들기 위해 맵핑함.
+        List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
+        List<PostResponseDto> postResponseDto = new ArrayList<>();
 
+        for(Post post : posts){
+            postResponseDto.add(new PostResponseDto(post));
+        }
 
-    public PostResponseDto lookupPost(Long id) {
-        Post post = findPost(id); // 해당 id의 Post객체를 참조하는 필드 post 선언하기
-        return new PostResponseDto(post); // 해당 id의 Post객체를 PostResponseDto로 넣어 컨트롤러로 반환
+        return postResponseDto;
     }
 
-    public Post findPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("선택한 게시물은 존재하지 않습니다."));
-    } // 해당 id의 Post객체 반환
+    // 선택 게시판 게시글 전체 조회 API
+     @Transactional(readOnly = true)
+    public List<Post> getAllPostsByBoardId(Long boardId) {
+        return postRepository.findByBoardIdOrderByCreatedAtDesc(boardId);
+    }
 
+    // 게시글 선택 조회 API
+    @Transactional(readOnly = false)
+    public PostResponseDto getPost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("선택하신 게시물은 존재하지 않습니다.")
+        );
+        return new PostResponseDto(post);
+
+    }
+
+    //게시글 제목으로 검색
+    public List<PostResponseDto> searchPostsByTitle(String title) {
+
+        saveSearchHistory(title);
+
+        List<Post> posts = postRepository.findAllByTitleContainingIgnoreCaseOrderByCreatedAtDesc(title);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtos;
+    }
+
+    //게시글 내용으로 검색
+    @Transactional
+    public List<PostResponseDto> searchPostsByContents(String contents) {
+
+        saveSearchHistory(contents);
+
+        List<Post> posts = postRepository.findAllByContentsContainingIgnoreCaseOrderByCreatedAtDesc(contents);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtos;
+    }
+
+    //게시글 제목 + 내용으로 검색
+    @Transactional
+    public List<PostResponseDto> searchPostsByTitleOrContents(String keyword) {
+
+        saveSearchHistory(keyword);
+
+        List<Post> posts = postRepository.findAllByTitleContainingIgnoreCaseOrContentsContainingIgnoreCaseOrderByCreatedAtDesc(keyword, keyword);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtos;
+    }
+
+    // 인기 검색어 top10
+    public List<PostResponseDto> getTop10LikedPostsWithDuplicates() {
+        List<Post> top10Posts = postRepository.findTop10LikedPostsWithDuplicates();
+        List<PostResponseDto> postResponseDto = new ArrayList<>();
+
+        int count = 0;
+        for (Post post : top10Posts) {
+            if (count >= 10) {
+                break;
+            }
+            postResponseDto.add(new PostResponseDto(post));
+            count++;
+        }
+
+        return postResponseDto;
+    }
+
+    // 게시글 등록 API
+    public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId, MultipartFile postImage) {
+        Board board =boardRepository.findById(boardId).orElseThrow();
+
+        if(user == null){
+            throw new IllegalArgumentException("허가되지 않은 사용자입니다.");
+        }
+
+        String postImageUrl = null;
+
+        try {
+            if (postImage != null && !postImage.isEmpty()) {
+                // S3에 이미지를 업로드하고, 이미지 URL을 받아옴
+                postImageUrl = s3Uploader.upload(postImage, "post-images");
+                log.info("업로드 성공");
+            }
+        } catch (IOException e) {
+            // 로깅 또는 적절한 에러 처리
+            log.info("업로드 실패");
+            throw new IllegalArgumentException("이미지 업로드 중 오류가 발생했습니다.");
+
+        }
+
+        Post post = new Post(postRequestDto, user, board, 0L, postImageUrl);
+        postRepository.save(post);
+
+        return new PostResponseDto(post);
+
+
+    }
+
+    // 게시글 수정 API
+    @Transactional
+    public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, User user) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
+        );
+
+        if (post.getUser().getUserId().equals(user.getUserId())) {
+            post.update(postRequestDto);
+
+            MultipartFile newPostImage = postRequestDto.getNewPostImage();
+            if (newPostImage != null && !newPostImage.isEmpty()) {
+                try {
+                    String imageUrl = s3Uploader.upload(newPostImage, "post-images");
+                    post.setImageUrl(imageUrl); // setImageUrl 메서드를 사용하여 이미지 URL 업데이트
+                } catch (IOException e) {
+                    log.info("업로드 실패");
+                    throw new IllegalArgumentException("이미지 업로드 중 오류가 발생했습니다.");
+                }
+            } else if (postRequestDto.getPostImage() == null && postRequestDto.getPostImageUrl() == null) {
+                // 이미지를 변경하지 않을 경우 이미지 관련 내용을 초기화
+                post.setImageUrl(null);
+            }
+
+        } else {
+            throw new IllegalArgumentException("작성자만 수정이 가능합니다.");
+        }
+
+        return new PostResponseDto(post);
+    }
+
+
+    // 게시글 삭제 API
+    @Transactional
+    public ApiResponseDto deletePost(Long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
+        );
+        if(post.getUser().getUserId().equals(user.getUserId())){ //  || user.getRole().equals(UserRoleEnum.ADMIN)
+            postRepository.delete(post);
+        } else {
+            return new ApiResponseDto(400, "작성자만 삭제가 가능합니다.");
+        }
+        return new ApiResponseDto(200, "삭제가 완료되었습니다.");
+    }
 
     @Transactional
-    public ResponseEntity<ApiResponseDto> updatePost(Long id, PostRequestDto postRequestDto, User user) { //
-        // ResponseEntity :  HTTP 응답의 상태 코드, 헤더, 본문 등을 포함시킬 수 있는 클래스
-        // ApiResponseDto로 객체를 저장하여 status, message, data를 하나의 객체로 만듬
-
-        Optional<Post> post = postRepository.findById(id); // 해당id의 Post 가져오기
-
-//        if (!post.isPresent() || !Objects.equals(post.get().getUser().getUsername(), user.getUsername())
-//                && !user.getRole().equals(UserRoleEnum.ADMIN)) {
-//            log.error("게시글이 존재하지 않거나 수정 권한이 없습니다.");
-//            return ResponseEntity.status(400).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "게시글 수정 실패"));
-//        }
-
-
-        post.get().updatePost(postRequestDto); // Optional객체에서 값이 존재하면 update에 postRequestDto를 전달하면서 Post를 업데이트함, 없으면 예외처리 발생시킴)
-
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "게시글 수정 성공", new PostResponseDto(post.get())));
+    public void incrementViewCount(Long postId) {
+        postRepository.incrementViewCount(postId);
     }
 
-
-    @Transactional
-    public ResponseEntity<ApiResponseDto> deletePost(Long id, User user) { //
-        Optional<Post> post = postRepository.findById(id);
-
-//        if (!post.isPresent() || !Objects.equals(post.get().getUser().getUsername(), user.getUsername())
-//                && !user.getRole().equals(UserRoleEnum.ADMIN)) {
-//            log.error("게시글이 존재하지 않거나 수정 권한이 없습니다.");
-//            return ResponseEntity.status(400).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "게시글 삭제 실패"));
-//        }
-
-        postRepository.delete(post.get());
-
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "게시글 삭제 성공"));
+    private void saveSearchHistory(String keyword) {
+        SearchHistory searchHistory = new SearchHistory();
+        searchHistory.setKeyword(keyword);
+        searchHistoryRepository.save(searchHistory);
     }
-
-//    // post 좋아요
-//    @Transactional
-//    public ApiResponseDto addLikePost(Long postId, UserDetailsImpl userDetails) {
-//        Long userId = userDetails.getUser().getId();
-//        // postId와 userId 를이용해서 사용자가 이미 Like를 눌렀는지 확인
-//
-//        // 해당 게시물이 존재하는지 확인
-//        Post post = postRepository.findById(postId)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 게시글이 존재하지 않습니다."));
-//
-//        //자신의 게시글에 좋아요 X
-//        if (post.getUser().getId().equals(userId)) {
-//            throw new RejectedExecutionException("자신의 게시글에는 '좋아요'를 할 수 없습니다.");
-//        }
-//        PostLikedInfo postLikedInfo = postLikedInfoRepository.findByPostIdAndUserId(postId, userId).orElse(null);
-//
-//        if (postLikedInfo == null) {
-//            postLikedInfo = new PostLikedInfo(postId, userId);
-//            postLikedInfo.setLiked(true);
-//            postLikedInfoRepository.save(postLikedInfo);
-//            updatePostLikedCount(postId);
-//            return new ApiResponseDto(200, "좋아요");
-//        } else {
-//            postLikedInfo.setLiked(!postLikedInfo.getLiked());
-//            postLikedInfoRepository.save(postLikedInfo);
-//            updatePostLikedCount(postId);
-//            if (postLikedInfo.getLiked()) {
-//                return new ApiResponseDto(200, "좋아요");
-//            } else {
-//                return new ApiResponseDto(200, "좋아요 취소");
-//            }
-//        }
-//    }
-//
-//    // count한 like 저장해주기
-//    private void updatePostLikedCount(Long postId) {
-//        Post post = postRepository.findById(postId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-//        Integer postLikedCount = postLikedInfoRepository.countByPostIdAndLikedIsTrue(postId);
-//        post.setPostLikedCount(postLikedCount);
-//    }
 
 }

@@ -3,7 +3,6 @@ package com.example.princesstown.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
-@Getter
 @Component
 public class JwtUtil { // JWT와 관련된 주요 기능을 제공
 
@@ -88,5 +86,12 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-}
 
+    // Jwt 토큰에서 사용자 이름 추출
+    // Stomp header 에서 가져옴
+    public String getUsernameFromJwt(String rawToken) {
+        String tokenValue = substringToken(rawToken);
+        Claims info = getUserInfoFromToken(tokenValue);
+        return info.getSubject();
+    }
+}

@@ -5,9 +5,8 @@ import com.example.princesstown.dto.getInfo.NaverUserInfoDto;
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import java.util.*;
 
 @Entity
 @Getter
@@ -36,6 +35,10 @@ public class User {
 
     @Column
     private String profileImage;
+
+    /* 연관관계 */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatUser> chatUserList = new ArrayList<>();
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "location_locationId")

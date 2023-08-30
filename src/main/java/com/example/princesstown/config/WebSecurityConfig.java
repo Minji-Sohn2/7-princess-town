@@ -33,7 +33,7 @@ public class WebSecurityConfig {
 
     // 비밀번호 암호화를 위한 Bean 설정
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -74,15 +74,20 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스에 대한 접근 허용
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/board/{boardId}/posts/{postId}/**").authenticated() //좋아요는 사용자 인증이 필요
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
                         .requestMatchers("/send/**").permitAll()
                         .requestMatchers("/modify/**").permitAll()
                         .requestMatchers("/find/**").permitAll()
                         .requestMatchers("/verify/**").permitAll()
+                        .requestMatchers("/img/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/ws-stomp/**").permitAll()
                         .requestMatchers("/code/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
+
 
         // 로그인 페이지 설정
         http.formLogin((formLogin) ->

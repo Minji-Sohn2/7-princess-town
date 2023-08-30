@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
-    Location findByLocationIdAndLatitudeAndLongitude(Long id, Double latitude, Double longitude);
+//    Location findByLocationIdAndLatitudeAndLongitude(Long id, Double latitude, Double longitude);
 
     Optional<Location> findByUsers_UserId(Long id);
 
