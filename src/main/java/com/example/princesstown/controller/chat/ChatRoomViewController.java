@@ -1,4 +1,4 @@
-package com.example.princesstown.controller.chatRoom;
+package com.example.princesstown.controller.chat;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

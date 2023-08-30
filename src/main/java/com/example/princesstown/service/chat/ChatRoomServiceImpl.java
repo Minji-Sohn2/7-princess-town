@@ -1,12 +1,12 @@
-package com.example.princesstown.service.chatRoom;
+package com.example.princesstown.service.chat;
 
 import com.example.princesstown.dto.chatRoom.*;
-import com.example.princesstown.entity.ChatRoom;
-import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.entity.chat.ChatRoom;
+import com.example.princesstown.entity.chat.ChatUser;
 import com.example.princesstown.exception.NoPermissionsException;
-import com.example.princesstown.repository.chatRoom.ChatRoomRepository;
-import com.example.princesstown.repository.chatRoom.ChatUserRepository;
+import com.example.princesstown.repository.chat.ChatRoomRepository;
+import com.example.princesstown.repository.chat.ChatUserRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

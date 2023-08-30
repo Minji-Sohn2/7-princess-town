@@ -1,9 +1,9 @@
-package com.example.princesstown.controller.chatRoom;
+package com.example.princesstown.controller.chat;
 
 import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
-import com.example.princesstown.service.chatRoom.ChatRoomService;
+import com.example.princesstown.service.chat.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.example.princesstown.dto.chatRoom;
 
-import com.example.princesstown.entity.ChatRoom;
+import com.example.princesstown.entity.chat.ChatRoom;
 import lombok.Getter;
 
 @Getter

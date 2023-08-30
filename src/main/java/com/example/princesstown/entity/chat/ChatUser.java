@@ -1,5 +1,6 @@
-package com.example.princesstown.entity;
+package com.example.princesstown.entity.chat;
 
+import com.example.princesstown.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

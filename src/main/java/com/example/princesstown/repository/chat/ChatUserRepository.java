@@ -1,8 +1,8 @@
-package com.example.princesstown.repository.chatRoom;
+package com.example.princesstown.repository.chat;
 
-import com.example.princesstown.entity.ChatRoom;
-import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.entity.chat.ChatRoom;
+import com.example.princesstown.entity.chat.ChatUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

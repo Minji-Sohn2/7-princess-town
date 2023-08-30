@@ -1,4 +1,4 @@
-package com.example.princesstown.repository.chatRoom;
+package com.example.princesstown.repository.chat;
 
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;

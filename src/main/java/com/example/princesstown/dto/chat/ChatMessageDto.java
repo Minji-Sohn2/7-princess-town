@@ -17,7 +17,7 @@ public class ChatMessageDto {
     }
 
     private MessageType type;
-    private String roomId;
+    private Long roomId;
     private String sender;  // username
     private String message;
 
@@ -25,7 +25,7 @@ public class ChatMessageDto {
     private String createdAt;
 
     @Builder
-    public ChatMessageDto(MessageType type, String roomId, String senderNickname, String message) {
+    public ChatMessageDto(MessageType type, Long roomId, String senderNickname, String message) {
         this.type = type;
         this.roomId = roomId;
         this.sender = senderNickname;
