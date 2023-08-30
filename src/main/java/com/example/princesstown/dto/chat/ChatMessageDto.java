@@ -1,10 +1,12 @@
 package com.example.princesstown.dto.chat;
 
+import com.example.princesstown.entity.chat.ChatMessage;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -24,11 +26,11 @@ public class ChatMessageDto {
     @JsonFormat(pattern = "yy-MM-dd HH:mm")
     private String createdAt;
 
-    @Builder
-    public ChatMessageDto(MessageType type, Long roomId, String senderNickname, String message) {
-        this.type = type;
-        this.roomId = roomId;
-        this.sender = senderNickname;
-        this.message = message;
+    public ChatMessageDto(ChatMessage chatMessage) {
+        this.type = MessageType.TALK;
+        this.roomId = chatMessage.getChatRoom().getId();
+        this.sender = chatMessage.getSenderNickname();
+        this.message = chatMessage.getMessage();
+        this.createdAt = chatMessage.getCreatedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.princesstown.controller.chat;
 
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +30,16 @@ public class ChatRoomController {
         log.info("채팅방 생성 컨트롤러 -> " + userDetails.getUser().getUsername());
         ChatRoomInfoResponseDto result = chatRoomService.createChatRoom(userDetails.getUser(), createChatRoomRequestDto);
         return ResponseEntity.status(201).body(result);
+    }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<List<ChatMessageDto>> getChatRoomChatMessages(
+            @PathVariable Long roomId,
+            @RequestParam("page") int page
+    ) {
+        log.info("채팅방 채팅 기록 조회 컨트롤러 -> " + roomId);
+        List<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomChatMessages(roomId, page);
+        return ResponseEntity.ok().body(chatMessageDtoList);
     }
 
     @PutMapping("/{roomId}")

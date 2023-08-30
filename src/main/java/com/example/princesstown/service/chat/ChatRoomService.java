@@ -1,5 +1,6 @@
 package com.example.princesstown.service.chat;
 
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.entity.chat.ChatRoom;
@@ -16,6 +17,15 @@ public interface ChatRoomService {
      * @return 생성된 채팅방 정보
      */
     ChatRoomInfoResponseDto createChatRoom(User user, CreateChatRoomRequestDto requestDto);
+
+    /**
+     * 채팅방의 메세지 불러오기
+     *
+     * @param roomId 채팅방 id
+     * @param page   page 번호
+     * @return 메세지 list
+     */
+    List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page);
 
     /**
      * 채팅방 이름 수정

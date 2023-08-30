@@ -1,15 +1,20 @@
 package com.example.princesstown.service.chat;
 
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.entity.chat.ChatRoom;
 import com.example.princesstown.entity.chat.ChatUser;
 import com.example.princesstown.exception.NoPermissionsException;
+import com.example.princesstown.repository.chat.ChatMessageRepository;
 import com.example.princesstown.repository.chat.ChatRoomRepository;
 import com.example.princesstown.repository.chat.ChatUserRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +29,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatUserRepository chatUserRepository;
+    private final ChatMessageRepository chatMessageRepository;
+
+    private static final int MESSAGE_PAGE_SIZE = 35;
 
     @Override
     @Transactional
@@ -40,6 +48,19 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         chatRoomRepository.save(newChatRoom);
         return new ChatRoomInfoResponseDto(newChatRoom);
+    }
+
+    @Override
+    public List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page) {
+        ChatRoom chatRoom = findChatRoomById(roomId);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, MESSAGE_PAGE_SIZE, sort);
+
+        return chatMessageRepository.findAllByChatRoom(pageable, chatRoom)
+                .stream()
+                .map(ChatMessageDto::new)
+                .toList();
     }
 
     @Override
