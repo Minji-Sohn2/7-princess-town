@@ -23,20 +23,20 @@ public class BoardController {
 
 
     // 게시판 전체 조회 API
-    @GetMapping("/board")
+    @GetMapping("/boards")
     public List<BoardResponseDto> getBoard() {
         return boardService.getBoard();
     }
 
 
     // 게시판 선택 조회 API
-    @GetMapping("/board/{boardId}")
+    @GetMapping("/boards/{boardId}")
     public BoardResponseDto getBoard(@PathVariable Long boardId) {
         return boardService.getBoard(boardId);
     }
 
     // 게시판 생성 API
-    @PostMapping("/board")
+    @PostMapping("/boards")
     @ResponseBody
     public ResponseEntity<ApiResponseDto> createBoard(@RequestBody BoardRequestDto boardRequestDto,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -47,7 +47,7 @@ public class BoardController {
     }
 
     // 게시판 수정 API
-    @PutMapping("/board/{boardId}")
+    @PutMapping("/boards/{boardId}")
     public ResponseEntity<ApiResponseDto> updateBoard(@PathVariable Long boardId,
                                                       @RequestBody BoardRequestDto boardRequestDto,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -61,7 +61,7 @@ public class BoardController {
 
 
     // 게시판 삭제 API
-    @DeleteMapping("/board/{boardId}")
+    @DeleteMapping("/boards/{boardId}")
     public ApiResponseDto deletePost(@PathVariable Long boardId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return boardService.deleteBoard(boardId, userDetails.getUser());

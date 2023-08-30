@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>게시글 작성 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .content {
+            display: flex;
+            width: 50%
+        }
+
+        .sidebar {
+            padding: 20px;
+            background-color: #f2f2f2;
+            min-width: 200px;
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 600px; /* Adjust the width as needed */
+            margin: 0 auto;
+        }
+
+        .h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .board-list, .search-ranking {
+            list-style: none;
+            padding: 0;
+            margin: 0; /* remove default margin for ul/ol */
+        }
+
+        .board-list li, .search-ranking li {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .board-list li:last-child, .search-ranking li:last-child {
+            margin-bottom: 0;
+        }
+
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="sidebar">
+        <div class="box">
+            <h2 class="h2">인기검색어</h2>
+            <ol class="search-ranking">
+                <!--                <li>검색어 1</li>-->
+            </ol>
+        </div>
+        <div>
+            <ul class="board-list">
+                <li><a href="/view/mainpage">전체게시판</a></li>
+                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                <th:block th:each="board : ${boardList}">
+                    <li><a th:href="@{/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+        <h2 class="h2">게시판 선택</h2>
+        <form id="createPostForm" enctype="multipart/form-data">
+            <select id="boardId" name="boardId">
+                <option value="" selected disabled>게시판을 선택하세요</option>
+                <th:block th:each="board : ${boardList}">
+                    <option th:value="${board.id}" th:text="${board.title}"></option>
+                </th:block>
+            </select><br>
+
+            <h2 class="h2">게시글 작성</h2>
+            <form id="createPostForm" enctype="multipart/form-data">
+            <label for="postTitle">제목:</label>
+            <input type="text" id="postTitle" name="title" required><br>
+
+            <label for="postContents">내용:</label>
+            <textarea id="postContents" name="contents" rows="4" required></textarea><br>
+
+            <label for="postImage">이미지 업로드:</label>
+            <input type="file" id="postImage" name="postImage"><br>
+
+            <button type="submit">작성</button>
+            <button type="button" id="cancelButton">취소</button>
+        </form>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#createPostForm").submit(function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "/api/boards/{boardId}/posts", // 실제 API 엔드포인트로 변경해야 함
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    alert("게시글을 작성하였습니다!");
+                    // 페이지 이동 또는 필요한 작업 수행
+                },
+                error: function() {
+                    alert("게시글 작성에 실패했습니다.");
+                }
+            });
+        });
+
+        // 취소 버튼 클릭 시 이전 페이지로 돌아가기
+        $("#cancelButton").click(function() {
+            window.history.back(); // 이전 페이지로 돌아가는 함수
+        });
+
+    });
+</script>
+</html>

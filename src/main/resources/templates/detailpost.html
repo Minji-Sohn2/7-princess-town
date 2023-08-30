@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>게시글 상세 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .content {
+            display: flex;
+            width: 50%;
+        }
+
+        .sidebar {
+            padding: 20px;
+            background-color: #f2f2f2;
+            min-width: 200px;
+        }
+
+        .box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .board-list, .search-ranking {
+            list-style: none;
+            padding: 0;
+            margin: 0; /* remove default margin for ul/ol */
+        }
+
+        .board-list li, .search-ranking li {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .board-list li:last-child, .search-ranking li:last-child {
+            margin-bottom: 0;
+        }
+
+        .main-content {
+            margin-left: 20px;
+        }
+
+        .post-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .post-info {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .post-image {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .post-contents {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .post-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="sidebar">
+        <div class="box">
+            <h2 class="h2">인기검색어</h2>
+            <ol class="search-ranking">
+                <!--                <li>검색어 1</li>-->
+            </ol>
+        </div>
+        <div>
+            <ul class="board-list">
+                <li><a href="/view/mainpage">전체게시판</a></li>
+                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                <th:block th:each="board : ${boardList}">
+                    <li><a th:href="@{/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="post-header">
+            <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
+            <div class="post-info">
+                <span th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 수정일: ' + ${post.modifiedAt} + '| 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCount}"></span>
+            </div>
+        </div>
+        <img class="post-image" th:src="${post.postImageUrl}" alt="게시글 이미지">
+        <div class="post-contents">
+            <p th:text="${post.contents}">
+                게시글 내용이 여기에 들어갑니다.
+            </p>
+        </div>
+        <div class="post-actions">
+            <button class="action-button" id="likeButton">좋아요</button>
+            <button class="action-button">수정</button>
+            <button class="action-button">삭제</button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // 인기검색어 데이터 가져와서 렌더링
+        function renderPopularSearches(data) {
+            var searchRanking = $(".search-ranking");
+            searchRanking.empty();
+
+            $.each(data, function(index, popularSearch) {
+                var listItem = $("<li>").text(popularSearch.keyword);
+                listItem.on("click", function() {
+                    var keyword = encodeURIComponent(popularSearch.keyword);
+                    var searchType = "titleAndContents";
+                    window.location.href = "/view/searchKeyword?searchType=" + searchType + "&keyword=" + keyword;
+                });
+                searchRanking.append(listItem);
+            });
+        }
+
+        // 백엔드 API 호출하여 인기검색어 데이터 가져오기
+        $.ajax({
+            url: "/api/popular-searches",
+            method: "GET",
+            success: function(data) {
+                renderPopularSearches(data);
+            },
+            error: function() {
+                console.error("Error fetching popular searches data.");
+            }
+        });
+
+        function handleLike(postId) {
+            $.ajax({
+                url: "/api/posts/" + postId + "/like",
+                method: "POST",
+                success: function(response) {
+                    if (response.success) {
+                        alert("게시물을 좋아요 했습니다!");
+                        // 페이지 새로고침 (좋아요 수 업데이트)
+                        window.location.reload();
+                    } else {
+                        alert("좋아요 처리에 실패했습니다.");
+                    }
+                },
+                error: function() {
+                    console.error("Error processing like request.");
+                }
+            });
+        }
+
+        var urlParts = window.location.pathname.split("/");
+        var postId = urlParts[urlParts.length - 1];
+
+        // 좋아요 버튼 클릭 이벤트 처리
+        $("#likeButton").click(function() {
+            handleLike(postId);
+        });
+    });
+</script>
+</html>

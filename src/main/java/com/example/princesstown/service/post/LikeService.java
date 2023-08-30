@@ -8,10 +8,12 @@ import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.post.LikeRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -22,14 +24,17 @@ public class LikeService {
 
     @Transactional
     public ApiResponseDto likePost(Long id, User user) {
+
         //해당 게시글이 존재하는지 확인
-        Post post = postRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not found blog"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not found post"));
 
         //해당 게시글에 좋아요를 누른 아이디인지 체크
         Like checkLike = likeRepository.findByUserUserIdAndPostId(user.getUserId(), id);
         if (checkLike != null) {
+
             return new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미 좋아요를 누른 계정입니다.");
         } else { // 해당 게시글에 좋아요를 누르지 않은 아이디이면 좋아요 처리
+
             Like like = new Like(user, post);
             likeRepository.save(like);
         }
@@ -44,7 +49,7 @@ public class LikeService {
     @Transactional
     public ApiResponseDto deleteLikePost(Long id, User user) {
         //해당 게시글이 존재하는지 확인
-        Post post = postRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not found blog"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not found post"));
 
         //해당 게시글에 좋아요를 누른 아이디인지 체크
         Like checkLike = likeRepository.findByUserUserIdAndPostId(user.getUserId(), id);
@@ -54,7 +59,7 @@ public class LikeService {
             return new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "아직 좋아요를 누르지 않은 계정입니다.");
         }
 
-        // 블로그 게시글의 좋아요 개수 처리
+        //게시글의 좋아요 개수 처리
         post.setLikeCount((long) likeRepository.findByPostId(id).size());
 
         return new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다.");
