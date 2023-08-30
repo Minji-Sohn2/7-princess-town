@@ -21,7 +21,6 @@ public class FindController {
 
     private final MessageService messageService;
 
-
     // 휴대폰 인증 코드 발송
     @PostMapping("/send-phone-verification-code")
     public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) {
@@ -40,10 +39,9 @@ public class FindController {
         return authenticationService.sendTemporaryPasswordAfterVerification(phoneNumber, email);
     }
 
-    // 임시 비밀번호로 로그인
     @PostMapping("/login-with-temp-password")
-    public ResponseEntity<ApiResponseDto> loginWithTemporaryPassword(@RequestParam("email") String email, @RequestParam("tempPassword") String tempPassword) {
-        return authenticationService.loginWithTemporaryPassword(email, tempPassword);
+    public ResponseEntity<ApiResponseDto> unifiedLogin(@RequestParam("username") String username, @RequestParam("TempPassword") String tempPassword) {
+        return authenticationService.unifiedLogin(username, tempPassword);
     }
 }
 
