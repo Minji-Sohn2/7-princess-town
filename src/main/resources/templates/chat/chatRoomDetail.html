@@ -37,7 +37,7 @@
             <h2>{{roomName}} <span class="badge badge-info badge-pill"></span></h2>
         </div>
         <div class="col-md-6 text-right">
-            <button class="btn btn-info btn-sm">초대</button>
+            <button class="btn btn-info btn-sm" id="inviteModalBtn">초대</button>
             <button class="btn btn-info btn-sm btn-danger" @click="leaveChatRoom">채팅방 나가기</button>
         </div>
     </div>
@@ -79,9 +79,9 @@
 </div>
 
 <!-- 대화상대 초대하기 모달 -->
-<div class="modal-overlay" id="createRoomModalOverlay"></div>
-<div class="register-modal" id="registerCreateRoomModal">
-    <h3 class="modal-title" id="createRoomModalTitle">대화상대 초대하기</h3>
+<div class="modal-overlay" id="inviteUserModalOverlay"></div>
+<div class="register-modal" id="registerInviteUserModal">
+    <h3 class="modal-title" id="inviteUserModalTitle">대화상대 초대하기</h3>
     <div class="modal-content">
 
         <!-- 채팅방 생성 1. 초대할 사용자 선택 -->
@@ -99,7 +99,7 @@
 
         <!-- 채팅방 생성 2. 완료 -->
         <div id="complete-creating" style="display: none">
-            <h4 style="">채팅방 생성 완료</h4>
+            <h4 style="">초대 완료</h4>
         </div>
 
         <div class="modal-buttons">
