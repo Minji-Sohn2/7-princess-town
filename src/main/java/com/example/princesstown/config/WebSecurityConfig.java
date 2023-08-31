@@ -75,7 +75,6 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스에 대한 접근 허용
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/board/{boardId}/posts/{postId}/**").authenticated() //좋아요는 사용자 인증이 필요
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/view/**").permitAll()
                         .requestMatchers("/send/**").permitAll()

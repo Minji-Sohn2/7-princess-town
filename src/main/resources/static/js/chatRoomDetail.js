@@ -41,13 +41,15 @@ const vm = new Vue({
         roomName: '',
         message: '',
         messages: [],
+        members: [],
+        users: [],
         token: '',
     },
     created() {
         this.initializeWebSocket();     // 접속 시 웹소켓 연결
         this.getChatHistory(page);         // 접속 시 가장 최근 채팅들 로드
         //this.$nextTick(() => {      // 접속 시 스크롤 가장 아래로 (안됨)
-        this.scrollToBottom();
+        //this.scrollToBottom();
         //})
     },
     updated() {
@@ -119,9 +121,6 @@ const vm = new Vue({
                 "message": recv.message,
                 "createdAt": recv.createdAt
             })
-            this.$nextTick(() => {      // 스크롤 가장 아래로
-                this.scrollToBottom();
-            })
         },
         leaveChatRoom() {
             this.message = '.';
@@ -138,16 +137,53 @@ const vm = new Vue({
                     alert('채팅방 나가기 실패');
                 });
         },
-        scrollToBottom: function () {
-            if (bottomFlag) {
-                this.containerDiv.scrollTop = this.containerDiv.scrollHeight;
-            }
+        getThisChatRoomMembers() {
+            showElement('chatMembersModalOverlay');
+            showElement('registerChatMemberModal');
+
+            axios.get('/api/chatRooms/' + this.roomId + '/members', config)
+                .then(response => {
+                    console.log(response);
+
+                    let members = response.data.chatMemberInfoList;
+                    members.forEach(member => {
+                        this.members.push({
+                            "id": member.id,
+                            "username": member.username,
+                            "nickname": member.nickname
+                        })
+                    })
+                })
+                .catch(error => {
+                    console.error(error);
+                })
         },
-        handleScroll(event) {
-            const messageContainer = event.target;
-            if (messageContainer.scrollTop === 0) {
-                this.loadMoreChatHistory();
-            }
+        startInviteUser() {
+            const searchInput = document.getElementById('searchInput').value;
+            console.log('검색 키워드 -> ' + searchInput);
+            searchUserByKeyword(searchInput);
+        },
+        searchUserByKeyword(keyword) {
+            const searchResultsContainer = document.getElementById('searchResultsContainer');
+            searchResultsContainer.innerHTML = '';
+
+            axios.get('/api/search/users?keyword=' + keyword, config)
+                .then(response => {
+                    console.log(response);
+                    const results = response.data.searchUserResults;
+
+                    if (results.length === 0) {
+                        showElement('no-search-result');
+                    } else {
+                        results.forEach(user => {
+                            createSearchResultCard(user, searchResultsContainer);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('사용자 검색 결과 불러오기 실패');
+                });
         },
         loadMoreChatHistory() {
             page++; // Increment the page counter
@@ -266,7 +302,7 @@ $(document).ready(function () {
 
         checkbox.addEventListener('click', () => {
             if (checkbox.checked) {
-                selectedUserIds.push(user.userId); // Add the ID to the array
+                selectedUserIds.push(user.userId);
             } else {
                 const index = selectedUserIds.indexOf(user.userId);
                 if (index !== -1) {
@@ -297,4 +333,11 @@ $(document).ready(function () {
                 console.error('사용자 초대 요청 실패');
             });
     });
+
+    $("#closeChatMemberModal").click(function () {
+        hideElement('chatMembersModalOverlay');
+        hideElement('registerChatMemberModal');
+        document.getElementById('memberListContainer').innerHTML = '';
+    });
+
 });
