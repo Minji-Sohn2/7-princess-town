@@ -16,7 +16,7 @@ public class MessageController {
 
     //문자 인증번호 발송
     @PostMapping("/send/code")
-    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) {
+    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) throws Exception {
         return messageService.sendVerificationCode(phoneNumber);
     }
 
