@@ -12,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -38,11 +38,8 @@ public class ProfileController {
     // 프로필 수정
     @PutMapping("/api/auth/profile")
     @ResponseBody
-    public ApiResponseDto updateUser(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody ProfileEditRequestDto editRequestDto,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
-
+    public ResponseEntity<ApiResponseDto> updateUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfileEditRequestDto editRequestDto) {
         Long userId = userDetails.getUser().getUserId();
 
         return profileService.updateUser(userId, editRequestDto);
