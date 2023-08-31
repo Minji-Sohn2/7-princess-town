@@ -26,7 +26,7 @@ public class UserController {
 
     // 휴대폰 인증 코드 발송
     @PostMapping("/send-phone-verification-code")
-    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) {
+    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) throws Exception {
         return messageService.sendVerificationCode(phoneNumber);
     }
 
