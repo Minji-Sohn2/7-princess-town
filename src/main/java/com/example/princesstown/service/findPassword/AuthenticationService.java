@@ -46,7 +46,7 @@ public class AuthenticationService {
 
         if (phoneVerificationResponse.getStatusCode() == HttpStatus.OK) {
             // 휴대폰 인증 성공시 Redis에 인증 성공 여부 저장
-            redisTemplate.opsForValue().set(phoneNumber + "_verified", "true", 5, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(phoneNumber + "_verified", "true", 60, TimeUnit.MINUTES);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(200, "휴대폰 인증 성공"));
         } else {
             return phoneVerificationResponse; // 휴대폰 인증 실패 응답 반환
@@ -67,10 +67,10 @@ public class AuthenticationService {
             mailService.sendTemporaryPassword(email, tempPassword);
 
             // 생성된 난수 비밀번호와 만료 시간을 Redis에 저장
-            redisTemplate.opsForValue().set(username + "_tempPassword", tempPassword, 5, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(username + "_tempPassword", tempPassword, 60, TimeUnit.MINUTES);
 
             // username을 Redis에 저장
-            redisTemplate.opsForValue().set(username + "_ID", username, 5, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(username + "_ID", username, 60, TimeUnit.MINUTES);
 
             // Redis에 저장된 phoneNumber + "_verified" 키를 삭제
             redisTemplate.delete(phoneNumber + "_verified");
