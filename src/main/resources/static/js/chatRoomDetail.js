@@ -48,16 +48,14 @@ const vm = new Vue({
     created() {
         this.initializeWebSocket();     // 접속 시 웹소켓 연결
         this.getChatHistory(page);         // 접속 시 가장 최근 채팅들 로드
-        //this.$nextTick(() => {      // 접속 시 스크롤 가장 아래로 (안됨)
-        //this.scrollToBottom();
-        //})
+        this.getThisChatRoomMembers();
     },
-    updated() {
+/*    updated() {
 
         if (bottomFlag) {
             this.containerDiv.scrollTop = this.containerDiv.scrollHeight;
         }
-    },
+    },*/
     methods: {
         initializeWebSocket() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -138,8 +136,6 @@ const vm = new Vue({
                 });
         },
         getThisChatRoomMembers() {
-            showElement('chatMembersModalOverlay');
-            showElement('registerChatMemberModal');
 
             axios.get('/api/chatRooms/' + this.roomId + '/members', config)
                 .then(response => {
@@ -158,23 +154,23 @@ const vm = new Vue({
                     console.error(error);
                 })
         },
-        startInviteUser() {
+/*        searchUserByKeyword() {
             const searchInput = document.getElementById('searchInput').value;
             console.log('검색 키워드 -> ' + searchInput);
-            searchUserByKeyword(searchInput);
-        },
-        searchUserByKeyword(keyword) {
+
             const searchResultsContainer = document.getElementById('searchResultsContainer');
             searchResultsContainer.innerHTML = '';
 
-            axios.get('/api/search/users?keyword=' + keyword, config)
+            axios.get('/api/search/users?keyword=' + searchInput, config)
                 .then(response => {
                     console.log(response);
                     const results = response.data.searchUserResults;
 
                     if (results.length === 0) {
+                        // 검색결과 없으면
                         showElement('no-search-result');
                     } else {
+                        //검색 결과 있다면
                         results.forEach(user => {
                             createSearchResultCard(user, searchResultsContainer);
                         });
@@ -184,7 +180,10 @@ const vm = new Vue({
                     console.error(error);
                     alert('사용자 검색 결과 불러오기 실패');
                 });
-        },
+        },/!*
+        createSearchResultCard(user, container) {
+
+        },*!/*/
         loadMoreChatHistory() {
             page++; // Increment the page counter
             this.getChatHistory(page);
@@ -198,6 +197,17 @@ const vm = new Vue({
 
 // ----------------------- ready ---------------------------
 $(document).ready(function () {
+    // 채팅방 멤버 모달 열기, 닫기
+    $("#getThisChatRoomMembersBtn").click(function () {
+        showElement('chatMembersModalOverlay');
+        showElement('registerChatMemberModal');
+    })
+
+    $("#closeChatMemberModal").click(function () {
+        hideElement('chatMembersModalOverlay');
+        hideElement('registerChatMemberModal');
+    });
+
     // 사용자 초대 모달 열기, 닫기
     $("#inviteModalBtn").click(function () {
         showElement('inviteUserModalOverlay');
@@ -302,7 +312,7 @@ $(document).ready(function () {
 
         checkbox.addEventListener('click', () => {
             if (checkbox.checked) {
-                selectedUserIds.push(user.userId);
+                selectedUserIds.push(user.userId); // Add the ID to the array
             } else {
                 const index = selectedUserIds.indexOf(user.userId);
                 if (index !== -1) {
@@ -333,11 +343,4 @@ $(document).ready(function () {
                 console.error('사용자 초대 요청 실패');
             });
     });
-
-    $("#closeChatMemberModal").click(function () {
-        hideElement('chatMembersModalOverlay');
-        hideElement('registerChatMemberModal');
-        document.getElementById('memberListContainer').innerHTML = '';
-    });
-
 });
