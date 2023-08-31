@@ -11,24 +11,17 @@ import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.awsS3.S3Uploader;
-import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.message.MessageService;
-import lombok.Getter;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -41,11 +34,8 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final TokenBlacklistService tokenBlacklistService;
     private final S3Uploader s3Uploader;
-    private final MailService mailService;
-    private final AuthenticationManager authenticationManager;
     private final MessageService messageService;
     private final ApplicationContext applicationContext;
-    private final StringRedisTemplate redisTemplate;
 
 
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
