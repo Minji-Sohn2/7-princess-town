@@ -1,10 +1,13 @@
 package com.example.princesstown;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import java.util.TimeZone;
 
 @EnableJpaAuditing
 @EnableScheduling
@@ -20,4 +23,8 @@ public class PrincesstownApplication {
         SpringApplication.run(PrincesstownApplication.class, args);
     }
 
+    @PostConstruct
+    void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 }
