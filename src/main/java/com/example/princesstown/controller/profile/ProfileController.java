@@ -4,11 +4,11 @@ import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.ProfileResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
-import com.example.princesstown.service.location.LocationService;
 import com.example.princesstown.service.profile.ProfileService;
 import com.example.princesstown.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +23,6 @@ import java.io.IOException;
 public class ProfileController {
 
     private final UserService userService;
-    private final LocationService locationService;
     private final ProfileService profileService;
 
     // 프로필 조회 메서드
@@ -39,19 +38,9 @@ public class ProfileController {
     // 프로필 수정
     @PutMapping("/api/auth/profile")
     @ResponseBody
-    public ApiResponseDto updateUser(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody ProfileEditRequestDto editRequestDto,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
-
+    public ResponseEntity<ApiResponseDto> updateUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfileEditRequestDto editRequestDto) {
         Long userId = userDetails.getUser().getUserId();
-
-        // 위치설정 업데이트 로직
-//        if (editRequestDto.getLatitude() != null && editRequestDto.getLongitude() != null) {
-//            locationService.updateLocationAndRelatedEntities(userId, editRequestDto.getLatitude(), editRequestDto.getLongitude());
-//        }
-
-        editRequestDto.setProfileImage(profileImage);
 
         return profileService.updateUser(userId, editRequestDto);
     }

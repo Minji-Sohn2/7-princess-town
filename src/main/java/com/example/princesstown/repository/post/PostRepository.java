@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collections;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -39,7 +40,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     int incrementViewCount(@Param("postId") Long postId);
 
-//    List<Post> findByLocationLatitudeBetweenAndLocationLongitudeBetween(Double minLat, Double maxLat, Double minLon, Double maxLon);
+    //     위치 범위 내의 게시물을 찾는 메서드
+    List<Post> findByLocationIn(List<Location> locations);
 
-//    List<Post> findByLocation(Location updatedLocation);
+    List<Post> findByLocationLatitudeBetweenAndLocationLongitudeBetween(Double minLat, Double maxLat, Double minLon, Double maxLon);
+
+    // 위치로 게시물을 찾는 메서드
+    default List<Post> findByLocation(Location location) {
+        return findByLocationIn(Collections.singletonList(location));
+    }
+
 }

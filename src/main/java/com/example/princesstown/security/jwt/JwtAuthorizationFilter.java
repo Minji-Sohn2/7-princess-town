@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -57,20 +56,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
             String username = info.getSubject();
 
-            try {
-                Map<String, Object> authStatus = info.get("authStatus", Map.class);
-
-                if (authStatus != null) {
-                    username = (String) authStatus.get("username");
-                }
-
                 // 실제 사용자의 username을 가져오는 코드
                 log.info("Setting authentication for username: " + username);
                 setAuthentication(username);
-            } catch (Exception e) {
-                log.error("Error while setting authentication: " + e.getMessage());
-                return;
-            }
         }
 
         filterChain.doFilter(req, res);

@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +44,16 @@ public class S3Uploader {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
+
+    // ResourceLoader를 이용하여 기본 이미지를 업로드하는 메서드
+    public String uploadDefaultImage(ResourceLoader resourceLoader) throws IOException {
+        Resource resource = resourceLoader.getResource("classpath:image/기본이미지.png");
+        File defaultImageFile = resource.getFile();
+        String fileName = "기본이미지.png"; // 업로드할 파일명 설정
+        String uploadImageUrl = putS3(defaultImageFile, fileName);
+        return uploadImageUrl;
+    }
+
 
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
