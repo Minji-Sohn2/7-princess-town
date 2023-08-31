@@ -15,6 +15,25 @@ jQuery(document).ready(function($) {
 		$back_to_login_link = $form_forgot_password.find('.cd-form-bottom-message a'),
 		$main_nav = $('.main-nav')
 
+	//
+	// // 회원가입 문자 인증번호 전송 버튼 클릭 이벤트
+	// $('#sendVerificationCode').on('click', function (event) {
+	// 	event.preventDefault();
+	//
+	// 	var phoneNumber = $signup_phoneNumber.val();
+	//
+	// 	$.ajax({
+	// 		url: "/auth/send-phone-verification-code",
+	// 		type: "POST",
+	// 		data: {phoneNumber: phoneNumber},
+	// 		success: function (response) {
+	// 			alert("인증번호가 전송되었습니다.");
+	// 		},
+	// 		error: function (error) {
+	// 			alert("인증번호 전송 실패. 다시 시도해주세요.");
+	// 		}
+	// 	});
+	// });
 
 	// 회원가입 버튼 클릭 이벤트
 	$('#signup-submit').on('click', function (event) {
