@@ -43,7 +43,7 @@ public class BoardController {
         log.info("title : " + boardRequestDto.getTitle());
 
         boardService.createBoard(boardRequestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "게시판 작성에 성공했습니다."));
     }
 
     // 게시판 수정 API

@@ -103,20 +103,21 @@
                     <option th:value="${board.id}" th:text="${board.title}"></option>
                 </th:block>
             </select><br>
-        </form>
-        <h2 class="h2">게시글 작성</h2>
-        <form id="createPostForm" enctype="multipart/form-data">
-        <label for="postTitle">제목:</label>
-        <input type="text" id="postTitle" name="title" required><br>
 
-        <label for="postContents">내용:</label>
-        <textarea id="postContents" name="contents" rows="4" required></textarea><br>
+            <h2 class="h2">게시글 작성</h2>
+            <form id="createPostForm" enctype="multipart/form-data">
+            <label for="postTitle">제목:</label>
+            <input type="text" id="postTitle" name="title" required><br>
 
-        <label for="postImage">이미지 업로드:</label>
-        <input type="file" id="postImage" name="postImage"><br>
+            <label for="postContents">내용:</label>
+            <textarea id="postContents" name="contents" rows="4" required></textarea><br>
 
-        <button type="submit">작성</button>
-        <button type="button" id="cancelButton">취소</button>
+            <label for="postImage">이미지 업로드:</label>
+            <input type="file" id="postImage" name="postImage"><br>
+
+            <button type="submit">작성</button>
+            <button type="button" id="cancelButton">취소</button>
+            </form>
         </form>
     </div>
 </div>
