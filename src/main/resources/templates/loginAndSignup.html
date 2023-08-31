@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,8 +28,9 @@
     <nav class="main-nav">
       <ul>
         <!-- inser more links here -->
-        <li><a class="cd-signin" href="#0">Sign in</a></li>
-        <li><a class="cd-signup" href="#0">Sign up</a></li>
+        <li><a class="cd-signin" href="#0">로그인</a></li>
+        <li><a class="cd-signup" href="#0">회원가입</a></li>
+        <li><a class="cd-logout">로그아웃</a></li>
       </ul>
     </nav>
   </header>
@@ -47,25 +48,30 @@
         <!-- log in form -->
         <form class="cd-form">
           <p class="fieldset">
-            <label class="image-replace cd-email" for="signin-email">E-mail</label>
-            <input class="full-width has-padding has-border" id="signin-email" type="email" placeholder="E-mail">
+            <label class="image-replace cd-username" for="signin-username">아이디</label>
+            <input class="full-width has-padding has-border" id="signin-username" name="username" type="text" placeholder="아이디">
             <span class="cd-error-message">Error message here!</span>
           </p>
 
           <p class="fieldset">
-            <label class="image-replace cd-password" for="signin-password">Password</label>
-            <input class="full-width has-padding has-border" id="signin-password" type="hide" placeholder="Password">
+            <label class="image-replace cd-password" for="signin-password">비밀번호</label>
+            <input class="full-width has-padding has-border" id="signin-password" name="password" type="password" placeholder="비밀번호">
             <a href="#0" class="hide-password">Show</a>
             <span class="cd-error-message">Error message here!</span>
           </p>
 
           <p class="fieldset">
+          <div class="login-buttons">
             <input type="checkbox" id="remember-me">
             <label for="remember-me">Remember me</label>
+            <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=09f2acecd9cd8bf7b7d3f6951daf4548&redirect_uri=http://localhost:8080/api/user/kakao/callback&response_type=code'">
+              카카오로 로그인하기
+            </button>
+          </div>
           </p>
 
           <p class="fieldset">
-            <input class="full-width" type="submit" value="Login">
+            <input class="full-width" type="submit" id="signin-submit" value="Login">
           </p>
         </form>
 
@@ -76,24 +82,55 @@
       <div id="cd-signup">
         <!-- sign up form -->
         <form class="cd-form">
-          <p class="fieldset">
-            <label class="image-replace cd-username" for="signup-username">Username</label>
-            <input class="full-width has-padding has-border" id="signup-username" type="text" placeholder="Username">
+        <p class="fieldset">
+            <label class="image-replace cd-username" for="signup-username">아이디</label>
+            <input class="full-width has-padding has-border" id="signup-username" name="username" type="text" placeholder="Username">
             <span class="cd-error-message">Error message here!</span>
           </p>
 
           <p class="fieldset">
-            <label class="image-replace cd-email" for="signup-email">E-mail</label>
-            <input class="full-width has-padding has-border" id="signup-email" type="email" placeholder="E-mail">
-            <span class="cd-error-message">Error message here!</span>
-          </p>
-
-          <p class="fieldset">
-            <label class="image-replace cd-password" for="signup-password">Password</label>
-            <input class="full-width has-padding has-border" id="signup-password" type="password" placeholder="Password">
+            <label class="image-replace cd-password" for="signup-password">비밀번호</label>
+            <input class="full-width has-padding has-border" id="signup-password" name="password" type="password" placeholder="Password">
             <a href="#0" class="hide-password">Show</a>
             <span class="cd-error-message">Error message here!</span>
           </p>
+
+          <p class="fieldset">
+            <label class="image-replace cd-nickname" for="signup-nickname">닉네임</label>
+            <input class="full-width has-padding has-border" id="signup-nickname" name="nickname" type="text" placeholder="Nickname">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <p class="fieldset">
+            <label class="image-replace cd-email" for="signup-email">이메일</label>
+            <input class="full-width has-padding has-border" id="signup-email" name="email" type="email" placeholder="E-mail">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <!-- 휴대폰 번호 입력 -->
+          <div class="input-with-button">
+            <label class="image-replace cd-phoneNumber" for="signup-phoneNumber">전화번호</label>
+            <input class="full-width has-padding has-border" id="signup-phoneNumber" name="phoneNumber" type="text" placeholder="PhoneNumber">
+            <button id="sendVerificationCode">인증번호 전송</button>
+          </div>
+
+          <!-- 인증 코드 입력 -->
+          <div class="input-with-button">
+            <label class="image-replace cd-phoneVerifyCode" for="signup-phoneVerifyCode">인증번호</label>
+            <input class="full-width has-padding has-border" id="signup-phoneVerifyCode" name="phoneVerifyCode" type="text" placeholder="Enter Verification Code">
+            <button id="verifyCodeButton">인증번호 확인</button>
+          </div>
+
+          <!-- 프로필 이미지 업로드 -->
+          <p class="fieldset">
+            <label for="signup-profileImage" class="file-input-label">
+              <span class="icon">+</span> 파일 선택
+            </label>
+            <input type="file" id="signup-profileImage" name="profileImage" class="file-input">
+          </p>
+          <!-- 선택한 이미지의 URL 표시 -->
+          <img id="selectedImage" src="" alt="Selected Image" style="display: none;">
+
 
           <p class="fieldset">
             <input type="checkbox" id="accept-terms">
@@ -101,7 +138,7 @@
           </p>
 
           <p class="fieldset">
-            <input class="full-width has-padding" type="submit" value="Create account">
+            <input class="full-width has-padding" type="submit" id="signup-submit" value="Create account">
           </p>
         </form>
 
@@ -131,4 +168,8 @@
   </div> <!-- cd-user-modal -->
 </body>
 <script src="/js/app.js"></script>
+<script>
+
+</script>
+
 </html>

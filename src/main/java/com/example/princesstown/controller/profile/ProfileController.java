@@ -2,12 +2,13 @@ package com.example.princesstown.controller.profile;
 
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
-import com.example.princesstown.dto.response.UserResponseDto;
+import com.example.princesstown.dto.response.ProfileResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.profile.ProfileService;
 import com.example.princesstown.service.user.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,36 +23,26 @@ import java.io.IOException;
 public class ProfileController {
 
     private final UserService userService;
+    private final ProfileService profileService;
 
     // 프로필 조회 메서드
     @GetMapping("/api/auth/profile")
     @ResponseBody
-    public UserResponseDto lookupUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ProfileResponseDto lookupUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long userId = userDetails.getUser().getUserId();
-        UserResponseDto userResponse = userService.lookupUser(userId);
+        ProfileResponseDto userResponse = userService.lookupUser(userId);
 
         return userResponse;
     }
 
-
-
+    // 프로필 수정
     @PutMapping("/api/auth/profile")
     @ResponseBody
-    public ApiResponseDto updateUser(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestPart("editRequest") String editRequestJson,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
-
+    public ResponseEntity<ApiResponseDto> updateUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails, @ModelAttribute ProfileEditRequestDto editRequestDto) {
         Long userId = userDetails.getUser().getUserId();
 
-        // JSON 문자열을 ProfileEditRequestDto 객체로 변환
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProfileEditRequestDto editRequestDto = objectMapper.readValue(editRequestJson, ProfileEditRequestDto.class);
-
-        // MultipartFile을 DTO에 설정
-        editRequestDto.setProfileImage(profileImage);
-
-        return userService.updateUser(userId, editRequestDto);
+        return profileService.updateUser(userId, editRequestDto);
     }
 
 

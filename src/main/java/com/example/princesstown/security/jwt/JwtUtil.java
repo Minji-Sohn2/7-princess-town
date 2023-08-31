@@ -3,6 +3,8 @@ package com.example.princesstown.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,8 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
+@RequiredArgsConstructor
 @Component
 public class JwtUtil { // JWT와 관련된 주요 기능을 제공
 
@@ -23,7 +27,7 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 100000L; // 100시간, 기준은 밀리세컨드
+    private final long TOKEN_TIME = 24 * 60 * 60 * 1000L; // 1일
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -51,7 +55,6 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
     }
-
 
     // JWT 토큰 substring
     public String substringToken(String tokenValue) {
@@ -83,5 +86,12 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-}
 
+    // Jwt 토큰에서 사용자 이름 추출
+    // Stomp header 에서 가져옴
+    public String getUsernameFromJwt(String rawToken) {
+        String tokenValue = substringToken(rawToken);
+        Claims info = getUserInfoFromToken(tokenValue);
+        return info.getSubject();
+    }
+}

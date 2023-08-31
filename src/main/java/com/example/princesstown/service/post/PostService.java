@@ -11,7 +11,7 @@ import com.example.princesstown.repository.board.BoardRepository;
 import com.example.princesstown.repository.post.LikeRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import com.example.princesstown.repository.post.SearchHistoryRepository;
-import com.example.princesstown.service.S3Uploader;
+import com.example.princesstown.service.awsS3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

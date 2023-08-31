@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.geo.Point;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,20 +14,23 @@ import java.util.List;
 @Setter
 @Table(name = "location")
 @NoArgsConstructor
-
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long locationId;
 
     @Column
-    private Long latitude;
-    @Column
-    private Long longitude;
+    private Double latitude; // 위도
 
     @Column
-    private Point point;
+    private Double longitude; // 경도
+
+    @Column(name = "last_update")
+    private LocalDateTime lastUpdate; // 위치 업데이트 시간 기록
 
     @OneToMany(mappedBy = "location")
-    private List<User> Locationlist = new ArrayList<>();
+    private List<User> users = new ArrayList<>(); // Location과 User 간의 일대다 관계 설정
+
+//    @OneToMany(mappedBy = "location")
+//    private List<Post> locationPosts = new ArrayList<>(); // Location과 Post 간의 일대다 관계 설정
 }

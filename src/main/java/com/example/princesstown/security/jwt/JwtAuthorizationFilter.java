@@ -37,33 +37,28 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-
         // 헤더에서 JWT 토큰 가져오기
         String tokenValue = req.getHeader(JwtUtil.AUTHORIZATION_HEADER);
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
-            log.info(tokenValue);
+            log.info("Extracted token: " + tokenValue);
 
             // 유효성 검증
             if (!jwtUtil.validateToken(tokenValue) || tokenBlacklistService.isBlacklisted(tokenValue)) {
-                log.error("Token Error");
+                log.error("Token Error: Invalid token or blacklisted");
                 return;
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            String username = info.getSubject();
 
-            try {
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
-            }
+                // 실제 사용자의 username을 가져오는 코드
+                log.info("Setting authentication for username: " + username);
+                setAuthentication(username);
         }
 
         filterChain.doFilter(req, res);
@@ -71,11 +66,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     // 인증 처리
     public void setAuthentication(String username) {
+        log.info("Setting authentication for username: " + username);
+
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
 
         SecurityContextHolder.setContext(context);
+
+        log.info("Authentication set for username: " + username);
     }
 
     // 인증 객체 생성
@@ -84,4 +83,3 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }
-
