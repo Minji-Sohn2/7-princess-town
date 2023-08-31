@@ -56,6 +56,22 @@ if (token) {
             console.log(e.message)
         }
     })
+
+    const tokenData = payload.exp;
+    const expirationTimeInMillis= tokenData * 1000;
+    const timeUntilExpiration = expirationTimeInMillis - Date.now();
+    setTimeout(deleteToken, timeUntilExpiration);
+
+    function deleteToken() {
+        Swal.fire({
+            icon: 'warning',
+            title: '토큰 만료',
+            text: '토큰이 만료되었습니다. 다시 로그인를 해주십시요.'
+        });
+        Cookies.remove('Authorization');
+        window.location.reload();
+    }
+
 } else if (token === undefined || token === "") {
     usernames = "Guest"
     nickname = "Guest"
@@ -75,24 +91,6 @@ $.ajax({
         $('.comment-h2').text("댓글 ( 댓글수 : " + commentsList + " )");
     }
 })
-
-// 토큰 만료기간을 밀리초로 변환후 지금 로컬타임과 비교하여 기간이 지날경우 자동 로그인 해제
-const payload = JSON.parse(atob(token.split(".")[1]));
-const tokenData = payload.exp;
-const expirationTimeInMillis= tokenData * 1000;
-const timeUntilExpiration = expirationTimeInMillis - Date.now();
-setTimeout(deleteToken, timeUntilExpiration);
-
-function deleteToken() {
-    Swal.fire({
-        icon: 'warning',
-        title: '토큰 만료',
-        text: '토큰이 만료되었습니다. 다시 로그인를 해주십시요.'
-    });
-    Cookies.remove('Authorization');
-    window.location.reload();
-}
-// 토큰 만료 끝
 
 // 화면이 띄워질경우 실행되는 메소드
 $(document).ready(function () {
