@@ -4,8 +4,8 @@ import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.message.MessageService;
 import com.example.princesstown.service.user.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Controller
@@ -23,21 +22,19 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDto> signup(
-            @ModelAttribute @Valid SignupRequestDto signupRequestDto,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            HttpServletRequest request) {
+    private final MessageService messageService;
 
-        if (profileImage != null && !profileImage.isEmpty()) {
-            signupRequestDto.setProfileImage(profileImage);
-        }
-
-        return userService.signup(signupRequestDto, request);
+    // 휴대폰 인증 코드 발송
+    @PostMapping("/send-phone-verification-code")
+    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) throws Exception {
+        return messageService.sendVerificationCode(phoneNumber);
     }
 
-
+    // 회원가입
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponseDto> signup(@ModelAttribute @Valid SignupRequestDto signupRequestDto) {
+        return userService.signup(signupRequestDto);
+    }
 
     // 회원탈퇴
     @DeleteMapping("/delete")
@@ -59,7 +56,6 @@ public class UserController {
     public ResponseEntity<ApiResponseDto> logout(@RequestHeader("Authorization") String token) {
         // UserService의 로그아웃 로직 호출
         ApiResponseDto response = userService.logout(token);
-
         return ResponseEntity.ok(response);
     }
 

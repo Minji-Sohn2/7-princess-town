@@ -1,6 +1,5 @@
 package com.example.princesstown.config;
 
-
 import com.example.princesstown.security.jwt.JwtAuthenticationFilter;
 import com.example.princesstown.security.jwt.JwtAuthorizationFilter;
 import com.example.princesstown.security.jwt.JwtUtil;
@@ -85,8 +84,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/img/**").permitAll()
                         .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/ws-stomp/**").permitAll()
+                        .requestMatchers("/code/**").permitAll()
                         .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
+
 
         // 로그인 페이지 설정
         http.formLogin((formLogin) ->

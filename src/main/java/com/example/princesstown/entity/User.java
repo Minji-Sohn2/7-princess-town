@@ -14,7 +14,6 @@ import java.util.*;
 @NoArgsConstructor
 @Table(name = "user")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -37,9 +36,6 @@ public class User {
     @Column
     private String profileImage;
 
-//    @Column(nullable = false)
-//    private String PhoneVerifyCode;
-
     /* 연관관계 */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatUser> chatUserList = new ArrayList<>();
@@ -54,7 +50,6 @@ public class User {
         this.nickname = signupRequestDto.getNickname();
         this.email = signupRequestDto.getEmail();
         this.phoneNumber = signupRequestDto.getPhoneNumber();
-//        this.PhoneVerifyCode = signupRequestDto.getPhoneVerifyCode();
     }
 
     public User(KakaoUserInfoDto kakaoUserInfoDto, String encodedPassword) {
@@ -67,6 +62,11 @@ public class User {
         this.password = encodedPassword;
         this.nickname = naverUserInfoDto.getNickname();
         this.userId = Long.valueOf(naverUserInfoDto.getId());
+    }
+
+    public User(String storedUsername, String encodedTempPassword) {
+        this.username = storedUsername;
+        this.password = encodedTempPassword;
     }
 
     public void editProfile(ProfileEditRequestDto profileEditRequestDto, String password) {

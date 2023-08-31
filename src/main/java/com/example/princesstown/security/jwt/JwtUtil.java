@@ -14,8 +14,6 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 100000L; // 100시간, 기준은 밀리세컨드
+    private final long TOKEN_TIME = 24 * 60 * 60 * 1000L; // 1일
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -52,40 +50,6 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
-                        .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-                        .compact();
-    }
-
-    // 토큰 생성
-    public String createToken(String username, String nickname) {
-        Date date = new Date();
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("username", username);
-        claims.put("nickname", nickname);
-
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .setClaims(claims) // 클레임 설정
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
-                        .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-                        .compact();
-    }
-
-    // 인증정보(createTime,endTime,authNum,username)이 담긴 Map을 Claims에 저장
-    public String createToken(Map<String, Object> authNumMap) {
-        Date date = new Date();
-        log.info("Received authNumMap: " + authNumMap);
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("authStatus", authNumMap);
-
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .setClaims(claims) // authMap의 정보를 Claims로 설정
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘

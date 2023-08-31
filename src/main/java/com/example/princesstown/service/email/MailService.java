@@ -1,7 +1,7 @@
 package com.example.princesstown.service.email;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -10,9 +10,10 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MailService {
-    @Autowired
-    private JavaMailSender mailSender;
+
+    private final JavaMailSender mailSender;
 
     public void sendUsernames(String email, List<String> username) {
         SimpleMailMessage message = new  SimpleMailMessage();
@@ -45,21 +46,21 @@ public class MailService {
         }).start();
     }
 
-    public void sendAuthNum(String email, String authNum) {
-        SimpleMailMessage message = new  SimpleMailMessage();
+    public void sendTemporaryPassword(String email, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("비밀번호 찾기 인증번호");
+        message.setSubject("비밀번호 찾기 임시 비밀번호");
 
-        String text = "인증번호는 " + authNum + "입니다";
+        String text = "임시 비밀번호는 " + tempPassword + "입니다";
 
         message.setText(text);
         new Thread(() -> {
             log.info("Sending email...");
             try {
                 mailSender.send(message);
-                log.info("Email sent successfully."); // 로그 추가
+                log.info("Email sent successfully.");
             } catch (Exception e) {
-                log.error("Failed to send email: {}", e.getMessage(), e); // 에러 로그 추가
+                log.error("Failed to send email: {}", e.getMessage(), e);
             }
         }).start();
     }
