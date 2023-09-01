@@ -83,7 +83,7 @@ public class UserController {
     // view.html 부분
     @GetMapping("/login-page")
     public String loginAndsignupPage() {
-        return "ex";
+        return "loginAndSignup";
     } // loginAndsignup.html view
 }
 
