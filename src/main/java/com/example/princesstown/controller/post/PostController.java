@@ -32,7 +32,7 @@ public class PostController {
     private final LocationService locationService;
 
     //게시글 전체 조회 API
-    @GetMapping("/board/posts")
+    @GetMapping("/boards/posts")
     public List<PostResponseDto> getPosts(){
         return postService.getPosts();
     }
@@ -44,13 +44,13 @@ public class PostController {
     }
 
     //선택 게시판 게시글 전체 조회
-    @GetMapping("/board/{boardId}/posts")
+    @GetMapping("/boards/{boardId}/posts")
     public List<Post> getAllPostsByBoardId(@PathVariable Long boardId) {
         return postService.getAllPostsByBoardId(boardId);
     }
 
     //게시글 선택 조회 API
-    @GetMapping("/board/{boardId}/posts/{postId}")
+    @GetMapping("/boards/{boardId}/posts/{postId}")
     public PostResponseDto getPost(@PathVariable Long boardId, @PathVariable Long postId){
 
         postService.incrementViewCount(postId);
@@ -83,12 +83,12 @@ public class PostController {
     }
 
     // 게시글 등록 API
-    @PostMapping("/board/{boardId}/posts")
+    @PostMapping("/boards/{boardId}/posts")
     @ResponseBody
     public ResponseEntity<ApiResponseDto> createPost(@ModelAttribute PostRequestDto postRequestDto,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                      @PathVariable Long boardId,
-                                                     @RequestPart(value = "imageFile", required = false) MultipartFile postImage){
+                                                     @RequestPart(value = "postImage", required = false) MultipartFile postImage){
 
         log.info("title : " + postRequestDto.getTitle());
         log.info("contents : " + postRequestDto.getContents());
@@ -97,6 +97,7 @@ public class PostController {
             try {
                 String imageUrl = s3Uploader.upload(postImage, "post-images");
                 postRequestDto.setPostImageUrl(imageUrl);
+                log.info("image : " + imageUrl);
             } catch (IOException e) {
                 log.error("이미지 업로드 실패: " + e.getMessage());
                 return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패했습니다."));
@@ -109,7 +110,7 @@ public class PostController {
     }
 
     // 게시글 수정 API
-    @PutMapping("/board/{boardId}/posts/{postId}")
+    @PutMapping("/boards/{boardId}/posts/{postId}")
     public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long boardId,
                                                      @PathVariable Long postId,
                                                      @ModelAttribute PostRequestDto postRequestDto,
@@ -124,7 +125,7 @@ public class PostController {
 
 
     // 게시글 삭제 API
-    @DeleteMapping("/board/{boardId}/posts/{postId}")
+    @DeleteMapping("/boards/{boardId}/posts/{postId}")
     public ApiResponseDto deletePost(@PathVariable Long boardId,
                                      @PathVariable Long postId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -132,17 +133,15 @@ public class PostController {
     }
 
     //게시글 좋아요 API
-    @PostMapping("/board/{boardId}/posts/{postId}/like")
-    public ResponseEntity<ApiResponseDto> likeBlog(@PathVariable Long boardId,
-                                                   @PathVariable Long postId,
+    @PostMapping("/posts/{postId}/like")
+    public ResponseEntity<ApiResponseDto> likeBlog(@PathVariable Long postId,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(likeService.likePost(postId, userDetails.getUser()));
     }
 
     //게시글 좋아요 취소 API
-    @DeleteMapping("/board/{boardId}/posts/{postId}/like")
-    public ResponseEntity<ApiResponseDto> deleteLikeBlog(@PathVariable Long boardId,
-                                                         @PathVariable Long postId,
+    @DeleteMapping("/posts/{postId}/like")
+    public ResponseEntity<ApiResponseDto> deleteLikeBlog(@PathVariable Long postId,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(likeService.deleteLikePost(postId, userDetails.getUser()));
     }

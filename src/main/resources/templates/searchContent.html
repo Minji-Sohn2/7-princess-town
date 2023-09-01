@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>게시판 및 인기검색어</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .content {
+            display: flex;
+            width: 50%;
+        }
+
+        .sidebar {
+            padding: 20px;
+            background-color: #f2f2f2;
+            min-width: 200px;
+        }
+
+        .box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .board-list, .search-ranking {
+            list-style: none;
+            padding: 0;
+            margin: 0; /* remove default margin for ul/ol */
+        }
+
+        .board-list li, .search-ranking li {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .board-list li:last-child, .search-ranking li:last-child {
+            margin-bottom: 0;
+        }
+
+        .post-title {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .post-info {
+            font-size: 12px;
+            color: #777;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        .post {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px;
+            background-color: #fff;
+            margin: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .post-title-container {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .post-info-container {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="sidebar">
+        <div class="box">
+            <h2 class="h2">인기검색어</h2>
+            <ol class="search-ranking">
+                <!--                <li>검색어 1</li>-->
+            </ol>
+        </div>
+        <div>
+            <ul class="board-list">
+                <li><a href="/view/mainpage">전체게시판</a></li>
+                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                <th:block th:each="board : ${boardList}">
+                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+        <div>
+            <form class="search-form">
+                <select name="searchType" id="searchType">
+                    <option value="title">제목</option>
+                    <option value="contents">내용</option>
+                    <option value="titleAndContents">제목+내용</option>
+                </select>
+                <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
+                <button type="submit">검색</button>
+            </form>
+        </div>
+        <div class="posts">
+            <h2 class="h2">검색 결과</h2>
+            <ul class="post-list">
+                <th:block th:if="${searchContentsResults.isEmpty()}">
+                    <p>검색결과가 없습니다.</p>
+                </th:block>
+                <th:block th:else>
+                    <li th:each="post : ${searchContentsResults}" class="post">
+                        <div class="post-content">
+                            <div class="post-title-container">
+                                <a th:href="@{/view/posts/{postId}(postId=${post.id})}">
+                                    <!-- 검색 결과 게시물 제목을 표시합니다 -->
+                                    <span class="post-title" th:text="${post.title}"></span>
+                                </a>
+                            </div>
+                            <div class="post-info-container">
+                                <!-- 검색 결과 게시물 정보를 표시합니다 -->
+                                <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCount}"></span>
+                            </div>
+                        </div>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // ... (이전 JavaScript 코드 생략)
+
+        // 검색 폼 제출 시 처리
+        $(".search-form").submit(function(event) {
+            event.preventDefault(); // 기본 제출 동작 방지
+
+            var searchType = $("#searchType").val();
+            var searchKeyword = $("#searchKeyword").val();
+
+            if (searchType === "title") {
+                window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
+            } else if (searchType === "contents") {
+                window.location.href = "/view/searchContent?contents=" + encodeURIComponent(searchKeyword);
+            } else if (searchType === "titleAndContents") {
+                window.location.href = "/view/searchKeyword?keyword=" + encodeURIComponent(searchKeyword);
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        // 인기검색어 데이터를 가져와서 HTML에 렌더링하는 함수
+        function renderPopularSearches(data) {
+            var searchRanking = $(".search-ranking");
+            searchRanking.empty(); // 기존 목록 비우기
+
+            $.each(data, function(index, popularSearch) {
+                var listItem = $("<li>").text(popularSearch.keyword);
+                listItem.on("click", function() {
+                    // 검색어 클릭 시 검색 결과 페이지로 이동
+                    var keyword = encodeURIComponent(popularSearch.keyword);
+                    var searchType = "titleAndContents"; // 예시로 제목+내용 검색 유형 사용
+                    window.location.href = "/view/searchKeyword?searchType=" + searchType + "&keyword=" + keyword;
+                });
+                searchRanking.append(listItem);
+            });
+        }
+        // 백엔드 API 호출하여 인기검색어 데이터 가져오기
+        $.ajax({
+            url: "/api/popular-searches",
+            method: "GET",
+            success: function(data) {
+                renderPopularSearches(data);
+            },
+            error: function() {
+                console.error("Error fetching popular searches data.");
+            }
+        });
+    });
+</script>
+</html>

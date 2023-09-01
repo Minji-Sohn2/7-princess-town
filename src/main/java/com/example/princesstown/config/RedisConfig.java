@@ -34,6 +34,7 @@ public class RedisConfig {
 
         return new LettuceConnectionFactory(redisConfig);
     }
+
     /**
      * 단일 Topic 사용을 위한 Bean 설정
      */

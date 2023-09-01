@@ -43,10 +43,6 @@ a.list-group-item .vs-title {
     font-size: 110px;
 }
 
-.social a {
-    text-decoration: none;
-}
-
 .media {
     padding: 10px;
 }
@@ -186,103 +182,6 @@ a.boxclose{
     vertical-align:middle;
 
 }
-/*--//userinfo--*/
-/*----start-post-grids----*/
-.post-share span{
-    background: no-repeat 0px 0px;
-    height:26px;
-    width:26px;
-    display:inline-block;
-    border-radius:30em;
-    -webkit-border-radius:30em;
-    -moz-border-radius:30em;
-    -o-border-radius:30em;
-}
-.post-share span:hover{
-    background:no-repeat 0px 0px;
-}
-.rateit span{
-    height:18px;
-    width:76px;
-    background:no-repeat 0px 0px;
-    display:inline-block;
-}
-.rateit span:hover{
-    background: no-repeat 0px 0px;
-}
-.post-basic-info{
-    padding: 7% 7% 5% 7%;
-}
-.post-basic-info h3 a{
-    color: #717171;
-    font-size: 1.2em;
-    margin-bottom: 0.2em;
-    display: block;
-    transition:0.5s all;
-    -webkit-transition:0.5s all;
-    -moz-transition:0.5s all;
-    -o-transition:0.5s all;
-}
-.post-basic-info h3 a:hover{
-    color:#B9CB41;
-}
-.post-basic-info span a{
-    color:#ACAAAA;
-    font-size:0.9em;
-}
-.post-basic-info span a label{
-    height:12px;
-    width:12px;
-    display:inline-block;
-    background:no-repeat 0px 0px;
-    margin-right: 0.4em;
-    transition:0.5s all;
-    -webkit-transition:0.5s all;
-    -moz-transition:0.5s all;
-    -o-transition:0.5s all;
-}
-.post-basic-info span a:hover{
-    color:#B9CB41;
-}
-.post-basic-info p{
-    font-size: 0.875em;
-    color: #B7B5B5;
-    margin: 0.6em 0;
-    line-height: 1.5em;
-}
-/*--post-info-rate-share--*/
-.post-info-rate-share{
-    border-top: 1px solid rgba(183, 181, 181, 0.36);
-    padding: 4% 0 2%;
-}
-.rateit{
-    float:left;
-    margin: 0.18em 0 0 1em;
-}
-.post-share{
-    float:right;
-    margin-right:1.5em;
-}
-/*--footer--*/
-.footer{
-    position:fixed;
-    bottom:10px;
-    right:15px;
-}
-.footer p{
-    color:#8C8C8C;
-    font-size:0.9em;
-}
-.footer p a{
-    color:#B9CB41;
-    transition:0.5s all;
-    -webkit-transition:0.5s all;
-    -moz-transition:0.5s all;
-    -o-transition:0.5s all;
-}
-.footer p a:hover{
-    color:#8C8C8C;
-}
 /*----start-single-page----*/
 .artical-content h3 a{
     font: 400 28px/28px 'Jua', sans-serif;
@@ -332,10 +231,6 @@ a.boxclose{
 .artical-links{
     padding: 10px 0px;
     float: left;
-}
-.share-artical {
-    float: right;
-    padding: 10px;
 }
 .artical-links ul li{
     display:inline-block;
@@ -560,12 +455,6 @@ p.para {
     font-size: 0.85em;
     margin-bottom: 5px;
     font-family: 'Open Sans', sans-serif;
-}
-span.mail a {
-    color:#B9CB41;
-}
-span.mail a:hover{
-    color:#626262;
 }
 .contact-to input[type="text"] {
     padding: 12px 10px;
@@ -793,15 +682,6 @@ span.mail a:hover{
     .artical-links {
         float:none;
     }
-    .share-artical{
-        float:none;
-        margin:0em 0 0 0;
-        padding:0;
-    }
-    .share-artical ul li a ,.artical-links ul li a{
-        padding-right: 20px;
-        padding-left:0;
-    }
     .grids_of_2 h2 {
         font: 400 26px/28px 'Open Sans', sans-serif;
         padding: 0.8em 0 0.5em;
@@ -1007,15 +887,6 @@ span.mail a:hover{
     }
     .artical-links {
         float:none;
-    }
-    .share-artical{
-        float:none;
-        margin:0em 0 0 0;
-        padding:0;
-    }
-    .share-artical ul li a ,.artical-links ul li a{
-        padding-right: 20px;
-        padding-left:0;
     }
     .grids_of_2 h2 {
         font: 400 26px/28px 'Open Sans', sans-serif;
@@ -1495,6 +1366,48 @@ span.mail a:hover{
     opacity: 0;
 }
 
+.edit-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+
+    /* 숨기기 */
+    z-index: -1;
+    opacity: 0;
+}
+
+.reply-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+
+    /* 숨기기 */
+    z-index: -1;
+    opacity: 0;
+}
+
+.editreply-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+
+    /* 숨기기 */
+    z-index: -1;
+    opacity: 0;
+}
+
 .show {
     opacity: 1;
     z-index: 1000;
@@ -1523,6 +1436,74 @@ span.mail a:hover{
     transform: translate(-50%, -40%);
 }
 
+.editpopup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+
+    /* 임시 지정 */
+    width: 430px;
+    height: 550px;
+
+    /* 초기에 약간 아래에 배치 */
+    transform: translate(-50%, -40%);
+}
+
+.replypopup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+
+    /* 임시 지정 */
+    width: 430px;
+    height: 550px;
+
+    /* 초기에 약간 아래에 배치 */
+    transform: translate(-50%, -40%);
+}
+
+.editreplypopup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+
+    /* 임시 지정 */
+    width: 430px;
+    height: 550px;
+
+    /* 초기에 약간 아래에 배치 */
+    transform: translate(-50%, -40%);
+}
+
+.show .popup {
+    transform: translate(-50%, -50%);
+    transition: all .5s;
+}
+
+.show .editpopup {
+    transform: translate(-50%, -50%);
+    transition: all .5s;
+}
+
+.show .replypopup {
+    transform: translate(-50%, -50%);
+    transition: all .5s;
+}
+
+.show .editreplypopup {
+    transform: translate(-50%, -50%);
+    transition: all .5s;
+}
+
 #close {
     position: absolute;
     bottom: 101%;
@@ -1537,9 +1518,46 @@ span.mail a:hover{
     display: flex;
 }
 
-.show .popup {
-    transform: translate(-50%, -50%);
-    transition: all .5s;
+#editclose {
+    position: absolute;
+    bottom: 101%;
+    left: 93.8%;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    font-size: 23px;
+    color: white;
+    justify-content: center;
+    display: flex;
+}
+
+#replyclose {
+    position: absolute;
+    bottom: 101%;
+    left: 93.8%;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    font-size: 23px;
+    color: white;
+    justify-content: center;
+    display: flex;
+}
+
+#editreplyclose {
+    position: absolute;
+    bottom: 101%;
+    left: 93.8%;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    font-size: 23px;
+    color: white;
+    justify-content: center;
+    display: flex;
 }
 
 #show {
@@ -1552,4 +1570,146 @@ span.mail a:hover{
     border: none;
     top: 89%;
     left: 0.2%;
+}
+
+.editshow {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    top: 86%;
+    left: 0.4%;
+}
+
+.replyshow {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    top: 86%;
+    left: 0.4%;
+}
+
+.editreplyshow {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    top: 86%;
+    left: 0.4%;
+}
+
+#img-wrap {
+    height: 100px;
+    width: 100px;
+    display: flex;
+    position: relative;
+}
+
+#img-wrap img {
+    position: absolute;
+    bottom: 0;
+}
+
+#img-wrap a {
+    position: absolute;
+    cursor: pointer;
+    bottom: 80%;
+    left: 90%;
+}
+
+.editemoji-container {
+    height: 100px;
+    width: 100px;
+    position: relative;
+}
+
+.editclose {
+    cursor: pointer;
+    position: absolute;
+    bottom: 95%;
+    left: 115%;
+}
+
+.replyemoji-container {
+    height: 100px;
+    width: 100px;
+    position: relative;
+}
+
+.replyclose {
+    cursor: pointer;
+    position: absolute;
+    bottom: 95%;
+    left: 115%;
+}
+
+.editreplyemoji-container {
+    height: 100px;
+    width: 100px;
+    position: relative;
+}
+
+.editreplyclose {
+    cursor: pointer;
+    position: absolute;
+    bottom: 95%;
+    left: 115%;
+}
+
+.btn-replycreate {
+    position: absolute;
+    top: 79.7%;
+    left: 61%;
+}
+
+.userEditCommentsComplete {
+    position: absolute;
+    top: 79.7%;
+    left: 61%;
+}
+.btn-replyedit {
+    position: absolute;
+    top: 79.7%;
+    left: 61%;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translateZ(0);
+    }
+}
+
+#replyList {
+    animation: fadeInDown 1s;
+}
+
+.userReply-Form {
+    animation: fadeInDown 1s;
+}
+
+.userCommentEdit-Form {
+    animation: fadeInDown 1s;
+}
+
+.userReplyEdit-Form {
+    animation: fadeInDown 1s;
+}
+
+.commentbox {
+    animation: fadeInDown 1s;
 }

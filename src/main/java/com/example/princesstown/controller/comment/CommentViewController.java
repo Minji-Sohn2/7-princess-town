@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class CommentViewController {
     @GetMapping("/view/posts/1/comment")
     public String ViewComment() {
-        return "comment-list";
+        return "postDetails";
     }
 }
