@@ -118,7 +118,7 @@ public class ViewController {
 
     //게시글 작성
     @GetMapping("/createpost")
-    public String createPostView(Model model) {
+    public String createPostView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         List<BoardResponseDto> boardList = boardService.getBoard();
         model.addAttribute("boardList", boardList);

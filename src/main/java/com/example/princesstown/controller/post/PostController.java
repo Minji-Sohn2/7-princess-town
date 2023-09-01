@@ -90,6 +90,12 @@ public class PostController {
                                                      @PathVariable Long boardId,
                                                      @RequestPart(value = "imageFile", required = false) MultipartFile postImage){
 
+//        if (userDetails == null) {
+//            // 사용자가 인증되지 않은 상태에서 호출한 경우에 대한 처리
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(new ApiResponseDto(HttpStatus.UNAUTHORIZED.value(), "인증되지 않은 사용자입니다."));
+//        }
+
         log.info("title : " + postRequestDto.getTitle());
         log.info("contents : " + postRequestDto.getContents());
 

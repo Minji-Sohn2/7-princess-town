@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
@@ -171,15 +172,24 @@
             }
         });
 
+        var token = Cookies.get('Authorization');
+        console.log(token);
+
+        var urlParts = window.location.pathname.split("/");
+        var postId = urlParts[urlParts.length - 1];
+
         function handleLike(postId) {
             $.ajax({
                 url: "/api/posts/" + postId + "/like",
                 method: "POST",
+                headers: {
+                    'Authorization': token, // 토큰주입 임시방편 `${token}`
+                },
                 success: function(response) {
                     if (response.success) {
                         alert("게시물을 좋아요 했습니다!");
                         // 페이지 새로고침 (좋아요 수 업데이트)
-                        window.location.reload();
+                        // window.location.reload();
                     } else {
                         alert("좋아요 처리에 실패했습니다.");
                     }
@@ -189,9 +199,6 @@
                 }
             });
         }
-
-        var urlParts = window.location.pathname.split("/");
-        var postId = urlParts[urlParts.length - 1];
 
         // 좋아요 버튼 클릭 이벤트 처리
         $("#likeButton").click(function() {
