@@ -182,6 +182,8 @@ $(document).ready(function() {
     const code = new URL(window.location.href).searchParams.get("code");
     console.log("code : " + code)
     if (code == null) {
+        return;
+    } else {
         $.ajax({
             url: KAKAO_REDIRECT_URL,
             method: "GET",
