@@ -183,13 +183,12 @@
                 url: "/api/posts/" + postId + "/like",
                 method: "POST",
                 headers: {
-                    'Authorization': token, // 토큰주입 임시방편 `${token}`
+                    'Authorization': token, // 토큰주입 임시방편
                 },
                 success: function(response) {
                     if (response.success) {
                         alert("게시물을 좋아요 했습니다!");
-                        // 페이지 새로고침 (좋아요 수 업데이트)
-                        // window.location.reload();
+                        window.location.reload();
                     } else {
                         alert("좋아요 처리에 실패했습니다.");
                     }

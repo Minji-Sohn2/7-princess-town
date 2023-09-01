@@ -91,7 +91,6 @@
         <div class="box">
             <h2 class="h2">인기검색어</h2>
             <ol class="search-ranking">
-                <!--                <li>검색어 1</li>-->
             </ol>
         </div>
         <div>
@@ -195,11 +194,14 @@
         $("#createPostForm").submit(function(event) {
             event.preventDefault();
 
-            var formData = new FormData(this);
+            var formData = new FormData($("#createPostForm")[0]);
+            // FormData 객체 내용 확인
+            var postImage = formData.get('postImage');
+            console.log('postImage:', postImage);
 
             var url = "/api/boards/" + $("#boardId").val() + "/posts";
-            // var value = document.cookie.match('(^|;) ?' + "Authorization" + '=([^;]*)(;|$)');
-            // var token = value[2];
+
+            //이미지가 첨부되지 않는 쿠키
             var token = Cookies.get('Authorization');
             console.log(token);
 
@@ -207,16 +209,14 @@
                 url: url,
                 method: "POST",
                 headers: {
-                    'Authorization': token, // 토큰주입 임시방편 `${token}`
+                    'Authorization': token,
                 },
                 data: formData,
                 contentType: false,
                 processData: false,
-                // ajax요청이 전송되기 직전에 헤더에 토큰을 전달
-                // beforeSend: function (xhr) {
-                //     xhr.setRequestHeader("Authorization", token);
-                // },
                 success: function(response) {
+                    console.log('FormData:', formData);
+                    console.log('postImage:', postImage);
                     alert("게시글을 작성하였습니다!");
                 },
                 error: function() {

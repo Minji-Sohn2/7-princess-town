@@ -88,13 +88,7 @@ public class PostController {
     public ResponseEntity<ApiResponseDto> createPost(@ModelAttribute PostRequestDto postRequestDto,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                      @PathVariable Long boardId,
-                                                     @RequestPart(value = "imageFile", required = false) MultipartFile postImage){
-
-//        if (userDetails == null) {
-//            // 사용자가 인증되지 않은 상태에서 호출한 경우에 대한 처리
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(new ApiResponseDto(HttpStatus.UNAUTHORIZED.value(), "인증되지 않은 사용자입니다."));
-//        }
+                                                     @RequestPart(value = "postImage", required = false) MultipartFile postImage){
 
         log.info("title : " + postRequestDto.getTitle());
         log.info("contents : " + postRequestDto.getContents());
@@ -103,6 +97,7 @@ public class PostController {
             try {
                 String imageUrl = s3Uploader.upload(postImage, "post-images");
                 postRequestDto.setPostImageUrl(imageUrl);
+                log.info("image : " + imageUrl);
             } catch (IOException e) {
                 log.error("이미지 업로드 실패: " + e.getMessage());
                 return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패했습니다."));

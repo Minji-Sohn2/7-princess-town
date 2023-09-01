@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="/css/ex.css">
+    <title>Document</title>
+</head>
+<body>
+<!-- Header -->
+<div class="ui secondary pointing menu">
+    <!-- 로그인과 회원가입 버튼에 데이터-modal 속성 추가 -->
+    <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>
+    <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>
+    <a class="item">로그아웃</a>
+</div>
+<!-- Signup Form -->
+<div class="ui segment">
+    <div class="ui segment modal" id="signupModal">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="username" placeholder="아이디">
+            </div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="password" placeholder="비밀번호">
+            </div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" name="nickname" placeholder="닉네임">
+            </div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" name="email" placeholder="이메일">
+            </div>
+            <div class="field">
+                <label>전화번호</label>
+                <div class="ui action input">
+                    <input type="text" name="phoneNumber" placeholder="전화번호">
+                    <button class="ui button" id="sendVerificationCode">인증번호 전송</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>인증번호</label>
+                <div class="ui action input">
+                    <input type="text" name="phoneVerifyCode" placeholder="인증번호">
+                    <button class="ui button" id="verifyCodeButton">인증번호 확인</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>프로필 이미지</label>
+                <input type="file" name="profileImage">
+            </div>
+            <div class="inline field">
+                <div class="ui checkbox">
+                    <input type="checkbox" id="accept-terms">
+                    <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
+                </div>
+            </div>
+            <button class="ui button" type="submit">회원가입</button>
+        </form>
+    </div>
+</div>
+<!-- Login Form (새로 추가) -->
+<div class="ui segment modal" id="loginModal">
+    <form class="ui form">
+        <div class="field">
+            <label>아이디</label>
+            <input type="text" name="login-username" placeholder="아이디">
+        </div>
+        <div class="field">
+            <label>비밀번호</label>
+            <input type="password" name="login-password" placeholder="비밀번호">
+        </div>
+        <button class="ui button" type="submit">로그인</button>
+        <button class="custom-image-button" id="naverLogin">
+            <img src="/img/loginButton/naverButton.png" class="icon-img">
+        </button>
+        <button class="custom-image-button" id="kakaoLogin">
+            <img src="/img/loginButton/kakaoButton.png" class="icon-img">
+        </button>
+    </form>
+    <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
+</div>
+<!-- Password Reset Form -->
+<div class="ui segment modal" id="passwordResetModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>E-mail</label>
+                <input type="email" id="reset-email" placeholder="E-mail">
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="text" id="reset-phoneNumber" placeholder="Phone Number">
+            </div>
+            <div class="field">
+                <label>Verification Code</label>
+                <input type="text" id="inputCode" placeholder="Enter Verification Code">
+            </div>
+            <button class="ui button" type="button" id="reset-sendVerificationCode">Send Verification Code</button>
+            <button class="ui button" type="button" id="verifyPhoneNumber">Verify Phone Number</button>
+            <button class="ui button" type="button" id="sendTempPassword">Reset Password with Temporary Password</button>
+            <button class="ui button" type="button" id="tempLoginButton">Login with Temporary Password</button>
+        </form>
+        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<script src="/js/Ex.js"></script>
+</body>
+</html>

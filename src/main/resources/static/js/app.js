@@ -16,6 +16,53 @@ jQuery(document).ready(function($) {
 		$main_nav = $('.main-nav')
 
 
+	// 회원가입 문자 인증번호 전송 버튼 클릭 이벤트
+	$('#sendVerificationCode').on('click', function (event) {
+		event.preventDefault();
+
+		var phoneNumber = $signup_phoneNumber.val();
+
+		$.ajax({
+			url: "/auth/send-phone-verification-code",
+			type: "POST",
+			data: {phoneNumber: phoneNumber},
+			success: function (response) {
+				alert("인증번호가 전송되었습니다.");
+			},
+			error: function (error) {
+				alert("인증번호 전송 실패. 다시 시도해주세요.");
+			}
+		});
+	});
+
+	// 인증번호 확인 버튼 클릭 이벤트
+	$('#verifyCodeButton').on('click', function(event) {
+		event.preventDefault();
+
+		var phoneNumber = $('input[name="phoneNumber"]').val();
+		var inputCode = $('input[name="phoneVerifyCode"]').val();
+		if (!phoneNumber.trim() || !inputCode.trim()) { // 전화번호나 인증 코드가 입력되지 않았을 때
+			alert("전화번호와 인증코드를 모두 입력해주세요.");
+			return;
+		}
+
+		$.ajax({
+			url: "/auth/verify-phone-code",
+			type: "POST",
+			data: { phoneNumber: phoneNumber, inputCode: inputCode },
+			success: function(response) {
+				if (response.status === 200) {
+					alert("인증 성공");
+				} else {
+					alert("존재하지 않는 인증코드입니다. 다시 입력해주세요");
+				}
+			},
+			error: function(error) {
+				alert("인증 실패. 다시 시도해주세요.");
+			}
+		});
+	});
+
 	// 회원가입 버튼 클릭 이벤트
 	$('#signup-submit').on('click', function (event) {
 		event.preventDefault();
@@ -62,7 +109,6 @@ jQuery(document).ready(function($) {
 			}
 		});
 	});
-
 
 	// 로그인 버튼 클릭 이벤트
 	$('#signin-submit').on('click', function (event) {
@@ -183,7 +229,6 @@ jQuery(document).ready(function($) {
 // 로그인 성공 후에 아래 코드 실행
 	setTimeout(autoLogout, 24 * 60 * 60 * 1000);  // 24시간 후에 autoLogout 함수 실행
 
-
 	// 파일 선택 input 엘리먼트 가져오기
 	const fileInput = document.getElementById('signup-profileImage');
 
@@ -225,6 +270,7 @@ jQuery(document).ready(function($) {
 			}
 		});
 	});
+
 
 	// 인증번호 확인 버튼 클릭 이벤트
 	$('#verifyCodeButton').on('click', function (event) {
