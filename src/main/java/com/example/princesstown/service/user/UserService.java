@@ -11,10 +11,10 @@ import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.awsS3.S3Uploader;
-import com.example.princesstown.service.message.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,17 +34,11 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final TokenBlacklistService tokenBlacklistService;
     private final S3Uploader s3Uploader;
-    private final MessageService messageService;
     private final ApplicationContext applicationContext;
+    private final StringRedisTemplate redisTemplate;
 
 
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
-        // 휴대폰 인증 검사
-        ResponseEntity<ApiResponseDto> phoneVerificationResponse = messageService.verifyCode(requestDto.getPhoneNumber(), requestDto.getPhoneVerifyCode());
-
-        if (phoneVerificationResponse.getStatusCode() != HttpStatus.OK) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 실패"));
-        }
 
         String username = requestDto.getUsername();
         String notEncodingPassword = requestDto.getPassword();
@@ -96,12 +90,12 @@ public class UserService {
                 if (requestDto.getProfileImage() != null) {
                     // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
                     imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
-                } else {
-                    // 이미지가 없는 경우 기본 이미지 URL을 설정
-                    imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
                 }
-                // 이미지 URL을 설정
-                user.setProfileImage(imageUrl);
+//                    // 이미지가 없는 경우 기본 이미지 URL을 설정
+//                    imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
+
+//                // 이미지 URL을 설정
+//                user.setProfileImage(imageUrl);
 
             } catch (IOException e) {
                 // 로깅 또는 적절한 에러 메시지를 반환
@@ -111,8 +105,11 @@ public class UserService {
             // User 객체 저장
             userRepository.save(user);
 
+            // 회원가입 완료 후 인증상태 삭제
+            redisTemplate.delete("VerificationStatus_" + requestDto.getPhoneNumber());
+
             return ResponseEntity.status(201).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원가입 완료 되었습니다."));
-        }
+    }
 
 
     // 회원 탈퇴
@@ -127,7 +124,7 @@ public class UserService {
 
 
     // 로그인 메서드
-    public void login(LoginRequestDto requestDto) {
+    public ResponseEntity<ApiResponseDto> login(LoginRequestDto requestDto) {
         log.error("호출안됨");
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
@@ -143,6 +140,7 @@ public class UserService {
             log.error("로그인 정보가 일치하지 않습니다.");
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
+        return  ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", checkUser.get().getUserId()));
     }
 
     // 로그아웃 메서드
