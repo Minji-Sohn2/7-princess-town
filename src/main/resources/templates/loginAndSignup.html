@@ -11,14 +11,13 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
       integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
       crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
-      integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
-      crossorigin="anonymous"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 <script src="https://cdn.tutorialjinni.com/modernizr/2.8.3/modernizr.min.js"></script>
-<link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
 <title>Document</title>
 </head>
 <body>
@@ -147,7 +146,7 @@
 
       <div id="cd-reset-password">
         <!-- reset password form -->
-        <p class="cd-form-message">Lost your password? Please enter your email address. You will receive a link to create a new password.</p>
+        <p class="cd-form-message">Lost your password? Please enter your phone number and email address. You will receive a verification code to reset your password.</p>
 
         <form class="cd-form">
           <p class="fieldset">
@@ -157,12 +156,38 @@
           </p>
 
           <p class="fieldset">
-            <input class="full-width has-padding" type="submit" value="Reset password">
+            <label class="image-replace cd-phone" for="reset-phoneNumber">Phone Number</label>
+            <input class="full-width has-padding has-border" id="reset-phoneNumber" type="text" placeholder="Phone Number">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <p class="fieldset">
+            <input class="half-width has-padding" id="reset-sendVerificationCode" type="button" value="Send Verification Code">
+          </p>
+
+          <p class="fieldset">
+            <label class="image-replace cd-code" for="inputCode">Verification Code</label>
+            <input class="full-width has-padding has-border" id="inputCode" type="text" placeholder="Enter Verification Code">
+            <span class="cd-error-message">Error message here!</span>
+          </p>
+
+          <p class="fieldset">
+            <input class="half-width has-padding" id="verifyPhoneNumber" type="button" value="Verify Phone Number">
+          </p>
+
+          <p class="fieldset">
+            <input class="full-width has-padding" id="sendTempPassword" type="button" value="Reset Password with Temporary Password">
+          </p>
+
+          <!-- 임시 로그인 버튼 -->
+          <p class="fieldset">
+            <input class="full-width has-padding" id="tempLoginButton" type="button" value="Login with Temporary Password">
           </p>
         </form>
 
         <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
       </div> <!-- cd-reset-password -->
+
       <a href="#0" class="cd-close-form">Close</a>
     </div> <!-- cd-user-modal-container -->
   </div> <!-- cd-user-modal -->
