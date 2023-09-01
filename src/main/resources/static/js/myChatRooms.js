@@ -39,7 +39,12 @@ closeCreateRoomModal.addEventListener('click', () => {
 //------------------------- 사용자 검색  -------------------------------
 document.getElementById('submitSearchKeyword').addEventListener('click', () => {
     const searchInput = document.getElementById('searchInput').value;
+
     console.log('검색 키워드 -> ' + searchInput);
+    if (searchInput.trim() === '') {
+        alert('검색어를 입력하세요');
+        return;
+    }
     searchUserByKeyword(searchInput);
 });
 
