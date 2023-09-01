@@ -30,7 +30,7 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String phoneNumber;
 
     @Column
@@ -55,13 +55,14 @@ public class User {
     public User(KakaoUserInfoDto kakaoUserInfoDto, String encodedPassword) {
         this.nickname = kakaoUserInfoDto.getNickname();
         this.password = encodedPassword;
-        this.userId = Long.valueOf(kakaoUserInfoDto.getId());
+        this.username = kakaoUserInfoDto.getUsername();
     }
 
     public User(NaverUserInfoDto naverUserInfoDto, String encodedPassword) {
         this.password = encodedPassword;
         this.nickname = naverUserInfoDto.getNickname();
-        this.userId = Long.valueOf(naverUserInfoDto.getId());
+        this.username = naverUserInfoDto.getUsername();
+        this.phoneNumber = naverUserInfoDto.getPhoneNumber();
     }
 
     public User(String storedUsername, String encodedTempPassword) {
