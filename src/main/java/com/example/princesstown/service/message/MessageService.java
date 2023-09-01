@@ -80,7 +80,6 @@ public class MessageService {
         }
 
         if (inputCode.equals(storedCode)) {
-            redisTemplate.delete(phoneNumber); // 인증 성공 후 인증 코드 삭제
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(HttpStatus.OK.value(), "인증 성공", null));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "인증 실패", null));

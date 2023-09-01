@@ -108,10 +108,9 @@ public class ProfileService {
 
         if (requestDto.getProfileImage() != null) {
             imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
-        } else {
-            imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
+            user.setProfileImage(imageUrl);
         }
+//            imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
 
-        user.setProfileImage(imageUrl);
     }
 }

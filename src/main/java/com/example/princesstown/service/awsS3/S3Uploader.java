@@ -25,7 +25,6 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
@@ -45,15 +44,14 @@ public class S3Uploader {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    // ResourceLoader를 이용하여 기본 이미지를 업로드하는 메서드
-    public String uploadDefaultImage(ResourceLoader resourceLoader) throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:image/기본이미지.png");
-        File defaultImageFile = resource.getFile();
-        String fileName = "기본이미지.png"; // 업로드할 파일명 설정
-        String uploadImageUrl = putS3(defaultImageFile, fileName);
-        return uploadImageUrl;
-    }
-
+      // ResourceLoader를 이용하여 기본 이미지를 업로드하는 메서드
+//    public String uploadDefaultImage(ResourceLoader resourceLoader) throws IOException {
+//        Resource resource = resourceLoader.getResource("classpath:/image/quokka.jpg");
+//        File defaultImageFile = resource.getFile();
+//        String fileName = "quokka.jpg"; // 업로드할 파일명 설정
+//        String uploadImageUrl = putS3(defaultImageFile, fileName);
+//        return uploadImageUrl;
+//    }
 
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
