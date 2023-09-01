@@ -4,5 +4,6 @@ import com.example.princesstown.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface KakaoRepository extends JpaRepository<User,Long> {
-    User findByNickname(String username);
+    User findByUsernameStartingWith(String usernamePrefix);
+
 }

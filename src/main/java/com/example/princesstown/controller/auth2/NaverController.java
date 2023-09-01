@@ -1,5 +1,7 @@
 package com.example.princesstown.controller.auth2;
 
+import com.example.princesstown.dto.getInfo.KakaoResponseDto;
+import com.example.princesstown.dto.getInfo.NaverResponseDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.naver.NaverService;
@@ -22,20 +24,19 @@ public class NaverController {
 
     private final NaverService naverService;
 
-    @GetMapping("/api/user/kakao/callback")
-    public ResponseEntity<ApiResponseDto> kakaoLogin(
-            @RequestParam String code,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            HttpServletResponse response) throws IOException {
+    @GetMapping("/api/user/naver/callback")
+    public ResponseEntity<ApiResponseDto> NaverLogin(
+            @RequestParam String code, HttpServletResponse response) throws IOException {
 
-        String pureToken = naverService.naverLogin(code,profileImage).substring(7);
+        NaverResponseDto responseDto = naverService.naverLogin(code);
+        String pureToken = responseDto.getJwtToken();
         HttpHeaders headers = new HttpHeaders();
         headers.set(JwtUtil.AUTHORIZATION_HEADER, pureToken);
 
         String authorizationHeader = headers.getFirst(JwtUtil.AUTHORIZATION_HEADER);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, authorizationHeader);
 
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공"));
+        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", responseDto));
     }
 }
 

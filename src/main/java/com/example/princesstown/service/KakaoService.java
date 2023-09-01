@@ -1,5 +1,6 @@
 package com.example.princesstown.service;
 
+import com.example.princesstown.dto.getInfo.KakaoResponseDto;
 import com.example.princesstown.dto.getInfo.KakaoUserInfoDto;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.kakao.KakaoRepository;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -38,6 +39,7 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
     private final S3Uploader s3Uploader;
+    private final ApplicationContext applicationContext;
 
     @Value("${kakao.client.id}")
     private String client_id;
@@ -47,8 +49,11 @@ public class KakaoService {
     @Value("${kakao.redirect.url}")
     private String redirect_url;
 
+    @Value("${kakao.client.secret}")
+    private String client_secret;
+
     // 카카오 로그인 처리 메서드
-    public String kakaoLogin(String code, MultipartFile profileImage) throws IOException {
+    public KakaoResponseDto kakaoLogin(String code) throws IOException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         // 인가코드 : 인가 서버로부터 받는 액세스 토큰을 요청할 수 있는 코드
         // 액세스 토큰 : 인가 서버에서 가지고 있는 사용자 정보, 리소스 접근 권한을 가지고 있는 토큰
@@ -58,12 +63,12 @@ public class KakaoService {
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 3. 필요시에 회원가입
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo, profileImage);
+        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createToken(kakaoUser.getUsername());
+        String createToken = jwtUtil.createToken(kakaoUser.getUsername()).substring(7);
 
-        return createToken;
+        return new KakaoResponseDto(createToken, kakaoUser);
     }
 
     // "인가 코드"로 "액세스 토큰" 요청하는 메서드
@@ -74,6 +79,7 @@ public class KakaoService {
                 .path("/oauth/token")
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("client_id", client_id)
+                .queryParam("client_secret", client_secret)
                 .queryParam("redirect_uri", redirect_url)
                 .queryParam("code", code)
                 .queryParam("state", "1234")
@@ -140,39 +146,35 @@ public class KakaoService {
         String nickname = jsonNode.get("properties").get("nickname").asText(); // 카카오 아이디
 
         log.info("카카오 사용자 정보: " + id + ", " + nickname);
-        return new KakaoUserInfoDto(id, nickname);
+        return new KakaoUserInfoDto(nickname, id);
     }
 
     // 필요시에 회원가입하는 메서드
-    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo, MultipartFile profileImage) throws IOException {
-        String nickname = kakaoUserInfo.getNickname();
-        User kakaoUser = kakaoRepository.findByNickname(nickname);
+    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) throws IOException {
+        String kakaoUsername = kakaoUserInfo.getUsername() + "_kakaoUsername_";
+        User kakaoUser = kakaoRepository.findByUsernameStartingWith(kakaoUsername);
 
-        // 중복된 닉네임인지 확인
-        if (kakaoUser != null) {
-            log.info(nickname + "이미 존재하는 닉네임입니다.");
-
+        if (kakaoUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
-            String uniqueNickname = kakaoUserInfo.getNickname() + "Kakao" + UUID.randomUUID();
+            String uniqueNickname = kakaoUserInfo.getNickname() + "_KakaoNickname_" + UUID.randomUUID();
+            String uniqueUsername = kakaoUserInfo.getUsername() + "_KakaoUsername_" + UUID.randomUUID();
             kakaoUserInfo.setNickname(uniqueNickname);
+            kakaoUserInfo.setUsername(uniqueUsername);
+
+            // password 생성
+            String UUIDpassword = UUID.randomUUID().toString();
+            String encodedPassword = passwordEncoder.encode(UUIDpassword);
+
+            // 회원가입
+            kakaoUser = new User(kakaoUserInfo, encodedPassword);
+
+//            // 기본 이미지 설정
+//            String imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
+//            kakaoUser.setProfileImage(imageUrl);
+
+            // DB에 저장
+            userRepository.save(kakaoUser);
         }
-
-        // password 생성
-        String UUIDpassword = UUID.randomUUID().toString();
-        String encodedPassword = passwordEncoder.encode(UUIDpassword);
-
-        if (profileImage != null) {
-            // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 kakaoUser.profileImage에 직접 객체에 저장이 됨
-            String imageUrl = s3Uploader.upload(profileImage, "profile-images");
-            kakaoUser.setProfileImage(imageUrl);
-        }
-
-        // 회원가입
-        kakaoUser = new User(kakaoUserInfo, encodedPassword);
-
-        // DB에 저장
-        userRepository.save(kakaoUser);
-
         return kakaoUser;
     }
 }

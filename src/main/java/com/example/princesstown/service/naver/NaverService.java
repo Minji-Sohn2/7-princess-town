@@ -1,7 +1,10 @@
 package com.example.princesstown.service.naver;
 
+import com.example.princesstown.dto.getInfo.KakaoResponseDto;
+import com.example.princesstown.dto.getInfo.NaverResponseDto;
 import com.example.princesstown.dto.getInfo.NaverUserInfoDto;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.repository.naver.NaverRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.awsS3.S3Uploader;
@@ -11,13 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -31,11 +34,13 @@ public class NaverService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final NaverRepository naverRepository;
     private final JwtUtil jwtUtil;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
+    private final ApplicationContext applicationContext;
 
-    @Value("${kakao.client.id}")
+    @Value("${naver.client.id}")
     private String client_id;
 
     @Value("${naver.client.secret}")
@@ -46,8 +51,8 @@ public class NaverService {
 //   @Value("${naver.redirect.url}")
 //   private String redirect_url;
 
-    // 카카오 로그인 처리 메서드
-    public String naverLogin(String code, MultipartFile profileImage) throws IOException {
+    // 네이버 로그인 처리 메서드
+    public NaverResponseDto naverLogin(String code) throws IOException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         // 인가코드 : 인가 서버로부터 받는 액세스 토큰을 요청할 수 있는 코드
         // 액세스 토큰 : 인가 서버에서 가지고 있는 사용자 정보, 리소스 접근 권한을 가지고 있는 토큰
@@ -57,12 +62,12 @@ public class NaverService {
         NaverUserInfoDto naverUserInfoDto = getNaverUserInfo(accessToken);
 
         // 3. 필요시에 회원가입
-        User naverUser = registerNaverUserIfNeeded(naverUserInfoDto, profileImage);
+        User naverUser = registerNaverUserIfNeeded(naverUserInfoDto);
 
         // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createToken(naverUser.getUsername());
+        String createToken = jwtUtil.createToken(naverUser.getUsername()).substring(7);
 
-        return createToken;
+        return new NaverResponseDto(createToken, naverUser);
     }
 
     // "인가 코드"로 "액세스 토큰" 요청하는 메서드
@@ -131,42 +136,39 @@ public class NaverService {
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         String id = jsonNode.get("response").get("id").asText(); // 네이버 식별자 id
         String nickname = jsonNode.get("response").get("nickname").asText(); // 네이버 별명
+        String phoneNumber = jsonNode.get("response").get("mobile").asText(); // 전화번호
 
-        log.info("네이버 사용자 정보: " + id + ", " + nickname);
+        log.info("네이버 사용자 정보: " +  id + ", " + nickname + ", " + phoneNumber);
 
-        return new NaverUserInfoDto(id, nickname);
+        return new NaverUserInfoDto(id, nickname, phoneNumber);
     }
 
     // 필요시에 회원가입하는 메서드
-    private User registerNaverUserIfNeeded(NaverUserInfoDto naverUserInfo, MultipartFile profileImage) throws IOException {
+    private User registerNaverUserIfNeeded(NaverUserInfoDto naverUserInfo) throws IOException {
+        String naverUsername = naverUserInfo.getUsername() + "_NaverUsername_";
+        User naverUser = naverRepository.findByUsernameStartingWith(naverUsername);
 
-        String nickname = naverUserInfo.getNickname();
-        User naverUser = userRepository.findBynickname(nickname).orElse(null);
-
-        if (naverUser != null) {
-            log.info(nickname + "이미 존재하는 닉네임입니다.");
-
+            if (naverUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
-            String uniqueNickname = naverUserInfo.getNickname() + "@Naver" + UUID.randomUUID();
+            String uniqueNickname = naverUserInfo.getNickname() + "_NaverNickame_" + UUID.randomUUID();
+            String uniqueUsername = naverUserInfo.getUsername() + "_NaverUsername_" + UUID.randomUUID();
             naverUserInfo.setNickname(uniqueNickname);
-        }
+            naverUserInfo.setUsername(uniqueUsername);
 
-        // password 생성
-        String password = UUID.randomUUID().toString();
-        String encodedPassword = passwordEncoder.encode(password);
-
-        if (profileImage != null) {
-                // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 kakaoUser.profileImage에 직접 객체에 저장이 됨
-                String imageUrl = s3Uploader.upload(profileImage, "profile-images");
-                naverUser.setProfileImage(imageUrl);
-            }
+            // password 생성
+            String password = UUID.randomUUID().toString();
+            String encodedPassword = passwordEncoder.encode(password);
 
             // 회원가입
             naverUser = new User(naverUserInfo, encodedPassword);
 
+//            // 기본 이미지 설정
+//            String imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
+//            naverUser.setProfileImage(imageUrl);
+
             // DB에 저장
             userRepository.save(naverUser);
-
+        }
         return naverUser;
     }
 }
