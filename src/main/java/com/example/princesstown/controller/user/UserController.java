@@ -9,10 +9,14 @@ import com.example.princesstown.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Controller
@@ -24,16 +28,35 @@ public class UserController {
 
     private final MessageService messageService;
 
+    private final StringRedisTemplate redisTemplate;
+
     // 휴대폰 인증 코드 발송
     @PostMapping("/send-phone-verification-code")
     public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) throws Exception {
         return messageService.sendVerificationCode(phoneNumber);
     }
 
+    // 휴대폰 인증 검사
+    @PostMapping("/verify-phone-code")
+    public ResponseEntity<ApiResponseDto> verifyPhoneCode(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("inputCode") String inputCode) {
+        ResponseEntity<ApiResponseDto> response = messageService.verifyCode(phoneNumber, inputCode);
+        if (response.getStatusCode() != HttpStatus.OK) {
+           redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "false",1, TimeUnit.HOURS);
+        } else {
+            redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "true",1, TimeUnit.HOURS);
+        }
+        return response;
+    }
+
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDto> signup(@ModelAttribute @Valid SignupRequestDto signupRequestDto) {
-        return userService.signup(signupRequestDto);
+    public ResponseEntity<ApiResponseDto> signup(@ModelAttribute @Valid SignupRequestDto requestDto) {
+        if ("true".equals(redisTemplate.opsForValue().get("VerificationStatus_" + requestDto.getPhoneNumber()))) {
+            return userService.signup(requestDto);
+        } else {
+            redisTemplate.delete("VerificationStatus_" + requestDto.getPhoneNumber());
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증을 다시 하시고 회원가입을 진행해주세요."));
+        }
     }
 
     // 회원탈퇴
@@ -45,11 +68,10 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public void login(@RequestBody LoginRequestDto requestDto) {
-        log.error("start");
-        userService.login(requestDto);
-        log.error("login메서드 호출완료");
+    public ResponseEntity<ApiResponseDto> login(@RequestBody LoginRequestDto requestDto) {
+        return userService.login(requestDto);
     }
+
 
     // 로그아웃
     @PostMapping("/logout")
@@ -62,7 +84,7 @@ public class UserController {
     // view.html 부분
     @GetMapping("/login-page")
     public String loginAndsignupPage() {
-        return "loginAndSignup";
+        return "ex";
     } // loginAndsignup.html view
 }
 
