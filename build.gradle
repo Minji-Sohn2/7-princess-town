@@ -85,6 +85,8 @@ dependencies {
     //  aws s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+    implementation 'javax.xml.bind:jaxb-api:2.3.1' // JAXB 의존성 추가
+
     // sweetalert2
     implementation 'org.webjars.npm:sweetalert2:11.0.20'
 
