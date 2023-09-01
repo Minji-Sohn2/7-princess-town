@@ -58,6 +58,7 @@ public class JwtUtil { // JWT와 관련된 주요 기능을 제공
 
     // JWT 토큰 substring
     public String substringToken(String tokenValue) {
+//        tokenValue = tokenValue.replaceAll("%20", " "); // 추가한 부분
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }

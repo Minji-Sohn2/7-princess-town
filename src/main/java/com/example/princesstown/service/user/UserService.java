@@ -15,6 +15,7 @@ import com.example.princesstown.service.message.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,15 +37,10 @@ public class UserService {
     private final S3Uploader s3Uploader;
     private final MessageService messageService;
     private final ApplicationContext applicationContext;
+    private final StringRedisTemplate redisTemplate;
 
 
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
-        // 휴대폰 인증 검사
-        ResponseEntity<ApiResponseDto> phoneVerificationResponse = messageService.verifyCode(requestDto.getPhoneNumber(), requestDto.getPhoneVerifyCode());
-
-        if (phoneVerificationResponse.getStatusCode() != HttpStatus.OK) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "휴대폰 인증 실패"));
-        }
 
         String username = requestDto.getUsername();
         String notEncodingPassword = requestDto.getPassword();
@@ -82,37 +78,40 @@ public class UserService {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호 입니다."));
         }
 
-            // 비밀번호 인코딩
-            String encodedPassword = passwordEncoder.encode(notEncodingPassword);
+        // 비밀번호 인코딩
+        String encodedPassword = passwordEncoder.encode(notEncodingPassword);
 
-            // 회원 가입 진행
-            // requestDto.profileImage를 제외한 필드가 객체에 저장이 됨
-            User user = new User(requestDto, encodedPassword);
+        // 회원 가입 진행
+        // requestDto.profileImage를 제외한 필드가 객체에 저장이 됨
+        User user = new User(requestDto, encodedPassword);
 
-            // S3에 이미지 업로드
-            try {
-                String imageUrl;
+        // S3에 이미지 업로드
+        try {
+            String imageUrl;
 
-                if (requestDto.getProfileImage() != null) {
-                    // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
-                    imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
-                } else {
-                    // 이미지가 없는 경우 기본 이미지 URL을 설정
-                    imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
-                }
-                // 이미지 URL을 설정
-                user.setProfileImage(imageUrl);
-
-            } catch (IOException e) {
-                // 로깅 또는 적절한 에러 메시지를 반환
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미지 업로드 중 오류가 발생했습니다."));
+            if (requestDto.getProfileImage() != null) {
+                // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
+                imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
+            } else {
+                // 이미지가 없는 경우 기본 이미지 URL을 설정
+                imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
             }
+            // 이미지 URL을 설정
+            user.setProfileImage(imageUrl);
 
-            // User 객체 저장
-            userRepository.save(user);
-
-            return ResponseEntity.status(201).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원가입 완료 되었습니다."));
+        } catch (IOException e) {
+            // 로깅 또는 적절한 에러 메시지를 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미지 업로드 중 오류가 발생했습니다."));
         }
+
+        // User 객체 저장
+        userRepository.save(user);
+
+        // 회원가입 완료 후 인증상태 삭제
+        redisTemplate.delete("VerificationStatus_" + requestDto.getPhoneNumber());
+
+        return ResponseEntity.status(201).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원가입 완료 되었습니다."));
+    }
 
 
     // 회원 탈퇴
