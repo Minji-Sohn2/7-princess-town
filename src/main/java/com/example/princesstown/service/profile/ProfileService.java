@@ -45,11 +45,6 @@ public class ProfileService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "해당 유저를 조회하지 못했습니다"));
         }
 
-        // 비밀번호 형식 검증
-        if (!Pattern.matches("^[a-zA-Z0-9!@#$%^&*()_+{}:\"<>?,.\\\\/]{8,15}$", requestDto.getPassword())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400,"비밀번호는 최소 8자 이상, 15자 이하이며 알파벳 대소문자, 숫자로 구성되어야 합니다."));
-        }
-
         // 위치 업데이트 로직
         if (requestDto.getLatitude() != null && requestDto.getLongitude() != null) {
             locationService.updateLocationAndRelatedEntities(userId, requestDto.getLatitude(), requestDto.getLongitude());
@@ -84,7 +79,7 @@ public class ProfileService {
             user.setUsername(requestDto.getUsername());
         }
 
-        if (!StringUtils.isEmpty(requestDto.getPassword())) {
+        if (!StringUtils.isEmpty(requestDto.getPassword()) && !Pattern.matches("^[a-zA-Z0-9!@#$%^&*()_+{}:\"<>?,.\\\\/]{8,15}$", requestDto.getPassword())) {
             String password = passwordEncoder.encode(requestDto.getPassword());
             user.setPassword(password);
         }
