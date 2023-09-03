@@ -6,17 +6,17 @@ import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.KakaoService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080")
+@Slf4j
 public class KakaoController {
 
     private final KakaoService kakaoService;
@@ -26,6 +26,7 @@ public class KakaoController {
             @RequestParam String code, HttpServletResponse response) throws IOException {
 
         KakaoResponseDto responseDto = kakaoService.kakaoLogin(code);
+        log.info("클라이언트에게 보낼 데이터 : " + responseDto);
         String pureToken = responseDto.getJwtToken();
         HttpHeaders headers = new HttpHeaders();
         headers.set(JwtUtil.AUTHORIZATION_HEADER, pureToken);
