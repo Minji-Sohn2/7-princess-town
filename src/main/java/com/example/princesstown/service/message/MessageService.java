@@ -45,15 +45,19 @@ public class MessageService {
     public ResponseEntity<ApiResponseDto> sendVerificationCode(String phoneNumber) {
 //        DefaultMessageService messageService = NurigoApp.INSTANCE.initialize(appKey, appSecret, apiUrl);
 
-        Random ran = new Random();
-        StringBuilder numStr = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            String random = Integer.toString(ran.nextInt(10));
-            numStr.append(random);
-        }
+        if (phoneNumber != null) {
+            Random ran = new Random();
+            StringBuilder numStr = new StringBuilder();
+            for (int i = 0; i < 4; i++) {
+                String random = Integer.toString(ran.nextInt(10));
+                numStr.append(random);
+            }
 
-        // Redis를 사용하여 "key" : phoneNumber, "value" : numStr.toString(), "양" : 5, "단위" : minute로 설정
-        redisTemplate.opsForValue().set(phoneNumber, numStr.toString(), 5, TimeUnit.MINUTES); // 5분 후 만료
+            // Redis를 사용하여 "key" : phoneNumber, "value" : numStr.toString(), "양" : 5, "단위" : minute로 설정
+            redisTemplate.opsForValue().set(phoneNumber, numStr.toString(), 5, TimeUnit.MINUTES); // 5분 후 만료
+
+            return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "메세지 전송 성공", null));
+        }
 //
 //        Message message = new Message();
 //        message.setFrom(sendPhoneNumber);
@@ -69,7 +73,7 @@ public class MessageService {
 //            log.error("발송한 메세지" + exception.getMessage());
 //        }
 
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "메세지 전송 성공", null));
+        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "메세지 전송 실패", null));
     }
 
     public ResponseEntity<ApiResponseDto> verifyCode(String phoneNumber, String inputCode) {
