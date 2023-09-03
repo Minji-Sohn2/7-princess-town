@@ -38,8 +38,6 @@ public class KakaoService {
     private final KakaoRepository kakaoRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
-    private final S3Uploader s3Uploader;
-    private final ApplicationContext applicationContext;
 
     @Value("${kakao.client.id}")
     private String client_id;
@@ -58,6 +56,8 @@ public class KakaoService {
         // 인가코드 : 인가 서버로부터 받는 액세스 토큰을 요청할 수 있는 코드
         // 액세스 토큰 : 인가 서버에서 가지고 있는 사용자 정보, 리소스 접근 권한을 가지고 있는 토큰
         String accessToken = getToken(code);
+        log.info("인가 코드 : " + code);
+        log.info("액세스 토큰 : " + accessToken);
 
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
@@ -67,6 +67,7 @@ public class KakaoService {
 
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaoUser.getUsername()).substring(7);
+        log.info("카카오 토큰 생성 : " + createToken);
 
         return new KakaoResponseDto(createToken, kakaoUser);
     }
@@ -86,6 +87,8 @@ public class KakaoService {
                 .encode()
                 .build()
                 .toUri();
+
+        log.info("URI: {}", uri);
 
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -125,6 +128,7 @@ public class KakaoService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        log.info("Kakao accessToken : " + accessToken);
 
         // HTTP POST 요청 보내기
         // post요청에서 .body()를 사용하여 바디를 보내야됨(본문이 필요o)
@@ -150,9 +154,10 @@ public class KakaoService {
     }
 
     // 필요시에 회원가입하는 메서드
-    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) throws IOException {
+    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         String kakaoUsername = kakaoUserInfo.getUsername() + "_kakaoUsername_";
         User kakaoUser = kakaoRepository.findByUsernameStartingWith(kakaoUsername);
+        log.info("user : " + kakaoUser);
 
         if (kakaoUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
@@ -167,6 +172,7 @@ public class KakaoService {
 
             // 회원가입
             kakaoUser = new User(kakaoUserInfo, encodedPassword);
+            log.info("kakao user : " + kakaoUser);
 
 //            // 기본 이미지 설정
 //            String imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
