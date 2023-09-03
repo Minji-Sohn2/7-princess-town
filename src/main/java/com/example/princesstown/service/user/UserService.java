@@ -140,7 +140,12 @@ public class UserService {
             log.error("로그인 정보가 일치하지 않습니다.");
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
-        return  ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", checkUser.get().getUserId()));
+
+        Long userId = checkUser.get().getUserId(); // userId 추출
+
+        log.error("userId 받아오지 못함");
+
+        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", userId)); // 응답 수정
     }
 
     // 로그아웃 메서드
