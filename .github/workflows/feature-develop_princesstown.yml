@@ -58,5 +58,5 @@ jobs:
         with:
           app-name: 'princesstown' # Update this with your Azure Web App name
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_70dd10ae960845939aa33e8bbacb000f }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E2B3A8EC88464C2CA3BD8869B9F788CA }}
           package: '*.jar'
