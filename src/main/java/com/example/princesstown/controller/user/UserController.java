@@ -66,13 +66,6 @@ public class UserController {
         return userService.deleteAccount(userId);
     }
 
-    // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto> login(@RequestBody LoginRequestDto requestDto) {
-        return userService.login(requestDto);
-    }
-
-
     // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<ApiResponseDto> logout(@RequestHeader("Authorization") String token) {
