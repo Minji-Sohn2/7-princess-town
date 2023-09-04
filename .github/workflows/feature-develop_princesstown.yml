@@ -21,6 +21,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+
+      - run: cat ./src/main/resources/application.properties
+
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
@@ -32,12 +38,6 @@ jobs:
         with:
           name: gradle-app
           path: '${{ github.workspace }}/build/libs/*.jar'
-
-      - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-
-      - run: cat ./src/main/resources/application.properties
 
   deploy:
     runs-on: ubuntu-latest
