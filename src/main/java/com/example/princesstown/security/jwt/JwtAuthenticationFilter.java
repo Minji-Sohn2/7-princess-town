@@ -61,18 +61,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
+    // 로그인 성공 처리
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("Successful authentication");
-        // username 받아오기
+        // username,userId 받아오기
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        Long userId = ((UserDetailsImpl) authResult.getPrincipal()).getUserId();
         log.info("Authenticated username: " + username);
+        log.info("Authenticated userId : " + userId);
 
         // JWT 생성 후 Response 객체의 헤더에 추가함
         String token = jwtUtil.createToken(username);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         // 로그인 성공시 상태코드,메세지 반환
-        ApiResponseDto apiResponseDto = new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공");
+        ApiResponseDto apiResponseDto = new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", userId);
         String json = new ObjectMapper().writeValueAsString(apiResponseDto);
 
         response.setContentType("application/json");
@@ -81,10 +84,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-// 인증 실패 시 401
+    // 인증 실패 시 401
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         log.error("Unsuccessful authentication", failed);
         response.setStatus(401);
     }
-
 }
