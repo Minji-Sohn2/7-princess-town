@@ -122,32 +122,6 @@ public class UserService {
         return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "회원 탈퇴 성공"));
     }
 
-
-    // 로그인 메서드
-    public ResponseEntity<ApiResponseDto> login(LoginRequestDto requestDto) {
-        log.error("호출안됨");
-        String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
-
-        // 위에서 받아온 username과 일치하는 User 가져오기
-        Optional<User> checkUser = userRepository.findByUsername(username);
-
-        // DB에 없는 사용자인 경우 혹은 인코딩되지 않은 임시 비밀번호를 인코딩하여 DB 저장된 인코딩된 임시 비밀번호랑 같지 않을 때
-        if (checkUser.isEmpty() || !passwordEncoder.matches(password, checkUser.get().getPassword())) {
-
-            log.info(username);
-            log.info(password);
-            log.error("로그인 정보가 일치하지 않습니다.");
-            throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
-        }
-
-        Long userId = checkUser.get().getUserId(); // userId 추출
-
-        log.error("userId 받아오지 못함");
-
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", userId)); // 응답 수정
-    }
-
     // 로그아웃 메서드
     public ApiResponseDto logout(String token) {
         // 토큰에서 "Bearer " 접두사 제거
