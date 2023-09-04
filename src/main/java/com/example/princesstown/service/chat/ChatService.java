@@ -2,7 +2,6 @@ package com.example.princesstown.service.chat;
 
 import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.entity.User;
-import com.example.princesstown.entity.chat.ChatRoom;
 
 public interface ChatService {
 
@@ -29,12 +28,4 @@ public interface ChatService {
      * @return 해당하는 user
      */
     User findUserByUsername(String username);
-
-    /**
-     * 채팅방 id 로 채팅방 찾기
-     *
-     * @param roomId 채팅방 id
-     * @return 채팅방
-     */
-    ChatRoom findChatRoomByChatRoomId(Long roomId);
 }

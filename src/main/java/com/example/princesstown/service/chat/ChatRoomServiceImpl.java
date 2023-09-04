@@ -57,7 +57,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page, MESSAGE_PAGE_SIZE, sort);
 
-        return chatMessageRepository.findAllByChatRoom(pageable, chatRoom)
+        return chatMessageRepository.findAllByChatRoomId(pageable, roomId)
                 .stream()
                 .map(ChatMessageDto::new)
                 .toList();
