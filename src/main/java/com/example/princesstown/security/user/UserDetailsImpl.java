@@ -32,6 +32,10 @@ public class UserDetailsImpl implements UserDetails {
         return user.getNickname();
     }
 
+    public Long getUserId() {
+        return user.getUserId();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return new ArrayList<>();
