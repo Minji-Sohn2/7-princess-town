@@ -60,3 +60,5 @@ jobs:
           slot-name: 'production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E2B3A8EC88464C2CA3BD8869B9F788CA }}
           package: 'princesstown-0.0.1-SNAPSHOT.jar'
+        run:
+          az webapp restart --name princesstown --resource-group spartaA07
