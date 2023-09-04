@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
     // 페이지 로드 시 로그인 상태 확인
