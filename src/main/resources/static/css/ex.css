@@ -38,29 +38,46 @@ body {
     padding: 0 20px;
 }
 
+/* 입력창과 버튼을 같은 라인에 배치 */
+.field .input-button-container {
+    display: flex;
+    align-items: center;
+}
+
+.field .input-button-container input,
+.field .input-button-container button {
+    margin: 0;
+}
+
+/* 입력창 옆에 버튼을 배치할 스타일 */
+.field .input-button-container button {
+    margin-left: 10px;
+}
+
 /* 버튼 간 간격 조정 */
 #reset-sendVerificationCode,
 #verifyPhoneNumber,
 #sendTempPassword,
 #tempLoginButton {
-    margin-right: 10px;
+    margin-right: 5px; /* 간격 조정 */
     margin-bottom: 10px;
 }
 
-.custom-image-button {
-    /* 원하는 버튼 크기로 조절 */
-    width: 100px;
-    height: 100px;
-    /* 필요하면 여기에 추가적인 스타일을 지정할 수 있습니다 */
-}
-
-.icon-img {
-    /* 이미지 크기 조정 */
-    width: 80%; /* 버튼 크기에 비례하게 이미지 크기를 조절 */
-    height: auto; /* 가로 너비에 맞춰 세로 비율 조정 */
-    /* 필요하면 여기에 추가적인 스타일을 지정할 수 있습니다 */
-}
 
 #modalContainer {
     display : none;
 }
+
+/*.custom-image-button {*/
+/*    !* 원하는 버튼 크기로 조절 *!*/
+/*    width: 100px;*/
+/*    height: 100px;*/
+/*    !* 필요하면 여기에 추가적인 스타일을 지정할 수 있습니다 *!*/
+/*}*/
+
+/*.icon-img {*/
+/*    !* 이미지 크기 조정 *!*/
+/*    width: 80%; !* 버튼 크기에 비례하게 이미지 크기를 조절 *!*/
+/*    height: auto; !* 가로 너비에 맞춰 세로 비율 조정 *!*/
+/*    !* 필요하면 여기에 추가적인 스타일을 지정할 수 있습니다 *!*/
+/*}*/

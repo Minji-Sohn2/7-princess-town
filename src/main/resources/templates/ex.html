@@ -1,168 +1,208 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
-    <link rel="stylesheet" href="/css/ex.css">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <link rel="stylesheet" href="/css/ex.css">
+  <title>Document</title>
 </head>
 <body>
 
 <!-- Header -->
 <div class="ui secondary pointing menu">
-    <!-- 로그인과 회원가입 버튼에 데이터-modal 속성 추가 -->
-    <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>
-    <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>
-    <a class="item" id="profile-btn" href="#0" data-modal="#profileModal">프로필</a>
-    <a class="item">로그아웃</a>
+  <!-- 로그인과 회원가입 버튼에 데이터-modal 속성 추가 -->
+  <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>
+  <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>
+  <a class="item" id="profile-btn" href="#0" data-modal="#profileModal">프로필</a>
+  <a class="item" id="logout-btn" href="#0">로그아웃</a>
+<!--  <div id="token-expiry">로그인 만료 시간 : <span id="expiry-time"></span></div>-->
 </div>
 
 <!-- 프로필 정보 모달 창 -->
 <div class="ui modal" id="profileModal">
-    <i class="close icon"></i>
-    <div class="header">
-        개인정보
-        <button class="ui right floated button" id="editProfile">수정</button>
+  <i class="close icon"></i>
+  <div class="header">
+    개인정보
+    <button class="ui right floated button" id="editProfile">수정</button>
+    <button class="ui right floated button" id="saveProfile">저장</button>
+  </div>
+  <div class="content">
+    <div class="ui form">
+      <div class="field">
+        <label>아이디</label>
+        <input type="text" name="username" placeholder="아이디" readonly>
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" name="password" placeholder="비밀번호" readonly>
+        <button class="ui button" id="showPassword">비밀번호 보기</button>
+      </div>
+      <div class="field">
+        <label>닉네임</label>
+        <input type="text" name="nickname" placeholder="닉네임" readonly>
+      </div>
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" name="email" placeholder="이메일" readonly>
+      </div>
+      <div class="field">
+        <label>전화번호</label>
+        <input type="text" name="phoneNumber" placeholder="전화번호" readonly>
+      </div>
+      <div class="field">
+        <label>프로필 이미지</label>
+        <input type="file" name="profileImage">
+      </div>
+      <div class="field">
+        <label>반경 설정</label>
+        <select class="ui dropdown" id="radiusSelect">
+          <option value="1">1km</option>
+          <option value="2">2km</option>
+          <option value="3">3km</option>
+          <option value="4">4km</option>
+          <option value="5">5km</option>
+          <option value="custom">직접 입력</option>
+        </select>
+        <input type="number" id="customRadiusInput" placeholder="반경 (km)" style="display:none;">
+      </div>
     </div>
-    <div class="content">
-        <div class="ui form">
-            <div class="field">
-                <label>아이디</label>
-                <input type="text" name="username" placeholder="아이디" readonly>
-            </div>
-            <div class="field">
-                <label>비밀번호</label>
-                <input type="password" name="password" placeholder="비밀번호" readonly>
-            </div>
-            <div class="field">
-                <label>닉네임</label>
-                <input type="text" name="nickname" placeholder="닉네임" readonly>
-            </div>
-            <div class="field">
-                <label>이메일</label>
-                <input type="email" name="email" placeholder="이메일" readonly>
-            </div>
-            <div class="field">
-                <label>전화번호</label>
-                <input type="text" name="phoneNumber" placeholder="전화번호" readonly>
-            </div>
-            <div class="field">
-                <label>반경 설정</label>
-                <select class="ui dropdown" id="radiusSelect">
-                    <option value="1">1km</option>
-                    <option value="2">2km</option>
-                    <option value="3">3km</option>
-                    <option value="4">4km</option>
-                    <option value="5">5km</option>
-                    <option value="custom">직접 입력</option>
-                </select>
-                <input type="number" id="customRadiusInput" placeholder="반경 (km)" style="display:none;">
-            </div>
-        </div>
-        <button class="ui button" id="setLocation">위치 설정</button>
-    </div>
+    <button class="ui button" id="setLocation">위치 설정</button>
+  </div>
 </div>
 
 
 <!-- Signup Form -->
 <div class="ui segment" id="modalContainer">
-    <div class="ui segment modal" id="signupModal">
+  <div class="ui segment modal" id="signupModal">
     <form class="ui form">
-        <div class="field">
-            <label>아이디</label>
-            <input type="text" name="username" placeholder="아이디">
+      <div class="field">
+        <label>아이디</label>
+        <input type="text" id="username" placeholder="아이디">
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="password" placeholder="비밀번호">
+      </div>
+      <div class="field">
+        <label>닉네임</label>
+        <input type="text" id="nickname" placeholder="닉네임">
+      </div>
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" id="email" placeholder="이메일">
+      </div>
+      <div class="field">
+        <label>전화번호</label>
+        <div class="ui action input">
+          <input type="text" id="phoneNumber" placeholder="전화번호">
+          <button class="ui button" id="sendVerificationCode">인증번호 전송</button>
         </div>
-        <div class="field">
-            <label>비밀번호</label>
-            <input type="password" name="password" placeholder="비밀번호">
+      </div>
+      <div class="field">
+        <label>인증번호</label>
+        <div class="ui action input">
+          <input type="text" id="phoneVerifyCode" placeholder="인증번호">
+          <button class="ui button" id="verifyCodeButton">인증번호 확인</button>
         </div>
-        <div class="field">
-            <label>닉네임</label>
-            <input type="text" name="nickname" placeholder="닉네임">
+      </div>
+      <div class="field">
+        <label>프로필 이미지</label>
+        <input type="file" name="profileImage">
+      </div>
+      <div class="inline field">
+        <div class="ui checkbox">
+          <input type="checkbox" id="accept-terms">
+          <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
         </div>
-        <div class="field">
-            <label>이메일</label>
-            <input type="email" name="email" placeholder="이메일">
-        </div>
-        <div class="field">
-            <label>전화번호</label>
-            <div class="ui action input">
-                <input type="text" name="phoneNumber" placeholder="전화번호">
-                <button class="ui button" id="sendVerificationCode">인증번호 전송</button>
-            </div>
-        </div>
-        <div class="field">
-            <label>인증번호</label>
-            <div class="ui action input">
-                <input type="text" name="phoneVerifyCode" placeholder="인증번호">
-                <button class="ui button" id="verifyCodeButton">인증번호 확인</button>
-            </div>
-        </div>
-        <div class="field">
-            <label>프로필 이미지</label>
-            <input type="file" name="profileImage">
-        </div>
-        <div class="inline field">
-            <div class="ui checkbox">
-                <input type="checkbox" id="accept-terms">
-                <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
-            </div>
-        </div>
-        <button class="ui button" type="submit">회원가입</button>
+      </div>
+      <button class="ui button" type="submit">회원가입</button>
     </form>
-    </div>
+  </div>
 </div>
 
-<!-- Login Form (새로 추가) -->
+<!-- Login Form -->
 <div class="ui segment modal" id="loginModal">
-    <form class="ui form">
-        <div class="field">
-            <label>아이디</label>
-            <input type="text" name="login-username" placeholder="아이디">
-        </div>
-        <div class="field">
-            <label>비밀번호</label>
-            <input type="password" name="login-password" placeholder="비밀번호">
-        </div>
-        <button class="ui button" type="submit">로그인</button>
+  <form class="ui form">
+    <div class="field">
+      <label>아이디</label>
+      <input type="text" name="login-username" placeholder="아이디">
+    </div>
+    <div class="field">
+      <label>비밀번호</label>
+      <input type="password" name="login-password" placeholder="비밀번호">
+    </div>
+    <button class="ui button" type="submit">로그인</button>
 
-        <button class="custom-image-button" id="naverLogin">
-            <img src="/img/loginButton/naverButton.png" class="icon-img">
-        </button>
+<!--    <button class="custom-image-button" id="naverLogin" onclick="location.href='https://nid.naver.com/oauth2.0/authorize?client_id=1y4x9PZB2SmdqeC02T5g&redirect_uri=http://localhost:8080/api/user/naver/callback&response_type=code'">-->
+<!--      <img src="/img/loginButton/naverButton.png" class="icon-img">-->
+<!--    </button>-->
 
-        <button class="custom-image-button" id="kakaoLogin">
-            <img src="/img/loginButton/kakaoButton.png" class="icon-img">
-        </button>
-    </form>
-    <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
+<!--    <button class="custom-image-button" id="kakaoLogin"  onclick="location.href=`https://kauth.kakao.com/oauth/authorize?client_id=09f2acecd9cd8bf7b7d3f6951daf4548&redirect_uri=http://localhost:8080/api/user/kakao/callback&response_type=code`">-->
+<!--      <img src="/img/loginButton/kakaoButton.png" class="icon-img">-->
+<!--    </button>-->
+<!--    <button class="custom-image-button" id="kakaoLogin">-->
+<!--      <img src="/img/loginButton/kakaoButton.png" class="icon-img">-->
+<!--    </button>-->
+
+  </form>
+  <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
 </div>
+
+<!-- Temp Password Login Form -->
+<div class="ui segment modal" id="tempLoginModal">
+  <form class="ui form">
+    <div class="field">
+      <label>아이디</label>
+      <input type="text" name="temp-login-username" placeholder="아이디">
+    </div>
+    <div class="field">
+      <label>임시 비밀번호</label>
+      <input type="password" name="temp-login-password" placeholder="임시 비밀번호">
+    </div>
+    <button class="ui button" type="submit">임시 비밀번호로 로그인</button>
+  </form>
+</div>
+
 
 <!-- Password Reset Form -->
 <div class="ui segment modal" id="passwordResetModal">
-<div class="ui segment">
+  <div class="ui segment">
     <form class="ui form">
-        <div class="field">
-            <label>E-mail</label>
-            <input type="email" id="reset-email" placeholder="E-mail">
+      <div class="field">
+        <label>인증번호 보내기</label>
+        <div class="input-button-container">
+          <input type="text" id="reset-phoneNumber" placeholder="전화번호를 입력해주세요">
+          <button class="ui button" type="button" id="reset-sendVerificationCode">Send</button>
         </div>
-        <div class="field">
-            <label>Phone Number</label>
-            <input type="text" id="reset-phoneNumber" placeholder="Phone Number">
+        <div style="margin-top: 50px;"></div>
+      </div>
+      <div class="field">
+        <label>인증번호 확인</label>
+        <div class="input-button-container">
+          <input type="text" id="inputCode" placeholder="인증번호를 입력해주세요">
+          <button class="ui button" type="button" id="verifyPhoneNumber">Enter</button>
         </div>
-        <div class="field">
-            <label>Verification Code</label>
-            <input type="text" id="inputCode" placeholder="Enter Verification Code">
+        <div style="margin-top: 50px;"></div>
+      </div>
+      <div class="field">
+        <label>임시 비밀번호 전송</label>
+        <div class="input-button-container">
+          <input type="email" id="reset-email" placeholder="이메일을 입력해주세요">
+          <button class="ui button" type="button" id="sendTempPassword">Send</button>
         </div>
-        <button class="ui button" type="button" id="reset-sendVerificationCode">Send Verification Code</button>
-        <button class="ui button" type="button" id="verifyPhoneNumber">Verify Phone Number</button>
-        <button class="ui button" type="button" id="sendTempPassword">Reset Password with Temporary Password</button>
-        <button class="ui button" type="button" id="tempLoginButton">Login with Temporary Password</button>
+      </div>
+      <div style="margin-top: 50px;"></div>
+      <div class="field">
+        <label style="margin-bottom: -10px;">임시 비밀번호로 임시 로그인 후, 비밀번호를 변경해주세요.</label>
+        <button class="ui button" type="button" id="tempLoginButton">임시 로그인</button>
+      </div>
     </form>
     <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
-</div>
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/dist/jwt-decode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
