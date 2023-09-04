@@ -13,12 +13,14 @@ function maskingName(username) {
             "*".repeat(Math.max(0, username.length - 5)) +
             username.slice(-3)
         );
-    } else {
+    } else if (username.length >= 4){
         return (
             username.slice(0, 2) +
             "*".repeat(Math.max(0, username.length - 3)) +
             username.slice(-1)
         );
+    } else {
+        return username.replaceAll('*', username);
     }
 }
 
@@ -54,6 +56,7 @@ if (token) {
         },
         error: function (e) {
             console.log(e.message)
+            console.log(`error = ${e}`)
         }
     })
 
