@@ -3,7 +3,6 @@ package com.example.princesstown.service.chat;
 import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.entity.chat.ChatMessage;
-import com.example.princesstown.entity.chat.ChatRoom;
 import com.example.princesstown.repository.chat.ChatMessageRepository;
 import com.example.princesstown.repository.chat.ChatRoomRepository;
 import com.example.princesstown.repository.user.UserRepository;
@@ -56,8 +55,7 @@ public class ChatServiceImpl implements ChatService{
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
         } else {
-            ChatRoom chatRoom = findChatRoomByChatRoomId(chatMessage.getRoomId());
-            chatMessageRepository.save(new ChatMessage(user, chatMessage, chatRoom));
+            chatMessageRepository.save(new ChatMessage(user, chatMessage));
         }
 
         chatMessage.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm")));
@@ -70,11 +68,5 @@ public class ChatServiceImpl implements ChatService{
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() ->
                 new NullPointerException("존재하지 않는 사용자"));
-    }
-
-    @Override
-    public ChatRoom findChatRoomByChatRoomId(Long roomId) {
-        return chatRoomRepository.findById(roomId).orElseThrow(() ->
-                new NullPointerException("존재하지 않는 채팅방"));
     }
 }
