@@ -39,8 +39,9 @@ public class FindController {
         return authenticationService.sendTemporaryPasswordAfterVerification(phoneNumber, email);
     }
 
+    // 임시 로그인
     @PostMapping("/login-with-temp-password")
-    public ResponseEntity<ApiResponseDto> unifiedLogin(@RequestParam("username") String username, @RequestParam("TempPassword") String tempPassword) {
+    public ResponseEntity<ApiResponseDto> tempLogin(@RequestParam("username") String username, @RequestParam("tempPassword") String tempPassword) {
         return authenticationService.unifiedLogin(username, tempPassword);
     }
 }
