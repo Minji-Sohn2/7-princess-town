@@ -22,17 +22,17 @@ repositories {
     maven { url 'https://repo.spring.io/libs-milestone'}
 }
 
-sourceSets {
-    main {
-        resources {
-            srcDirs 'src/main/resources'
-        }
-    }
-}
-
-processResources {
-    duplicatesStrategy = 'include'
-}
+//sourceSets {
+//    main {
+//        resources {
+//            srcDirs 'src/main/resources'
+//        }
+//    }
+//}
+//
+//processResources {
+//    duplicatesStrategy = 'include'
+//}
 
 dependencies {
 
