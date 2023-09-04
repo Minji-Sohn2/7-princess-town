@@ -106,6 +106,7 @@ $(document).ready(function() {
         } else {
             $.ajax({
                 url: "/auth/send-phone-verification-code",
+                contentType: 'application/json',
                 type: "POST",
                 data: {phoneNumber: phoneNumber},
                 success: function (response) {
