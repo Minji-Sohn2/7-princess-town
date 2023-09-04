@@ -1,6 +1,6 @@
 package com.example.princesstown.service.chat;
 
-import com.example.princesstown.repository.chatRoom.ChatRoomRedisRepository;
+import com.example.princesstown.repository.chat.ChatRoomRedisRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class StompHandler implements ChannelInterceptor {
         } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) {
             log.info("StompCommand.SUBSCRIBE");
 
-            // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
+            // header정보에서 구독 destination정보를 얻고, roomId를 추출
             String roomId = chatService.getRoomId(Optional.ofNullable(
                             (String) message.getHeaders()
                                     .get("simpDestination"))
@@ -58,7 +58,7 @@ public class StompHandler implements ChannelInterceptor {
 
             log.info("roomId : " + roomId);
 
-            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.
+            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑
             // (나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
             String sessionId = (String) message.getHeaders().get("simpSessionId");
             chatRoomRedisRepository.setUserEnterInfo(sessionId, roomId);
@@ -67,7 +67,7 @@ public class StompHandler implements ChannelInterceptor {
 
         } else if (StompCommand.DISCONNECT == accessor.getCommand()) { // Websocket 연결 종료
 
-            // 연결이 종료된 클라이언트 sesssionId로 채팅방 id를 얻는다.
+            // 연결이 종료된 클라이언트 sesssionId로 채팅방 id 확인
             String sessionId = (String) message.getHeaders().get("simpSessionId");
             String roomId = chatRoomRedisRepository.getUserEnterRoomId(sessionId);
 

@@ -1,15 +1,18 @@
-package com.example.princesstown.controller.chatRoom;
+package com.example.princesstown.controller.chat;
 
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.dto.chatRoom.*;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
-import com.example.princesstown.service.chatRoom.ChatRoomService;
+import com.example.princesstown.service.chat.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +32,19 @@ public class ChatRoomController {
         return ResponseEntity.status(201).body(result);
     }
 
+    @GetMapping("/{roomId}")
+    public ResponseEntity<List<ChatMessageDto>> getChatRoomChatMessages(
+            @PathVariable Long roomId,
+            @RequestParam("page") int page
+    ) {
+        log.info("채팅방 채팅 기록 조회 컨트롤러 -> " + roomId);
+        List<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomChatMessages(roomId, page);
+        return ResponseEntity.ok().body(chatMessageDtoList);
+    }
+
     @PutMapping("/{roomId}")
     public ResponseEntity<ChatRoomInfoResponseDto> updateChatRoomName(
-            @PathVariable String roomId,
+            @PathVariable Long roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody ChatRoomNameRequestDto requestDto
     ) {
@@ -42,7 +55,7 @@ public class ChatRoomController {
 
     @DeleteMapping("/{roomId}")
     public ResponseEntity<ApiResponseDto> deleteChatRoom(
-            @PathVariable String roomId,
+            @PathVariable Long roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         log.info("채팅방 삭제 컨트롤러 -> " + userDetails.getUser().getUsername());
@@ -52,7 +65,7 @@ public class ChatRoomController {
 
     @GetMapping("/{roomId}/members")
     public ResponseEntity<MemberInfoListDto> getChatRoomMembers(
-            @PathVariable String roomId
+            @PathVariable Long roomId
     ) {
         log.info("채팅방 멤버 조회 컨트롤러");
         MemberInfoListDto result = chatRoomService.getChatRoomMembers(roomId);
@@ -61,7 +74,7 @@ public class ChatRoomController {
 
     @DeleteMapping("/{roomId}/members")
     public ResponseEntity<ApiResponseDto> leaveChatRoom(
-            @PathVariable String roomId,
+            @PathVariable Long roomId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         log.info("채팅방 멤버 나가기 컨트롤러");
@@ -71,7 +84,7 @@ public class ChatRoomController {
 
     @PostMapping("/{roomId}/members")
     public ResponseEntity<ApiResponseDto> inviteMember(
-            @PathVariable String roomId,
+            @PathVariable Long roomId,
             @RequestBody MemberIdListDto memberIdListDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

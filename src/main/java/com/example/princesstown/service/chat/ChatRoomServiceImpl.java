@@ -1,15 +1,20 @@
-package com.example.princesstown.service.chatRoom;
+package com.example.princesstown.service.chat;
 
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.dto.chatRoom.*;
-import com.example.princesstown.entity.ChatRoom;
-import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
-import com.example.princesstown.repository.chatRoom.ChatRoomRedisRepository;
-import com.example.princesstown.repository.chatRoom.ChatRoomRepository;
-import com.example.princesstown.repository.chatRoom.ChatUserRepository;
+import com.example.princesstown.entity.chat.ChatRoom;
+import com.example.princesstown.entity.chat.ChatUser;
+import com.example.princesstown.exception.NoPermissionsException;
+import com.example.princesstown.repository.chat.ChatMessageRepository;
+import com.example.princesstown.repository.chat.ChatRoomRepository;
+import com.example.princesstown.repository.chat.ChatUserRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +29,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatUserRepository chatUserRepository;
-    // redis 추가 후 사용
-    private final ChatRoomRedisRepository chatRoomRedisRepository;
+    private final ChatMessageRepository chatMessageRepository;
+
+    private static final int MESSAGE_PAGE_SIZE = 35;
 
     @Override
     @Transactional
@@ -41,40 +47,50 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         chatRoomRepository.save(newChatRoom);
-        chatRoomRedisRepository.saveChatRoomRedis(newChatRoom);
         return new ChatRoomInfoResponseDto(newChatRoom);
     }
 
     @Override
+    public List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page) {
+        ChatRoom chatRoom = findChatRoomById(roomId);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, MESSAGE_PAGE_SIZE, sort);
+
+        return chatMessageRepository.findAllByChatRoom(pageable, chatRoom)
+                .stream()
+                .map(ChatMessageDto::new)
+                .toList();
+    }
+
+    @Override
     @Transactional
-    public ChatRoomInfoResponseDto updateChatRoomName(String chatRoomId, User user, ChatRoomNameRequestDto requestDto) {
+    public ChatRoomInfoResponseDto updateChatRoomName(Long chatRoomId, User user, ChatRoomNameRequestDto requestDto) {
         // 요청한 user가 채팅방의 생성자인지 확인
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
         if (!chatRoom.getHostUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
+            throw new NoPermissionsException("채팅방의 이름은 호스트만 변경할 수 있습니다.");
         }
 
         chatRoom.updateChatRoomName(requestDto.getNewChatRoomName());
-        chatRoomRedisRepository.saveChatRoomRedis(chatRoom);
         return new ChatRoomInfoResponseDto(chatRoom);
     }
 
     @Override
-    public void deleteChatRoom(String chatRoomId, User user) {
+    public void deleteChatRoom(Long chatRoomId, User user) {
         // 요청한 user가 채팅방의 생성자인지 확인
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
         if (!chatRoom.getHostUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("채팅방은 호스트만 삭제할 수 있습니다.");
+            throw new NoPermissionsException("채팅방은 호스트만 삭제할 수 있습니다.");
         }
 
-        chatRoomRedisRepository.deleteChatRoomRedis(chatRoom);
         chatRoomRepository.delete(chatRoom);
     }
 
     @Override
-    public MemberInfoListDto getChatRoomMembers(String chatRoomId) {
+    public MemberInfoListDto getChatRoomMembers(Long chatRoomId) {
 
         ChatRoom chatRoom = findChatRoomById(chatRoomId);
 
@@ -94,12 +110,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void leaveChatRoom(String roomId, User user) {
+    public void leaveChatRoom(Long roomId, User user) {
         ChatRoom chatRoom = findChatRoomById(roomId);
         ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
         if (chatUser == null) {
-            throw new IllegalArgumentException("해당 채팅방에 속해있지 않습니다.");
+            throw new NoPermissionsException("해당 채팅방에 속해있지 않습니다.");
         }
 
         // user가 해당 채팅방의 host인 경우 채팅방 삭제
@@ -111,12 +127,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void inviteMember(String roomId, MemberIdListDto memberIdListDto, User user) {
+    public void inviteMember(Long roomId, MemberIdListDto memberIdListDto, User user) {
         ChatRoom chatRoom = findChatRoomById(roomId);
         ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
         if (chatUser == null) {
-            throw new IllegalArgumentException("해당 채팅방으로의 초대 권한이 없습니다.");
+            throw new NoPermissionsException("해당 채팅방으로의 초대 권한이 없습니다.");
         }
 
         List<User> userList = dtoToUserList(memberIdListDto.getMemberIdList());
@@ -138,7 +154,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public ChatRoom findChatRoomById(String chatRoomId) {
+    public ChatRoom findChatRoomById(Long chatRoomId) {
         return chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new NullPointerException("존재하지 않는 채팅방입니다.")
         );
