@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "likes")
-public class Like {
+public class PostLikes extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +19,7 @@ public class Like {
     // 연관관계 설정
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_userId")
     private User user;
 
     @JsonIgnore
@@ -25,22 +27,12 @@ public class Like {
     @JoinColumn(name = "post_id")
     private Post post;
 
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "comment_id")
-//    private Comment comment;
+    @Column
+    private boolean likes;
 
-
-    public Like(User user, Post post) {
-        this.user = user;
+    public PostLikes(boolean likes, Post post, User user) {
+        this.likes = likes;
         this.post = post;
+        this.user = user;
     }
-
-//    public Like(User user, Comment comment) {
-//        this.user = user;
-//        this.post = comment.getPost();
-//        this.comment = comment;
-//    }
-
-
 }

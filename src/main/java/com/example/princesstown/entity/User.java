@@ -4,9 +4,14 @@ import com.example.princesstown.dto.getInfo.KakaoUserInfoDto;
 import com.example.princesstown.dto.getInfo.NaverUserInfoDto;
 import com.example.princesstown.dto.request.ProfileEditRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
+import com.example.princesstown.entity.chat.ChatUser;
 import jakarta.persistence.*;
-import lombok.*;
-import java.util.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter

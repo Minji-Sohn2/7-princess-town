@@ -120,8 +120,8 @@ public class ViewController {
     @GetMapping("/createpost")
     public String createPostView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        List<BoardResponseDto> boardList = boardService.getBoard();
-        model.addAttribute("boardList", boardList);
+            List<BoardResponseDto> boardList = boardService.getBoard();
+            model.addAttribute("boardList", boardList);
 
         return "writePost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
     }
@@ -132,4 +132,12 @@ public class ViewController {
         return "ex";
     }
 
+    @GetMapping("/editpost/{podstId}")
+    public String editPostView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        List<BoardResponseDto> boardList = boardService.getBoard();
+        model.addAttribute("boardList", boardList);
+
+        return "editpost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
+    }
 }

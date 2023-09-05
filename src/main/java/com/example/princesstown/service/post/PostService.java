@@ -1,19 +1,20 @@
 package com.example.princesstown.service.post;
 
+import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.dto.response.PostLikesResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
-import com.example.princesstown.entity.Board;
-import com.example.princesstown.entity.Post;
-import com.example.princesstown.entity.SearchHistory;
-import com.example.princesstown.entity.User;
+import com.example.princesstown.entity.*;
 import com.example.princesstown.repository.board.BoardRepository;
-import com.example.princesstown.repository.post.LikeRepository;
+import com.example.princesstown.repository.post.PostLikesRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import com.example.princesstown.repository.post.SearchHistoryRepository;
 import com.example.princesstown.service.awsS3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,7 +32,7 @@ public class PostService {
     private final S3Uploader s3Uploader;
     private final BoardRepository boardRepository;
     private final PostRepository postRepository;
-    private final LikeRepository likeRepository;
+    private final PostLikesRepository postLikesRepository;
     private final SearchHistoryRepository searchHistoryRepository;
 //    private final JwtUtil jwtUtil;
 
@@ -204,6 +206,7 @@ public class PostService {
         return new ApiResponseDto(200, "삭제가 완료되었습니다.");
     }
 
+    //게시글 조회수
     @Transactional
     public void incrementViewCount(Long postId) {
         postRepository.incrementViewCount(postId);
@@ -213,6 +216,103 @@ public class PostService {
         SearchHistory searchHistory = new SearchHistory();
         searchHistory.setKeyword(keyword);
         searchHistoryRepository.save(searchHistory);
+    }
+
+    //게시글 좋아요 가져오기
+    public ResponseEntity<RestApiResponseDto> getLikes(Long postId) {
+        try {
+            getPostId(postId);
+
+            List<PostLikes> likesList = postLikesRepository.findAllByPostId(postId);
+
+            List<PostLikesResponseDto> postLikesResponseDtoList = likesList.stream()
+                    .map(PostLikesResponseDto::new)
+                    .toList();
+
+            return this.resultResponse(HttpStatus.OK, "게시글 좋아요 조회", postLikesResponseDtoList);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
+    }
+
+    //게시글 좋아요
+    public ResponseEntity<RestApiResponseDto> createLikes(Long postId, User user) {
+        try {
+            getPostId(postId);
+
+            Optional<PostLikes> existingLikesOptional = postLikesRepository.findByPostIdAndUserUserId(postId, user.getUserId());
+
+            if (existingLikesOptional.isPresent()) {
+                PostLikes existingLikes = existingLikesOptional.get();
+
+                if (!existingLikes.isLikes()) {
+                    existingLikes.setLikes(true);
+                    existingLikes.getPost().setLikeCnt(existingLikes.getPost().getLikeCnt() + 1);
+                    postLikesRepository.save(existingLikes);
+                    return this.resultResponse(HttpStatus.CREATED, "게시글 좋아요 클릭", new PostLikesResponseDto(existingLikes));
+                } else {
+                    throw new IllegalArgumentException("이미 좋아요가 선택되어 있습니다.");
+                }
+            } else {
+                Post post = postRepository.findById(postId)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+                PostLikes newLikes = new PostLikes(true, post, user);
+                post.setLikeCnt(post.getLikeCnt() + 1);
+                postLikesRepository.save(newLikes);
+                return this.resultResponse(HttpStatus.CREATED, "게시글 좋아요 생성", new PostLikesResponseDto(newLikes));
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
+    }
+
+    //게시글 좋아요 취소
+    public ResponseEntity<RestApiResponseDto> deleteLikes(Long postId, User user) {
+        try {
+            getPost(postId);
+
+            PostLikes postLikes = postLikesRepository.findByPostIdAndUserUserId(postId, user.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시글 좋아요가 존재하지 않습니다."));
+
+            likesValid(postLikes, user);
+
+            if (!postLikes.isLikes()) {
+                throw new IllegalArgumentException("이미 취소된 게시글 좋아요입니다.");
+            } else {
+                postLikes.setLikes(false);
+                postLikes.getPost().setLikeCnt(postLikes.getPost().getLikeCnt() - 1);
+                postLikesRepository.save(postLikes);
+            }
+            return this.resultResponse(HttpStatus.OK, "게시글 좋아요 취소", new PostLikesResponseDto(postLikes));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new RestApiResponseDto(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        }
+    }
+
+
+    // 상태코드, 메세지, json 반환
+    private ResponseEntity<RestApiResponseDto> resultResponse(HttpStatus status, String message, Object result) {
+        RestApiResponseDto restApiResponseDto = new RestApiResponseDto(status.value(), message, result);
+        return new ResponseEntity<>(
+                restApiResponseDto,
+                status
+        );
+    }
+
+    // 좋아요 사용자 검증
+    private void likesValid(PostLikes postLikes, User user) {
+        Long writerId = postLikes.getUser().getUserId();
+        Long loginId = user.getUserId();
+        if (!writerId.equals(loginId)) {
+            throw new IllegalArgumentException("잘못된 접근입니다.");
+        }
+    }
+
+    // 게시물Id 가져오는 메소드 분리
+    private void getPostId(Long postId) {
+        postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
     }
 
 }

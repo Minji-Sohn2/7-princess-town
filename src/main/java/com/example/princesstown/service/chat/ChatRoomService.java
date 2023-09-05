@@ -1,9 +1,10 @@
-package com.example.princesstown.service.chatRoom;
+package com.example.princesstown.service.chat;
 
+import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.dto.chatRoom.*;
-import com.example.princesstown.entity.ChatRoom;
-import com.example.princesstown.entity.ChatUser;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.entity.chat.ChatRoom;
+import com.example.princesstown.entity.chat.ChatUser;
 
 import java.util.List;
 
@@ -18,6 +19,15 @@ public interface ChatRoomService {
     ChatRoomInfoResponseDto createChatRoom(User user, CreateChatRoomRequestDto requestDto);
 
     /**
+     * 채팅방의 메세지 불러오기
+     *
+     * @param roomId 채팅방 id
+     * @param page   page 번호
+     * @return 메세지 list
+     */
+    List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page, User user);
+
+    /**
      * 채팅방 이름 수정
      *
      * @param chatRoomId 이름을 수정할 채팅방
@@ -25,7 +35,7 @@ public interface ChatRoomService {
      * @param requestDto 새로운 채팅방 이름
      * @return 수정된 채팅방 정보
      */
-    ChatRoomInfoResponseDto updateChatRoomName(String chatRoomId, User user, ChatRoomNameRequestDto requestDto);
+    ChatRoomInfoResponseDto updateChatRoomName(Long chatRoomId, User user, ChatRoomNameRequestDto requestDto);
 
     /**
      * 채팅방 삭제
@@ -33,7 +43,7 @@ public interface ChatRoomService {
      * @param roomId 삭제할 채팅방 id
      * @param user   요청하는 user
      */
-    void deleteChatRoom(String roomId, User user);
+    void deleteChatRoom(Long roomId, User user);
 
     /**
      * 채팅방 멤버 조회
@@ -41,7 +51,7 @@ public interface ChatRoomService {
      * @param roomId 조회할 채팅방 id
      * @return 멤버 id list
      */
-    MemberInfoListDto getChatRoomMembers(String roomId);
+    MemberInfoListDto getChatRoomMembers(Long roomId);
 
     /**
      * 내가 속한 채팅방 조회
@@ -57,7 +67,7 @@ public interface ChatRoomService {
      * @param roomId 나갈 채팅방 id
      * @param user   요청한 user
      */
-    void leaveChatRoom(String roomId, User user);
+    void leaveChatRoom(Long roomId, User user);
 
     /**
      * 채팅방에 user 초대하기
@@ -66,7 +76,7 @@ public interface ChatRoomService {
      * @param memberIdListDto 초대할 user id list
      * @param user            요청한 user
      */
-    void inviteMember(String roomId, MemberIdListDto memberIdListDto, User user);
+    void inviteMember(Long roomId, MemberIdListDto memberIdListDto, User user);
 
     /**
      * userId로 user 찾기
@@ -82,7 +92,7 @@ public interface ChatRoomService {
      * @param chatRoomId 찾을 채팅방 id
      * @return 찾은 채팅방
      */
-    ChatRoom findChatRoomById(String chatRoomId);
+    ChatRoom findChatRoomById(Long chatRoomId);
 
     /**
      * ChatUser 객체 찾기

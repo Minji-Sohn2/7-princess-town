@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,8 @@ public class Post extends Timestamped{
     @Column(length = 500)
     private String contents;
 
-    @Column(name = "like_count")
-    private Long likeCount;
+    @ColumnDefault("0")
+    private Long likeCnt;
 
     @Column(name = "view_count", columnDefinition = "int default 0", nullable = false)
     private int viewCount;
@@ -58,12 +59,12 @@ public class Post extends Timestamped{
 
     // post를 연관관계의 주인으로 설정. post 엔티티 제거시 연관된 like 제거.
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<Like> likeList = new ArrayList<>();
+    private List<PostLikes> postLikesList = new ArrayList<>();
 
-    public Post(PostRequestDto postRequestDto, User user, Board board, Long likeCount, String postImageUrl){
+    public Post(PostRequestDto postRequestDto, User user, Board board, Long likeCnt, String postImageUrl){
         this.user = user;
         this.board = board;
-        this.likeCount = likeCount;
+        this.likeCnt = likeCnt;
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
         this.postImageUrl = postImageUrl;
@@ -72,10 +73,6 @@ public class Post extends Timestamped{
     public void update(PostRequestDto postRequestDto){
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
-    }
-
-    public void setLikeCount(Long likeCount) {
-        this.likeCount = likeCount;
     }
 
     public void setImageUrl(String postImageUrl) {

@@ -115,7 +115,7 @@
                 <li><a href="/view/mainpage">전체게시판</a></li>
                 <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
                 <th:block th:each="board : ${boardList}">
-                    <li><a th:href="@{/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
+                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
                 </th:block>
             </ul>
         </div>
@@ -124,10 +124,10 @@
         <div class="post-header">
             <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
             <div class="post-info">
-                <span th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 수정일: ' + ${post.modifiedAt} + '| 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCount}"></span>
+                <span th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 수정일: ' + ${post.modifiedAt} + '| 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
             </div>
         </div>
-        <img class="post-image" th:src="${post.postImageUrl}" alt="게시글 이미지">
+        <img class="post-image" id="post-image" th:src="${post.postImageUrl}" alt="게시글 이미지">
         <div class="post-contents">
             <p th:text="${post.contents}">
                 게시글 내용이 여기에 들어갑니다.
@@ -135,8 +135,9 @@
         </div>
         <div class="post-actions">
             <button class="action-button" id="likeButton">좋아요</button>
-            <button class="action-button">수정</button>
-            <button class="action-button">삭제</button>
+            <button class="action-button" id="unlikeButton">좋아요 취소</button>
+            <button class="action-button" id="editButton">수정</button>
+            <button class="action-button" id="deleteButton">삭제</button>
         </div>
     </div>
 </div>
@@ -144,6 +145,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
+
+        if (!$('#post-image').attr('src')) {
+            $('.post-image').hide();
+        }
+
         // 인기검색어 데이터 가져와서 렌더링
         function renderPopularSearches(data) {
             var searchRanking = $(".search-ranking");
@@ -180,21 +186,27 @@
 
         function handleLike(postId) {
             $.ajax({
-                url: "/api/posts/" + postId + "/like",
+                url: "/api/posts/" + postId + "/likes",
                 method: "POST",
+                dataType: "json",
                 headers: {
-                    'Authorization': token, // 토큰주입 임시방편
+                    'Authorization': token,
                 },
                 success: function(response) {
-                    if (response.success) {
+                    if (response.status === 201 || response.status === 200) {
                         alert("게시물을 좋아요 했습니다!");
                         window.location.reload();
                     } else {
                         alert("좋아요 처리에 실패했습니다.");
+                        window.location.reload();
                     }
                 },
-                error: function() {
-                    console.error("Error processing like request.");
+                error: function(response) {
+                    if (response.status === 400) {
+                        alert("이미 좋아요를 누른 게시물 입니다.");
+                    } else {
+                        alert("서버에서 오류가 발생했습니다.");
+                    }
                 }
             });
         }
@@ -203,6 +215,81 @@
         $("#likeButton").click(function() {
             handleLike(postId);
         });
+
+        $("#unlikeButton").click(function() {
+            handleUnlike(postId);
+        });
+
+// 좋아요 취소 요청을 서버에 보내는 함수
+        function handleUnlike(postId) {
+            $.ajax({
+                url: "/api/posts/" + postId + "/likes",
+                method: "DELETE",
+                dataType: "json",
+                headers: {
+                    'Authorization': token, // 토큰주입 임시방편
+                },
+                success: function(response) {
+                    if (response.status === 201 || response.status === 200) {
+                        alert("게시물 좋아요를 취소했습니다!");
+                        window.location.reload();
+                    } else {
+                        alert("좋아요 취소 처리에 실패했습니다.");
+                        window.location.reload();
+                    }
+                },
+                error: function(response) {
+                    if (response.status === 400) {
+                        alert("아직 좋아요를 누르지 않은 게시물 입니다.");
+                    } else {
+                        alert("서버에서 오류가 발생했습니다.");
+                    }
+                }
+            });
+        }
+
+        $("#deleteButton").click(function() {
+            handleDelete(postId);
+        });
+
+        function handleDelete(postId) {
+            if (confirm("게시물을 삭제하시겠습니까?")) {
+                // 게시물 삭제 요청을 서버에 보냅니다.
+                $.ajax({
+                    url: "/api/posts/" + postId, // postId에 실제 게시물 ID를 할당하세요.
+                    method: "DELETE",
+                    dataType: "json",
+                    headers: {
+                        'Authorization': token,
+                    },
+                    success: function (response) {
+                        if (response.status === 200) {
+                            alert("게시물이 성공적으로 삭제되었습니다.");
+                            window.location.href = "/view/mainpage"; // 삭제 후 홈페이지로 이동하거나 필요한 페이지로 리다이렉션합니다.
+                        } else {
+                            alert("작성자만 삭제 가능합니다.");
+                        }
+                    },
+                    error: function (response) {
+                        if (response.status === 400) {
+                            alert("작성자만 삭제 가능합니다.");
+                        } else {
+                            alert("서버에서 오류가 발생했습니다.");
+                        }
+                    }
+                });
+            }
+        }
+
+        $("#editButton").click(function() {
+            handleEdit(postId);
+        });
+
+        function handleEdit(postId) {
+            // 게시글 수정 페이지로 이동합니다.
+            window.location.href = "/view/editpost/" + postId; // 적절한 URL로 수정 페이지 경로를 지정하세요.
+        }
+
     });
 </script>
 </html>

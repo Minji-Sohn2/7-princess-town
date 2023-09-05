@@ -103,7 +103,7 @@
         <div class="box">
             <h2 class="h2">인기검색어</h2>
             <ol class="search-ranking">
-<!--                <li>검색어 1</li>-->
+            <!--<li>검색어 1</li>-->
             </ol>
         </div>
         <div>
@@ -118,7 +118,7 @@
     </div>
     <div class="main-content">
         <div>
-            <form class="search-form">
+            <form class="search-form" style="display: inline-block; vertical-align: top;">
                 <select name="searchType" id="searchType">
                     <option value="title">제목</option>
                     <option value="contents">내용</option>
@@ -127,6 +127,9 @@
                 <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
                 <button type="submit">검색</button>
             </form>
+            <a href="http://localhost:8080/view/createpost" style="display: inline-block; margin-left: 10px;">
+                <button class="btn-create-post">글쓰기</button>
+            </a>
         </div>
         <div class="posts">
             <h2 class="h2">인기게시글</h2>
@@ -139,7 +142,7 @@
                             </a>
                         </div>
                         <div class="post-info-container">
-                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCount}"></span>
+                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
                         </div>
                     </div>
                 </li>
@@ -158,7 +161,7 @@
                         </div>
                         <div class="post-info-container">
                             <!-- 게시물 정보를 표시합니다 -->
-                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCount}"></span>
+                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
                         </div>
                     </div>
                 </li>

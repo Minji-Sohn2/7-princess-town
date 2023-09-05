@@ -1,48 +1,69 @@
 // ----------------------- 쿠키/토큰 ---------------------------
 const token = Cookies.get('Authorization');
-
 const config = {
     headers: {
         'Authorization': `${token}`
     }
 };
-//----------------------- 모달 관련 js --------------------------
-function showModal(modalId, overlayId) {
-    const modal = document.getElementById(modalId);
-    const overlay = document.getElementById(overlayId);
-    modal.style.display = 'block';
-    overlay.style.display = 'block';
+
+// ----------------------- 모달 관련 js --------------------------
+function showElement(elementId) {
+    const element = document.getElementById(elementId);
+    element.style.display = 'block';
 }
 
-function closeModal(modalId, overlayId) {
-    const modal = document.getElementById(modalId);
-    const overlay = document.getElementById(overlayId);
-    modal.style.display = 'none';
-    overlay.style.display = 'none';
+function hideElement(elementId) {
+    const element = document.getElementById(elementId);
+    element.style.display = 'none';
 }
 
-// --------------------- 채팅방 생성하기 -------------------------
+// --------------------- 채팅방 생성하기 모달 ---------------------
 const createRoomButton = document.getElementById('createRoomButton');
 const closeCreateRoomModal = document.getElementById('closeCreateRoomModal');
 
-createRoomButton.addEventListener('click', showModal.bind(null, 'registerCreateRoomModal', 'createRoomModalOverlay'));
-closeCreateRoomModal.addEventListener('click', closeModal.bind(null, 'registerCreateRoomModal', 'createRoomModalOverlay'));
+createRoomButton.addEventListener('click', () => {
+    showElement('registerCreateRoomModal');
+    showElement('createRoomModalOverlay');
+});
 
-document.getElementById('submitSearchKeyword').addEventListener('click', function () {
+closeCreateRoomModal.addEventListener('click', () => {
+    hideElement('registerCreateRoomModal');
+    hideElement('createRoomModalOverlay');
+    selectedUserIds.length = 0;
+    document.getElementById('searchInput').value = '';
+    document.getElementById('newChatRoomNameInput').value = '';
+    document.getElementById('searchResultsContainer').innerHTML = '';
+    location.reload();
+});
+
+//------------------------- 사용자 검색  -------------------------------
+document.getElementById('submitSearchKeyword').addEventListener('click', () => {
     const searchInput = document.getElementById('searchInput').value;
+
     console.log('검색 키워드 -> ' + searchInput);
+    if (searchInput.trim() === '') {
+        alert('검색어를 입력하세요');
+        return;
+    }
     searchUserByKeyword(searchInput);
 });
 
-// 사용자 검색 요청
 function searchUserByKeyword(keyword) {
+    const searchResultsContainer = document.getElementById('searchResultsContainer');
+    searchResultsContainer.innerHTML = '';
+
     axios.get('/api/search/users?keyword=' + keyword, config)
         .then(response => {
             console.log(response);
             const results = response.data.searchUserResults;
-            results.forEach(user => {
-                createSearchResultCard(user);
-            });
+
+            if (results.length === 0) {
+                createNoSearchResultCard(searchResultsContainer);
+            } else {
+                results.forEach(user => {
+                    createSearchResultCard(user, searchResultsContainer);
+                });
+            }
         })
         .catch(error => {
             console.error(error);
@@ -50,9 +71,19 @@ function searchUserByKeyword(keyword) {
         });
 }
 
+// 검색 결과가 없을 경우
+function createNoSearchResultCard(container) {
+    const noResultsCard = document.createElement('div');
+    noResultsCard.className = 'search-results-card';
+    noResultsCard.textContent = '검색 결과 없음';
+    container.appendChild(noResultsCard);
+}
+
+// 체크박스 클릭 -> 선택한 사용자 id 담을 배열
+const selectedUserIds = [];
+
 // 모달에 띄울 결과 카드 생성
-function createSearchResultCard(user) {
-    const searchResultsContainer = document.getElementById('searchResultsContainer'); // Replace with your actual container ID
+function createSearchResultCard(user, container) {
 
     const searchResultCard = document.createElement('div');
     searchResultCard.className = 'search-result-card';
@@ -96,7 +127,58 @@ function createSearchResultCard(user) {
     searchResultCard.appendChild(checkboxContainer);
     searchResultCard.appendChild(profileContainer);
 
-    searchResultsContainer.appendChild(searchResultCard);
+    container.appendChild(searchResultCard);
+
+    checkbox.addEventListener('click', () => {
+        if (checkbox.checked) {
+            selectedUserIds.push(user.userId); // Add the ID to the array
+        } else {
+            const index = selectedUserIds.indexOf(user.userId);
+            if (index !== -1) {
+                selectedUserIds.splice(index, 1);
+            }
+        }
+        console.log(selectedUserIds);
+    });
+}
+
+document.getElementById('submitSelectUser').addEventListener('click', function () {
+    showElement('new-roomname-container');
+    hideElement('search-container');
+    showElement('registerNewChatRoom');
+    hideElement('submitSelectUser');
+});
+
+// ------------------- 초대 후 방 이름 입력받기 -------------------
+// 만들기 버튼 눌렀을 때
+document.getElementById('registerNewChatRoom').addEventListener('click', function () {
+    const newChatRoomName = document.getElementById('newChatRoomNameInput').value;
+    console.log('입력한 새로운 채팅방 이름 -> ' + newChatRoomName);
+    createNewChatRoom(newChatRoomName);
+    hideElement('registerNewChatRoom');
+    hideElement('new-roomname-container');
+    showElement('complete-creating');
+});
+
+// 새로운 채팅방 정보 전송
+function createNewChatRoom(newChatRoomName) {
+
+    const memberIdList = selectedUserIds.map(userId => ({ userId }));
+    console.log(memberIdList);
+    let data = {
+        "chatRoomName": newChatRoomName,
+        memberIdList
+    };
+
+    axios.post("/api/chatRooms", data, config)
+        .then(response => {
+            console.log(response);
+
+        })
+        .catch(error => {
+            console.error(error);
+            console.error('채팅방 생성 요청 실패');
+        });
 }
 
 // ------------------- 내가 속한 채팅방 불러오기 -------------------
@@ -149,7 +231,7 @@ function enterRoom(roomId, roomName) {
     localStorage.setItem('wschat.roomId', roomId);
     localStorage.setItem('wschat.roomName', roomName);
     alert('이동');
-    location.href = "/chat/room/enter/" + roomId;
+    location.href = "/view/chatRooms/" + roomId;
 }
 
 // -----------------------로그아웃--------------------------
@@ -162,4 +244,9 @@ function logout() {
 }
 
 //---------------------- 페이지 로딩 시 -----------------------
-getAllMyRooms();
+function initializePage() {
+    getAllMyRooms();
+    document.getElementById('logoutButton').addEventListener('click', logout);
+}
+
+initializePage();

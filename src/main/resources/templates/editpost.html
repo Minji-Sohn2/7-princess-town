@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>게시글 작성 페이지</title>
+    <title>게시글 수정 페이지</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -106,7 +106,6 @@
             max-height: 200px;
             margin-top: 10px;
         }
-
     </style>
 </head>
 <body>
@@ -142,17 +141,17 @@
             </div>
         </form>
         <h2 class="h2">게시글 작성</h2>
-        <form id="createPostForm" enctype="multipart/form-data">
+        <form id="editPostForm" enctype="multipart/form-data">
             <label for="postTitle">제목:</label>
             <input type="text" id="postTitle" name="title" required><br>
             <label for="postContents">내용:</label>
             <textarea id="postContents" name="contents" rows="4" required></textarea><br>
             <div class="image-upload-div">
-                <label for="postImage">이미지 업로드:</label>
-                <input type="file" id="postImage" name="postImage"><br>
+                <label for="newPostImage">이미지 업로드:</label>
+                <input type="file" id="newPostImage" name="newPostImage"><br>
                 <img id="imagePreview">
             </div>
-            <button type="button" id="writePostButton">작성</button>
+            <button type="button" id="writePostButton">수정</button>
             <button type="button" id="cancelButton">취소</button>
         </form>
     </div>
@@ -190,6 +189,28 @@
         });
     });
 
+    var urlParts = window.location.pathname.split("/");
+    var postId = urlParts[urlParts.length - 1];
+
+    //게시글 수정페이지 진입시 기존에 있던 내용을 불러와 주는 js
+    $.ajax({
+        url: "/api/posts/" + postId, // postId는 페이지 URL에서 가져오는 것으로 가정
+        method: "GET",
+        success: function(response) {
+            // 서버에서 가져온 게시글 정보를 폼에 설정
+            $("#postTitle").val(response.title);
+            $("#postContents").val(response.contents);
+
+            // 게시글 수정 시 이미지를 업로드하려는 경우, 이미지가 설정되어 있다면 이미지 파일명을 표시
+            if (response.postImageUrl) {
+                $("#newPostImage").val(response.postImageUrl);
+            }
+        },
+        error: function() {
+            alert("게시글 정보 가져오기 실패.");
+        }
+    });
+
     $(document).ready(function() {
         $("#selectBoardButton").click(function() {
             var boardId = $("#boardId").val();
@@ -210,17 +231,11 @@
             });
         });
 
-        // 이미지 파일 선택 시 미리보기
-        $("#postImage").change(function() {
+        $("#newPostImage").change(function() {
             previewImage(this);
         });
 
-        // 이미지 파일 선택 시 미리보기
-        $("#postImage").change(function() {
-            previewImage(this);
-        });
-
-// 이미지 파일 미리보기를 추가하는 함수
+        // 이미지 파일 미리보기를 추가하는 함수
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -238,32 +253,32 @@
             }
         }
 
+
         $("#writePostButton").click(function() {
             var boardId = $("#boardId").val();
             if (!boardId) {
                 alert("게시판을 먼저 선택하세요.");
                 return;
             }
-            $("#createPostForm").submit();
+            $("#editPostForm").submit();
         });
 
-        $("#createPostForm").submit(function(event) {
+        $("#editPostForm").submit(function(event) {
             event.preventDefault();
 
-            var formData = new FormData($("#createPostForm")[0]);
+            var formData = new FormData($("#editPostForm")[0]);
             // FormData 객체 내용 확인
-            var postImage = formData.get('postImage');
-            console.log('postImage:', postImage);
+            var newPostImage = formData.get('newPostImage');
+            console.log('newPostImage:', newPostImage);
 
-            var url = "/api/boards/" + $("#boardId").val() + "/posts";
+            var url = "/api/boards/" + $("#boardId").val() + "/posts/" + postId;
 
-            //이미지가 첨부되지 않는 쿠키
             var token = Cookies.get('Authorization');
             console.log(token);
 
             $.ajax({
                 url: url,
-                method: "POST",
+                method: "PUT",
                 headers: {
                     'Authorization': token,
                 },
@@ -272,12 +287,12 @@
                 processData: false,
                 success: function(response) {
                     console.log('FormData:', formData);
-                    console.log('postImage:', postImage);
-                    alert("게시글을 작성하였습니다!");
+                    console.log('newPostImage:', newPostImage);
+                    alert("게시글을 수정하였습니다!");
                     window.location.href = "/view/mainpage"
                 },
                 error: function() {
-                    alert("게시글 작성에 실패했습니다.");
+                    alert("게시글 수정에 실패했습니다.");
                 }
             });
         });

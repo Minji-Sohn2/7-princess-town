@@ -1,5 +1,6 @@
 package com.example.princesstown.controller.post;
 
+import com.example.princesstown.dto.comment.RestApiResponseDto;
 import com.example.princesstown.dto.request.PostByLocationRequestDto;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
@@ -8,7 +9,6 @@ import com.example.princesstown.entity.Post;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.awsS3.S3Uploader;
 import com.example.princesstown.service.location.LocationService;
-import com.example.princesstown.service.post.LikeService;
 import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,6 @@ import java.util.List;
 @RequestMapping("/api")
 public class PostController {
     private final PostService postService;
-    private final LikeService likeService;
     private final S3Uploader s3Uploader;
     private final LocationService locationService;
 
@@ -37,8 +36,8 @@ public class PostController {
         return postService.getPosts();
     }
 
-
-    @GetMapping("/auth/location/posts/{id}") // 위치반경 내 게시글 조회
+    // 위치반경 내 게시글 조회
+    @GetMapping("/auth/location/posts/{id}")
     public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
         return locationService.getPostsInRadius(id, requestDto);
     }
@@ -50,8 +49,8 @@ public class PostController {
     }
 
     //게시글 선택 조회 API
-    @GetMapping("/boards/{boardId}/posts/{postId}")
-    public PostResponseDto getPost(@PathVariable Long boardId, @PathVariable Long postId){
+    @GetMapping("/posts/{postId}")
+    public PostResponseDto getPost(@PathVariable Long postId){
 
         postService.incrementViewCount(postId);
 
@@ -64,6 +63,7 @@ public class PostController {
         return postService.searchPostsByTitleOrContents(keyword);
     }
 
+    //게시글 내용으로 검색
     @GetMapping("/search/contents")
     public List<PostResponseDto> searchPostsByContents(@RequestParam String contents) {
         return postService.searchPostsByContents(contents);
@@ -111,8 +111,7 @@ public class PostController {
 
     // 게시글 수정 API
     @PutMapping("/boards/{boardId}/posts/{postId}")
-    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long boardId,
-                                                     @PathVariable Long postId,
+    public ResponseEntity<ApiResponseDto> updatePost(@PathVariable Long postId,
                                                      @ModelAttribute PostRequestDto postRequestDto,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
@@ -125,25 +124,36 @@ public class PostController {
 
 
     // 게시글 삭제 API
-    @DeleteMapping("/boards/{boardId}/posts/{postId}")
-    public ApiResponseDto deletePost(@PathVariable Long boardId,
-                                     @PathVariable Long postId,
+    @DeleteMapping("/posts/{postId}")
+    public ApiResponseDto deletePost(@PathVariable Long postId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
         return postService.deletePost(postId, userDetails.getUser());
     }
 
-    //게시글 좋아요 API
-    @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<ApiResponseDto> likeBlog(@PathVariable Long postId,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok().body(likeService.likePost(postId, userDetails.getUser()));
+    // 게시글 좋아요 조회
+    @GetMapping("/posts/{postId}/likes")
+    public ResponseEntity<RestApiResponseDto> getPostLikes(
+            @PathVariable Long postId
+    ) {
+        return postService.getLikes(postId);
     }
 
-    //게시글 좋아요 취소 API
-    @DeleteMapping("/posts/{postId}/like")
-    public ResponseEntity<ApiResponseDto> deleteLikeBlog(@PathVariable Long postId,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok().body(likeService.deleteLikePost(postId, userDetails.getUser()));
+    // 게시물 좋아요 추가
+    @PostMapping("/posts/{postId}/likes")
+    public ResponseEntity<RestApiResponseDto> createPostLikes(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return postService.createLikes(postId, userDetails.getUser());
+    }
+
+    // 게시물 좋아요 취소
+    @DeleteMapping("/posts/{postId}/likes")
+    public ResponseEntity<RestApiResponseDto> deletePostLikes(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return postService.deleteLikes(postId, userDetails.getUser());
     }
 
 }
