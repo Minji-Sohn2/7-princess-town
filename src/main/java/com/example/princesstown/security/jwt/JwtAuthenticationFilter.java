@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.jwtUtil = jwtUtil;
 
         // login" URL로 들어오는 인증 요청을 처리하도록 설정
-        setFilterProcessesUrl("/auth/login");
+        setFilterProcessesUrl("/api/users/login");
     }
 
     @Override
