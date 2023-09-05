@@ -3,7 +3,7 @@ name: Build and deploy Gradle app to Azure Web App - princesstown
 on:
   push:
     branches:
-      - feature/Develop
+      - develop
   workflow_dispatch:
 
 permissions:
