@@ -139,6 +139,7 @@ $(document).ready(function () {
             beforeSend: function() {
                 $('#eventLoading').show();
                 $('body').on('scroll touchmove mousewheel', function(e) {
+                    e.preventDefault();
                     e.stopPropagation();
                     return false;
                 });
@@ -556,6 +557,7 @@ $(document).ready(function () {
             beforeSend: function() {
                 $('#eventLoading').show();
                 $('body').on('scroll touchmove mousewheel', function(e) {
+                    e.preventDefault();
                     e.stopPropagation();
                     return false;
                 });
@@ -657,6 +659,7 @@ $(document).ready(function () {
                     beforeSend: function() {
                         $('#eventLoading').show();
                         $('body').on('scroll touchmove mousewheel', function(e) {
+                            e.preventDefault();
                             e.stopPropagation();
                             return false;
                         });
@@ -733,6 +736,7 @@ $(document).ready(function () {
                     beforeSend: function() {
                         $('#eventLoading').show();
                         $('body').on('scroll touchmove mousewheel', function(e) {
+                            e.preventDefault();
                             e.stopPropagation();
                             return false;
                         });
@@ -830,6 +834,7 @@ function replyCreate(postId, commentId) {
         beforeSend: function() {
             $('#eventLoading').show();
             $('body').on('scroll touchmove mousewheel', function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
@@ -966,6 +971,7 @@ function replyEdit(postId, commentId, replyId) {
                 beforeSend: function() {
                     $('#eventLoading').show();
                     $('body').on('scroll touchmove mousewheel', function(e) {
+                        e.preventDefault();
                         e.stopPropagation();
                         return false;
                     });
@@ -1035,6 +1041,7 @@ function replyDelete(postId, commentId, replyId) {
                 beforeSend: function() {
                     $('#eventLoading').show();
                     $('body').on('scroll touchmove mousewheel', function(e) {
+                        e.preventDefault();
                         e.stopPropagation();
                         return false;
                     });
@@ -1086,6 +1093,7 @@ function likesClick(postId, commentId, cnt) {
         beforeSend: function() {
             $('#eventLoading').show();
             $('body').on('scroll touchmove mousewheel', function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
@@ -1136,6 +1144,7 @@ function unlikesClick(postId, commentId, cnt) {
         beforeSend: function() {
             $('#eventLoading').show();
             $('body').on('scroll touchmove mousewheel', function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
@@ -1186,6 +1195,7 @@ function replyLikesClick(postId, commentId, replyId, cnt) {
         beforeSend: function() {
             $('#eventLoading').show();
             $('body').on('scroll touchmove mousewheel', function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
@@ -1233,6 +1243,7 @@ function replyUnlikesClick(postId, commentId, replyId, cnt) {
         beforeSend: function() {
             $('#eventLoading').show();
             $('body').on('scroll touchmove mousewheel', function(e) {
+                e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
