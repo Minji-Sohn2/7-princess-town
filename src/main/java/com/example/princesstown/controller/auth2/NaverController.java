@@ -1,42 +1,47 @@
 package com.example.princesstown.controller.auth2;
 
-import com.example.princesstown.dto.getInfo.KakaoResponseDto;
-import com.example.princesstown.dto.getInfo.NaverResponseDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
-import com.example.princesstown.security.jwt.JwtUtil;
+import com.example.princesstown.entity.User;
 import com.example.princesstown.service.naver.NaverService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
+@Slf4j
 public class NaverController {
 
     private final NaverService naverService;
 
     @GetMapping("/api/user/naver/callback")
-    public ResponseEntity<ApiResponseDto> NaverLogin(
-            @RequestParam String code, HttpServletResponse response) throws IOException {
+    public String NaverLogin(@RequestParam String code) throws IOException {
 
-        NaverResponseDto responseDto = naverService.naverLogin(code);
-        String pureToken = responseDto.getJwtToken();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(JwtUtil.AUTHORIZATION_HEADER, pureToken);
+        ResponseEntity<ApiResponseDto> responseDto = naverService.naverLogin(code);
+        log.info("클라이언트에게 보낼 데이터 : " + responseDto);
 
-        String authorizationHeader = headers.getFirst(JwtUtil.AUTHORIZATION_HEADER);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, authorizationHeader);
+        ApiResponseDto apiResponseBody = responseDto.getBody();
+        User userData = (User) apiResponseBody.getData();
+        String username = userData.getUsername();
+        Long userId = userData.getUserId();
+        log.info("네이버서버에서 보내는 username : " + username);
+        log.info("네이버서버에서 보내는 userId : " + userId);
 
-        return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", responseDto));
+        HttpHeaders apiRespnseHeader = responseDto.getHeaders();
+        String token = apiRespnseHeader.getFirst("Authorization");
+
+        if(token == null) {
+            throw new RuntimeException("Token not found in headers");
+        }
+        log.info("네이버서버에서 보내는 token : " + token);
+
+        return "redirect:/view/login-page?success=naver&username=" + username + "&userId=" + userId + "&token=" + token;
     }
 }
 
