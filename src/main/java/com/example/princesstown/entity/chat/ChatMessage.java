@@ -29,7 +29,7 @@ public class ChatMessage {
     @Column
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(nullable = false)
     private Long chatRoomId;
 
     public ChatMessage(User user, ChatMessageDto chatMessage) {

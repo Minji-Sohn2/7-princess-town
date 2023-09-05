@@ -35,10 +35,12 @@ public class ChatRoomController {
     @GetMapping("/{roomId}")
     public ResponseEntity<List<ChatMessageDto>> getChatRoomChatMessages(
             @PathVariable Long roomId,
-            @RequestParam("page") int page
+            @RequestParam("page") int page,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         log.info("채팅방 채팅 기록 조회 컨트롤러 -> " + roomId);
-        List<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomChatMessages(roomId, page);
+        List<ChatMessageDto> chatMessageDtoList = chatRoomService.getChatRoomChatMessages(roomId, page, userDetails.getUser());
+
         return ResponseEntity.ok().body(chatMessageDtoList);
     }
 
