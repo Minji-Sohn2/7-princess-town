@@ -19,6 +19,8 @@
             integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <link rel='stylesheet' href="/css/comment.css"/>
@@ -276,7 +278,9 @@
         </li>
     </ul>
 </nav>
-
+    <div id="eventLoading" class="ui active dimmer" style="position: fixed; display: none;">
+        <div class="ui massive text loader">Loading</div>
+    </div>
 </body>
 <script src="/js/comments.js"></script>
 </html>

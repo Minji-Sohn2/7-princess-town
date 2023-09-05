@@ -135,6 +135,17 @@ $(document).ready(function () {
             url: `/api/posts/${postId}/comments?page=${page}&size=${pageSize}`,
             method: "GET",
             dataType: "json",
+            beforeSend: function() {
+                $('#eventLoading').show();
+                $('body').on('scroll touchmove mousewheel', function(e) {
+                    e.stopPropagation();
+                    return false;
+                });
+            },
+            complete:function() {
+                $('#eventLoading').hide();
+                $('body').off('scroll touchmove mousewheel')
+            },
             success: function (comments) {
                 let data = comments.result.comments;
                 var commentsContainer = $("#comment");
@@ -426,7 +437,9 @@ $(document).ready(function () {
                         });
                     }
                 });
-            }
+            },
+
+            timeout: 300000
         });
     }
 
@@ -539,6 +552,17 @@ $(document).ready(function () {
                 content: content,
                 emoji: img
             }),
+            beforeSend: function() {
+                $('#eventLoading').show();
+                $('body').on('scroll touchmove mousewheel', function(e) {
+                    e.stopPropagation();
+                    return false;
+                });
+            },
+            complete:function() {
+                $('#eventLoading').hide();
+                $('body').off('scroll touchmove mousewheel')
+            },
             success: function (data) {
                 Swal.fire({
                     icon: 'success',
@@ -583,7 +607,9 @@ $(document).ready(function () {
                     title: '댓글 작성실패',
                     text: `${e.responseJSON.message}`
                 });
-            }
+            },
+
+            timeout: 300000
         })
     })
 
@@ -627,6 +653,17 @@ $(document).ready(function () {
                         content: content,
                         emoji: img
                     }),
+                    beforeSend: function() {
+                        $('#eventLoading').show();
+                        $('body').on('scroll touchmove mousewheel', function(e) {
+                            e.stopPropagation();
+                            return false;
+                        });
+                    },
+                    complete:function() {
+                        $('#eventLoading').hide();
+                        $('body').off('scroll touchmove mousewheel')
+                    },
                     success: function (data) {
                         const content = $(`.userCommentEdit[data-comment-id="${commentId}"]`).val();
                         const emoji = $(`.editemoji-container[data-comment-id="${commentId}"] .editCommentEmoji img`).attr("src");
@@ -661,7 +698,9 @@ $(document).ready(function () {
                             title: '댓글 수정실패',
                             text: `${e.responseJSON.message}`
                         });
-                    }
+                    },
+
+                    timeout: 300000
                 })
             }
         })
@@ -689,6 +728,17 @@ $(document).ready(function () {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": token
+                    },
+                    beforeSend: function() {
+                        $('#eventLoading').show();
+                        $('body').on('scroll touchmove mousewheel', function(e) {
+                            e.stopPropagation();
+                            return false;
+                        });
+                    },
+                    complete:function() {
+                        $('#eventLoading').hide();
+                        $('body').off('scroll touchmove mousewheel')
                     },
                     success: function (data) {
                         Swal.fire({
@@ -739,7 +789,9 @@ $(document).ready(function () {
                             title: '댓글 삭제실패',
                             text: `${e.responseJSON.message}`
                         });
-                    }
+                    },
+
+                    timeout: 300000
                 })
             }
         })
@@ -774,6 +826,17 @@ function replyCreate(postId, commentId) {
             content: createReplyValue,
             emoji: img
         }),
+        beforeSend: function() {
+            $('#eventLoading').show();
+            $('body').on('scroll touchmove mousewheel', function(e) {
+                e.stopPropagation();
+                return false;
+            });
+        },
+        complete:function() {
+            $('#eventLoading').hide();
+            $('body').off('scroll touchmove mousewheel')
+        },
         success: function (data) {
             Swal.fire({
                 icon: 'success',
@@ -855,7 +918,9 @@ function replyCreate(postId, commentId) {
                 title: '답글 생성실패',
                 text: `${e.responseJSON.message}`
             });
-        }
+        },
+
+        timeout: 300000
     })
 }
 
@@ -897,6 +962,17 @@ function replyEdit(postId, commentId, replyId) {
                     content: replyContexts,
                     emoji: img
                 }),
+                beforeSend: function() {
+                    $('#eventLoading').show();
+                    $('body').on('scroll touchmove mousewheel', function(e) {
+                        e.stopPropagation();
+                        return false;
+                    });
+                },
+                complete:function() {
+                    $('#eventLoading').hide();
+                    $('body').off('scroll touchmove mousewheel')
+                },
                 success: function (data) {
                     Swal.fire({
                         icon: 'success',
@@ -924,7 +1000,9 @@ function replyEdit(postId, commentId, replyId) {
                         title: '답글 수정실패',
                         text: `${e.responseJSON.message}`
                     });
-                }
+                },
+
+                timeout: 300000
             })
         }
     })
@@ -953,6 +1031,17 @@ function replyDelete(postId, commentId, replyId) {
                     "Authorization": token
                 },
                 data: {},
+                beforeSend: function() {
+                    $('#eventLoading').show();
+                    $('body').on('scroll touchmove mousewheel', function(e) {
+                        e.stopPropagation();
+                        return false;
+                    });
+                },
+                complete:function() {
+                    $('#eventLoading').hide();
+                    $('body').off('scroll touchmove mousewheel')
+                },
                 success: function (data) {
                     Swal.fire({
                         icon: 'success',
@@ -973,7 +1062,9 @@ function replyDelete(postId, commentId, replyId) {
                         title: '답글 수정실패',
                         text: `${e.responseJSON.message}`
                     });
-                }
+                },
+
+                timeout: 300000
             })
         }
     })
@@ -991,6 +1082,17 @@ function likesClick(postId, commentId, cnt) {
             "Authorization": token
         },
         data: {},
+        beforeSend: function() {
+            $('#eventLoading').show();
+            $('body').on('scroll touchmove mousewheel', function(e) {
+                e.stopPropagation();
+                return false;
+            });
+        },
+        complete:function() {
+            $('#eventLoading').hide();
+            $('body').off('scroll touchmove mousewheel')
+        },
         success: function (data) {
 
             const updateCnt = cnt += 1;
@@ -1012,7 +1114,9 @@ function likesClick(postId, commentId, cnt) {
                 title: '좋아요 실패',
                 text: `${e.responseJSON.message}`
             });
-        }
+        },
+
+        timeout: 300000
     })
 }
 
@@ -1028,6 +1132,17 @@ function unlikesClick(postId, commentId, cnt) {
             "Authorization": token
         },
         data: {},
+        beforeSend: function() {
+            $('#eventLoading').show();
+            $('body').on('scroll touchmove mousewheel', function(e) {
+                e.stopPropagation();
+                return false;
+            });
+        },
+        complete:function() {
+            $('#eventLoading').hide();
+            $('body').off('scroll touchmove mousewheel')
+        },
         success: function (data) {
 
             const updateCnt = cnt -= 1;
@@ -1049,7 +1164,9 @@ function unlikesClick(postId, commentId, cnt) {
                 title: '좋아요 취소 실패',
                 text: `${e.responseJSON.message}`
             });
-        }
+        },
+
+        timeout: 300000
     })
 }
 
@@ -1065,6 +1182,17 @@ function replyLikesClick(postId, commentId, replyId, cnt) {
             "Authorization": token
         },
         data: {},
+        beforeSend: function() {
+            $('#eventLoading').show();
+            $('body').on('scroll touchmove mousewheel', function(e) {
+                e.stopPropagation();
+                return false;
+            });
+        },
+        complete:function() {
+            $('#eventLoading').hide();
+            $('body').off('scroll touchmove mousewheel')
+        },
         success: function (data) {
             const updateCnt = cnt += 1;
 
@@ -1084,7 +1212,9 @@ function replyLikesClick(postId, commentId, replyId, cnt) {
                 title: '좋아요 실패',
                 text: `${e.responseJSON.message}`
             });
-        }
+        },
+
+        timeout: 300000
     })
 }
 
@@ -1099,6 +1229,17 @@ function replyUnlikesClick(postId, commentId, replyId, cnt) {
             "Authorization": token
         },
         data: {},
+        beforeSend: function() {
+            $('#eventLoading').show();
+            $('body').on('scroll touchmove mousewheel', function(e) {
+                e.stopPropagation();
+                return false;
+            });
+        },
+        complete:function() {
+            $('#eventLoading').hide();
+            $('body').off('scroll touchmove mousewheel')
+        },
         success: function (data) {
 
             const updateCnt = cnt -= 1;
@@ -1119,7 +1260,9 @@ function replyUnlikesClick(postId, commentId, replyId, cnt) {
                 title: '좋아요 취소 실패',
                 text: `${e.responseJSON.message}`
             });
-        }
+        },
+
+        timeout: 300000
     })
 }
 
