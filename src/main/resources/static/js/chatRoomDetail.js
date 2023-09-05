@@ -311,4 +311,37 @@ $(document).ready(function () {
                 console.error('사용자 초대 요청 실패');
             });
     });
+
+    $("#changeRoomName").click(function () {
+        showElement('changeRoomNameModalOverlay');
+        showElement('registerChangeRoomNameModal');
+    })
+
+    $("#closeChangeRoomNameModal").click(function () {
+        hideElement('changeRoomNameModalOverlay');
+        hideElement('registerChangeRoomNameModal');
+        location.reload();
+    });
+
+    document.getElementById('submitNewRoomName').addEventListener('click', function () {
+        const newRoomName = document.getElementById('roomNameInput').value;
+        console.log('new Room Name -> ' + newRoomName);
+
+        let data = {
+            newChatRoomName : newRoomName
+        }
+        axios.put(`/api/chatRooms/` + roomId, data, config)
+            .then(response => {
+                console.log(response);
+                hideElement('new-roomname-container');
+                hideElement('submitNewRoomName');
+                showElement('complete-changing');
+                localStorage.setItem('wschat.roomName', newRoomName);
+            })
+            .catch(error => {
+                alert(error.response.data.message);
+                console.error('채팅방 이름 변경 요청 실패');
+            });
+    });
 });
+
