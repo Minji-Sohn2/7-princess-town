@@ -123,7 +123,13 @@ public class ViewController {
         List<BoardResponseDto> boardList = boardService.getBoard();
         model.addAttribute("boardList", boardList);
 
-        return "writepost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
+        return "writePost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
+    }
+
+    // view.html 부분
+    @GetMapping("/login-page")
+    public String loginAndsignupPage() {
+        return "ex";
     }
 
 }
