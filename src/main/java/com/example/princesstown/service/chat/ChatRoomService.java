@@ -25,7 +25,7 @@ public interface ChatRoomService {
      * @param page   page 번호
      * @return 메세지 list
      */
-    List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page);
+    List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page, User user);
 
     /**
      * 채팅방 이름 수정

@@ -51,13 +51,16 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page) {
+    public List<ChatMessageDto> getChatRoomChatMessages(Long roomId, int page, User user) {
         ChatRoom chatRoom = findChatRoomById(roomId);
+        ChatUser chatUser = findChatUserByChatRoomAndUser(chatRoom, user);
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(page, MESSAGE_PAGE_SIZE, sort);
 
-        return chatMessageRepository.findAllByChatRoom(pageable, chatRoom)
+        // 입장한 후의 메세지만 조회할 수 있도록
+        return chatMessageRepository
+                .findAllByChatRoomIdAndCreatedAtGreaterThanEqual(pageable, roomId, chatUser.getCreatedAt())
                 .stream()
                 .map(ChatMessageDto::new)
                 .toList();

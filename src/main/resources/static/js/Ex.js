@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
     // 페이지 로드 시 로그인 상태 확인
@@ -105,7 +104,8 @@ $(document).ready(function() {
             return;
         } else {
             $.ajax({
-                url: "/auth/send-phone-verification-code",
+                url: "/auth/send-phone-verification-code?phoneNumber=" + phoneNumber,
+                contentType: 'application/json',
                 type: "POST",
                 data: {phoneNumber: phoneNumber},
                 success: function (response) {
@@ -752,4 +752,3 @@ $(document).ready(function() {
 //         return true;
 //     }
 // }
-

@@ -231,7 +231,7 @@ function enterRoom(roomId, roomName) {
     localStorage.setItem('wschat.roomId', roomId);
     localStorage.setItem('wschat.roomName', roomName);
     alert('이동');
-    location.href = "/chat/room/enter/" + roomId;
+    location.href = "/view/chatRooms/" + roomId;
 }
 
 // -----------------------로그아웃--------------------------

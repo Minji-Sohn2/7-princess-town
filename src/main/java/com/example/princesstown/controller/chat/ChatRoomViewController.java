@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @Controller
 @Slf4j(topic = "ChatRoomViewController")
-@RequestMapping("/chat")
+@RequestMapping("/view/chatRooms")
 public class ChatRoomViewController {
 
     // 채팅 리스트 화면
-    @GetMapping("/room")
+    @GetMapping
     public String rooms() {
         log.info("rooms 보이기");
         return "chat/myChatRooms";
     }
 
     // 채팅방 입장 화면
-    @GetMapping("/room/enter/{roomId}")
+    @GetMapping("/{roomId}")
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
         return "chat/chatRoomDetail";

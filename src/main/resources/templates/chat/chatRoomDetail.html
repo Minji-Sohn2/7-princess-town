@@ -37,6 +37,7 @@
         <div class="chat-header">
             <div class="col-md-6">
                 <h2>{{roomName}} <span class="badge badge-info badge-pill"></span></h2>
+                <button class="btn btn-light btn-sm" id="changeRoomName">이름 수정</button>
             </div>
             <div class="col-md-6 text-right">
                 <button class="btn btn-light btn-sm" id="getThisChatRoomMembersBtn">참여자</button>
@@ -131,12 +132,34 @@
 
         <!-- 채팅방 생성 2. 완료 -->
         <div id="complete-creating" style="display: none">
-            <h4 style="">초대 완료</h4>
+            <h4>초대 완료</h4>
         </div>
 
         <div class="modal-buttons">
             <button class="submit-modal-button" id="submitSelectUser">초대</button>
             <button class="close-modal-button" id="closeCreateRoomModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 채팅방 이름 변경하기 모달 -->
+<div class="modal-overlay" id="changeRoomNameModalOverlay"></div>
+<div class="register-modal" id="registerChangeRoomNameModal">
+    <h3 class="modal-title" id="changeRoomNameModalTitle">채팅방 이름 변경하기</h3>
+    <div class="modal-content">
+        <!-- 채팅방 이름 변경 1. 새로운 채팅방 이름 입력 -->
+        <div class="input-group mb-3" id="new-roomname-container">
+            <input type="text" class="form-control" placeholder="새로운 채팅방 이름" id="roomNameInput">
+        </div>
+
+        <!-- 채팅방 이름 변경 2. 완료 -->
+        <div id="complete-changing" style="display: none">
+            <h4>변경 완료</h4>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitNewRoomName">변경</button>
+            <button class="close-modal-button" id="closeChangeRoomNameModal">닫기</button>
         </div>
     </div>
 </div>

@@ -20,7 +20,7 @@ public class ChatMessageDto {
 
     private MessageType type;
     private Long roomId;
-    private String sender;  // username
+    private String sender;  // nickname
     private String message;
 
     @JsonFormat(pattern = "yy-MM-dd HH:mm")
@@ -28,7 +28,7 @@ public class ChatMessageDto {
 
     public ChatMessageDto(ChatMessage chatMessage) {
         this.type = MessageType.TALK;
-        this.roomId = chatMessage.getChatRoom().getId();
+        this.roomId = chatMessage.getChatRoomId();
         this.sender = chatMessage.getSenderNickname();
         this.message = chatMessage.getMessage();
         this.createdAt = chatMessage.getCreatedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
