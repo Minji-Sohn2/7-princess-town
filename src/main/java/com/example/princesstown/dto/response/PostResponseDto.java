@@ -30,7 +30,7 @@ public class PostResponseDto {
         this.viewCount = post.getViewCount();
         this.postImageUrl = post.getPostImageUrl();
         this.createdAt = post.getCreatedAt();
-        this.modifiedAt = post.getCreatedAt();
+        this.modifiedAt = post.getModifiedAt();
 
     }
 }
