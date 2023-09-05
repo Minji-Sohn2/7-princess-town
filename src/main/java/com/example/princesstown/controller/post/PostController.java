@@ -36,8 +36,8 @@ public class PostController {
         return postService.getPosts();
     }
 
-
-    @GetMapping("/auth/location/posts/{id}") // 위치반경 내 게시글 조회
+    // 위치반경 내 게시글 조회
+    @GetMapping("/auth/location/posts/{id}")
     public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
         return locationService.getPostsInRadius(id, requestDto);
     }
@@ -63,6 +63,7 @@ public class PostController {
         return postService.searchPostsByTitleOrContents(keyword);
     }
 
+    //게시글 내용으로 검색
     @GetMapping("/search/contents")
     public List<PostResponseDto> searchPostsByContents(@RequestParam String contents) {
         return postService.searchPostsByContents(contents);
@@ -154,19 +155,5 @@ public class PostController {
     ) {
         return postService.deleteLikes(postId, userDetails.getUser());
     }
-
-//    //게시글 좋아요 API
-//    @PostMapping("/posts/{postId}/like")
-//    public ResponseEntity<ApiResponseDto> likeBlog(@PathVariable Long postId,
-//                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return ResponseEntity.ok().body(likeService.likePost(postId, userDetails.getUser()));
-//    }
-//
-//    //게시글 좋아요 취소 API
-//    @DeleteMapping("/posts/{postId}/like")
-//    public ResponseEntity<ApiResponseDto> deleteLikeBlog(@PathVariable Long postId,
-//                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return ResponseEntity.ok().body(likeService.deleteLikePost(postId, userDetails.getUser()));
-//    }
 
 }
