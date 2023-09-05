@@ -50,12 +50,6 @@ const vm = new Vue({
         this.getChatHistory(page);         // 접속 시 가장 최근 채팅들 로드
         this.getThisChatRoomMembers();
     },
-/*    updated() {
-
-        if (bottomFlag) {
-            this.containerDiv.scrollTop = this.containerDiv.scrollHeight;
-        }
-    },*/
     methods: {
         initializeWebSocket() {
             this.roomId = localStorage.getItem('wschat.roomId');
@@ -154,36 +148,6 @@ const vm = new Vue({
                     console.error(error);
                 })
         },
-/*        searchUserByKeyword() {
-            const searchInput = document.getElementById('searchInput').value;
-            console.log('검색 키워드 -> ' + searchInput);
-
-            const searchResultsContainer = document.getElementById('searchResultsContainer');
-            searchResultsContainer.innerHTML = '';
-
-            axios.get('/api/search/users?keyword=' + searchInput, config)
-                .then(response => {
-                    console.log(response);
-                    const results = response.data.searchUserResults;
-
-                    if (results.length === 0) {
-                        // 검색결과 없으면
-                        showElement('no-search-result');
-                    } else {
-                        //검색 결과 있다면
-                        results.forEach(user => {
-                            createSearchResultCard(user, searchResultsContainer);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('사용자 검색 결과 불러오기 실패');
-                });
-        },/!*
-        createSearchResultCard(user, container) {
-
-        },*!/*/
         loadMoreChatHistory() {
             page++; // Increment the page counter
             this.getChatHistory(page);

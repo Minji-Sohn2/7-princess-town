@@ -4,7 +4,6 @@ import com.example.princesstown.dto.chat.ChatMessageDto;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.entity.chat.ChatMessage;
 import com.example.princesstown.repository.chat.ChatMessageRepository;
-import com.example.princesstown.repository.chat.ChatRoomRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +18,13 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 @Service
 @Slf4j(topic = "ChatService")
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
 
     private final JwtUtil jwtUtil;
     private final ChannelTopic channelTopic;
     private final RedisTemplate redisTemplate;
     private final UserRepository userRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatRoomRepository chatRoomRepository;
 
     @Override
     public String getRoomId(String destination) {
@@ -54,9 +52,9 @@ public class ChatServiceImpl implements ChatService{
         if (ChatMessageDto.MessageType.QUIT.equals(chatMessage.getType())) {
             chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
             chatMessage.setSender("[알림]");
-        } else {
-            chatMessageRepository.save(new ChatMessage(user, chatMessage));
         }
+
+        chatMessageRepository.save(new ChatMessage(user, chatMessage));
 
         chatMessage.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm")));
         log.info("메세지 발송 시각? " + chatMessage.getCreatedAt());

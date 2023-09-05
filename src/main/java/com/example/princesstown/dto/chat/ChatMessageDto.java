@@ -20,7 +20,7 @@ public class ChatMessageDto {
 
     private MessageType type;
     private Long roomId;
-    private String sender;  // username
+    private String sender;  // nickname
     private String message;
 
     @JsonFormat(pattern = "yy-MM-dd HH:mm")
