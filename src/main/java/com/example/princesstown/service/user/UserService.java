@@ -11,6 +11,7 @@ import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.awsS3.S3Uploader;
+import com.example.princesstown.service.email.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 @Slf4j(topic = "UserService")
@@ -36,6 +38,7 @@ public class UserService {
     private final S3Uploader s3Uploader;
     private final ApplicationContext applicationContext;
     private final StringRedisTemplate redisTemplate;
+    private final MailService mailService;
 
 
     public ResponseEntity<ApiResponseDto> signup(SignupRequestDto requestDto) {
@@ -111,6 +114,24 @@ public class UserService {
             return ResponseEntity.status(201).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원가입 완료 되었습니다."));
     }
 
+    // 회원탈퇴할 때 인증코드 이메일로 보내기
+    public ResponseEntity<ApiResponseDto> sendDeteactiveCode(String phoneNumber, String email) {
+        Optional<User> user = userRepository.findByPhoneNumberAndEmail(phoneNumber, email);
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "사용자를 찾을 수 없습니다."));
+        } else {
+             String username = user.get().getUsername();
+
+            // 난수 탈퇴 인증코드 생성 및 이메일 전송 로직
+            String deteactiveCode = UUID.randomUUID().toString().substring(0, 8);
+            mailService.sendDeactivateVerifyCode(email, deteactiveCode);
+
+            // 생성된 난수 인증코드 만료 시간을 Redis에 저장
+            redisTemplate.opsForValue().set(username + "_deteactiveCode", deteactiveCode, 60, TimeUnit.MINUTES);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(200, "회원탈퇴 인증코드 전송 성공"));
+        }
+    }
 
     // 회원 탈퇴
     public ResponseEntity<ApiResponseDto> deleteAccount(Long userId) {
