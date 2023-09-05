@@ -261,7 +261,6 @@ public class CommentService {
     }
 
     // 좋아요 사용자 검증
-
     private void likesValid(CommentLikes commentLikes, User user) {
         Long writerId = commentLikes.getUser().getUserId();
         Long loginId = user.getUserId();

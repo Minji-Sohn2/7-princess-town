@@ -12,7 +12,7 @@ public class PostResponseDto {
     private String username;
     private String title; // 게시글 제목
     private String contents; // 게시글 내용
-    private Long likeCount; // 좋아요 수
+    private Long likeCnt; // 좋아요 수
     private int viewCount;
     private String postImageUrl;
     private LocalDateTime createdAt; // 게시글 생성시간
@@ -26,16 +26,11 @@ public class PostResponseDto {
         this.username = post.getUser().getUsername();
         this.title = post.getTitle();
         this.contents = post.getContents();
-        this.likeCount = post.getLikeCount();
+        this.likeCnt = post.getLikeCnt();
         this.viewCount = post.getViewCount();
         this.postImageUrl = post.getPostImageUrl();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getCreatedAt();
 
-
-
-        // 댓글목록
-//        this.commentList = post.getCommentList().stream()
-//                .map(CommentResponseDto::new).collect(Collectors.toList());
     }
 }

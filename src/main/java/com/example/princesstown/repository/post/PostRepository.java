@@ -2,7 +2,6 @@ package com.example.princesstown.repository.post;
 
 import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.Post;
-import com.example.princesstown.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,7 +31,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByTitleContainingIgnoreCaseOrContentsContainingIgnoreCaseOrderByCreatedAtDesc(String title, String contents);
 
     //top10 인기검색어
-    @Query("SELECT p FROM Post p WHERE p.likeCount > 0 ORDER BY p.likeCount DESC")
+    @Query("SELECT p FROM Post p WHERE p.likeCnt > 0 ORDER BY p.likeCnt DESC")
     List<Post> findTop10LikedPostsWithDuplicates();
 
     @Transactional
