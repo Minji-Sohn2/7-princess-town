@@ -1,21 +1,37 @@
 /* 기본 설정 */
 body {
-    background-color: #f4f4f4;
+    background-color: #fafafa;  /* 좀 더 밝은 배경색으로 설정 */
     font-family: 'Noto Sans KR', sans-serif;
+    line-height: 1.5;  /* 기본 줄 간격 설정 */
 }
 
 .ui.form .field > label {
     margin-bottom: 8px;
     font-weight: bold;
+    color: #555;  /* 라벨의 색상을 약간 어둡게 설정 */
 }
 
 .ui.menu {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;  /* 메뉴의 배경색을 흰색으로 설정 */
 }
 
 .ui.button {
     margin-top: 20px;
+    transition: background-color 0.3s, transform 0.3s;  /* 버튼 호버 및 클릭 효과 추가 */
+    height: 45px;
+    font-size: 16px;
+    padding: 0 20px;
 }
+
+.ui.button:hover {
+    background-color: #ddd;  /* 버튼의 배경색을 호버 시 약간 어둡게 설정 */
+}
+
+.ui.button:active {
+    transform: scale(0.98);  /* 버튼을 클릭할 때 약간 축소되는 효과 설정 */
+}
+
 
 .cd-form-bottom-message {
     text-align: center;
@@ -30,12 +46,6 @@ body {
 
 .ui.action.input button {
     height: 45px;
-}
-
-.ui.button {
-    height: 45px;
-    font-size: 16px;
-    padding: 0 20px;
 }
 
 /* 입력창과 버튼을 같은 라인에 배치 */
@@ -68,16 +78,126 @@ body {
     display : none;
 }
 
-/*.custom-image-button {*/
-/*    !* 원하는 버튼 크기로 조절 *!*/
-/*    width: 100px;*/
-/*    height: 100px;*/
-/*    !* 필요하면 여기에 추가적인 스타일을 지정할 수 있습니다 *!*/
+.custom-image-button {
+    background: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.custom-image-button:hover {
+    transform: scale(1.05); /* Hover 시 버튼이 약간 확대되는 효과를 줍니다. */
+}
+
+.icon-img {
+    display: block;
+    width: 125px; /* 이미지의 기본 크기를 설정합니다. 필요한 크기로 조절하세요. */
+    height: auto;
+    transition: opacity 0.3s;
+}
+
+.custom-image-button:hover .icon-img {
+    opacity: 0.8; /* Hover 시 이미지의 투명도를 약간 줄여서 효과를 줍니다. */
+}
+
+/* 모달 윈도우 디자인 개선 */
+.ui.modal {
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;  /* 모달의 모서리를 약간 둥글게 설정 */
+    overflow: hidden;  /* 모달의 내부 요소가 넘칠 때 숨김 처리 */
+}
+
+.ui.modal .header {
+    background-color: #f6f6f6;  /* 모달의 헤더 부분 배경색 설정 */
+    border-bottom: 1px solid #e5e5e5;  /* 헤더 아래에 경계선 추가 */
+    padding: 15px;  /* 헤더 내부 패딩 설정 */
+    font-weight: bold;  /* 헤더 텍스트 굵게 설정 */
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.login-buttons .ui.button {
+    width: 70%; /* 버튼의 폭을 늘림 */
+}
+
+.primary-button {
+    background-color: #007bff;
+    color: #fff;
+    width: 120px;
+}
+
+.login-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/*!* 로그인 모달 크기 및 스타일링 *!*/
+/*.ui.segment.modal#loginModal {*/
+/*    width: 600px; !* 모달의 폭 조절 *!*/
+/*    padding: 30px 40px; !* 모달의 내부 패딩 *!*/
+/*    position: fixed; !* 중앙에 위치시키기 위한 스타일링 시작 *!*/
+/*    top: 50%;*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -50%);*/
+/*    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); !* 약간의 그림자 효과 *!*/
 /*}*/
 
-/*.icon-img {*/
-/*    !* 이미지 크기 조정 *!*/
-/*    width: 80%; !* 버튼 크기에 비례하게 이미지 크기를 조절 *!*/
-/*    height: auto; !* 가로 너비에 맞춰 세로 비율 조정 *!*/
-/*    !* 필요하면 여기에 추가적인 스타일을 지정할 수 있습니다 *!*/
+/*!* 로그인 모달 내부 버튼 및 폼 스타일링 *!*/
+/*.login-container .ui.form .field {*/
+/*    margin-bottom: 20px;*/
 /*}*/
+
+/* 기존의 CSS... */
+
+/* 로그인 모달 스타일 */
+.ui.segment.modal#loginModal {
+    width: 100%;  /* 폼의 너비를 60%로 확장 */
+    max-width: 650px;  /* 최대 너비 설정 */
+    margin: 50px auto;  /* 중앙 정렬 */
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);  /* 그림자 효과 강화 */
+}
+
+#loginModal {
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+/*!* 로그인 필드 스타일 *!*/
+/*#loginModal .ui.form .field input {*/
+/*    width: 100%;  !* 가로폭 100%로 확장 *!*/
+/*    border-radius: 5px;  !* 모서리 둥글게 *!*/
+/*    padding: 10px 15px;  !* 내부 패딩 추가 *!*/
+/*    border: 1px solid #ddd;  !* 경계선 추가 *!*/
+/*}*/
+
+/*!* 로그인 버튼 및 SNS 로그인 버튼 스타일 *!*/
+/*#loginModal .login-buttons .ui.button {*/
+/*    width: 100%;  !* 버튼 가로폭 100%로 확장 *!*/
+/*    margin-top: 10px;  !* 상단 마진 추가 *!*/
+/*}*/
+
+/*!*#loginModal .custom-image-button {*!*/
+/*!*    width: 48%;  !* 카카오와 네이버 버튼 너비 조절 *!*!*/
+/*!*}*!*/
+
+/*#loginModal .login-buttons {*/
+/*    width: 100%;  !* 버튼 컨테이너의 가로 길이를 최대로 확장 *!*/
+/*}*/
+
+
+
