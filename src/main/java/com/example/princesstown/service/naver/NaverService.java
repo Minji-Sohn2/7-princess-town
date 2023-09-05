@@ -1,8 +1,7 @@
 package com.example.princesstown.service.naver;
 
-import com.example.princesstown.dto.getInfo.KakaoResponseDto;
-import com.example.princesstown.dto.getInfo.NaverResponseDto;
 import com.example.princesstown.dto.getInfo.NaverUserInfoDto;
+import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.naver.NaverRepository;
 import com.example.princesstown.repository.user.UserRepository;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,7 +52,7 @@ public class NaverService {
 //   private String redirect_url;
 
     // 네이버 로그인 처리 메서드
-    public NaverResponseDto naverLogin(String code) throws IOException {
+    public ResponseEntity<ApiResponseDto> naverLogin(String code) throws IOException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         // 인가코드 : 인가 서버로부터 받는 액세스 토큰을 요청할 수 있는 코드
         // 액세스 토큰 : 인가 서버에서 가지고 있는 사용자 정보, 리소스 접근 권한을 가지고 있는 토큰
@@ -64,10 +64,10 @@ public class NaverService {
         // 3. 필요시에 회원가입
         User naverUser = registerNaverUserIfNeeded(naverUserInfoDto);
 
-        // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createToken(naverUser.getUsername()).substring(7);
+        // 4. 로그인
+        ResponseEntity<ApiResponseDto> naverLoginResponse = naverLogin(naverUser);
 
-        return new NaverResponseDto(createToken, naverUser);
+        return naverLoginResponse;
     }
 
     // "인가 코드"로 "액세스 토큰" 요청하는 메서드
@@ -147,6 +147,7 @@ public class NaverService {
     private User registerNaverUserIfNeeded(NaverUserInfoDto naverUserInfo) throws IOException {
         String naverUsername = naverUserInfo.getUsername() + "_NaverUsername_";
         User naverUser = naverRepository.findByUsernameStartingWith(naverUsername);
+        log.info("user : " + naverUser);
 
             if (naverUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
@@ -170,5 +171,33 @@ public class NaverService {
             userRepository.save(naverUser);
         }
         return naverUser;
+    }
+
+    // 로그인
+    public ResponseEntity<ApiResponseDto> naverLogin(User naverUser) {
+        log.info("start");
+        String naverUsername = naverUser.getUsername();
+        String naverPassword = naverUser.getPassword();
+
+        // 위에서 받아온 username과 일치하는 User 가져오기
+        User checknaverUser = naverRepository.findByUsername(naverUsername);
+
+        // DB에 없는 사용자인 경우 혹은 인코딩되지 않은 임시 비밀번호를 인코딩하여 DB 저장된 인코딩된 임시 비밀번호랑 같지 않을 때
+        if (checknaverUser == null || !naverPassword.equals(checknaverUser.getPassword())) {
+            log.info(checknaverUser.getPassword());
+            log.info(naverUsername);
+            log.info(naverPassword);
+            log.error("로그인 정보가 일치하지 않습니다.");
+            throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
+        }
+
+        // 토큰 생성
+        String token = jwtUtil.createToken(naverUsername);
+        log.info("token : " + token);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", token);
+
+        return ResponseEntity.status(200).headers(headers).body(new ApiResponseDto(HttpStatus.OK.value(), " 네이버로 로그인이 성공적으로 되었습니다!.", checknaverUser));
     }
 }

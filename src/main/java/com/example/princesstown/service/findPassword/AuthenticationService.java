@@ -3,6 +3,7 @@ package com.example.princesstown.service.findPassword;
 import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.entity.User;
+import com.example.princesstown.repository.user.NotOptinalUserRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.email.MailService;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,7 +44,20 @@ public class AuthenticationService {
 
     private final JwtUtil jwtUtil;
 
+    private final NotOptinalUserRepository notOptinalUserRepository;
 
+
+    public ResponseEntity<ApiResponseDto> verifyUsername(String username) {
+        User user = notOptinalUserRepository.findByUsername(username);
+        if(user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "아이디를 찾을 수 없습니다."));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(HttpStatus.OK.value(), "아이디가 인증되었습니다.", user));
+        }
+    }
+
+
+    // 휴대폰 인증 검사
     public ResponseEntity<ApiResponseDto> verifyPhoneNumber(String phoneNumber, String inputCode) {
         ResponseEntity<ApiResponseDto> phoneVerificationResponse = messageService.verifyCode(phoneNumber, inputCode);
 
@@ -55,6 +70,33 @@ public class AuthenticationService {
         }
     }
 
+    // 기존 아이디 이메일로 보내기
+    public ResponseEntity<ApiResponseDto> sendUsernameAfterVerification(String phoneNumber, String email) {
+        String isVerified = redisTemplate.opsForValue().get(phoneNumber + "_verified");
+        Optional<User> user = userRepository.findByPhoneNumberAndEmail(phoneNumber, email);
+        if (!user.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "사용자를 찾을 수 없습니다."));
+        }
+        String username = user.get().getUsername();
+
+        if ("true".equals(isVerified)) {
+
+            mailService.sendUsernames(email, username);
+
+            // username을 Redis에 저장
+            redisTemplate.opsForValue().set(username + "_ID", username, 60, TimeUnit.MINUTES);
+
+            // Redis에 저장된 phoneNumber + "_verified" 키를 삭제
+            redisTemplate.delete(phoneNumber + "_verified");
+
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(200, "임시 비밀번호 전송 성공"));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "휴대폰 인증이 필요합니다."));
+        }
+    }
+
+
+    // 임시 비밀번호 이메일로 보내기
     public ResponseEntity<ApiResponseDto> sendTemporaryPasswordAfterVerification(String phoneNumber, String email) {
         String isVerified = redisTemplate.opsForValue().get(phoneNumber + "_verified");
         Optional<User> user = userRepository.findByPhoneNumberAndEmail(phoneNumber, email);
@@ -83,6 +125,8 @@ public class AuthenticationService {
         }
     }
 
+
+    // 임시 로그인 하기
     @Transactional
     public ResponseEntity<ApiResponseDto> unifiedLogin(String username, String tempPassword) {
         // Redis에 저장된 tempPassword와 username가져오기

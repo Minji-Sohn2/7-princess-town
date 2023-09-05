@@ -15,26 +15,14 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    public void sendUsernames(String email, List<String> username) {
+    public void sendUsernames(String email, String username) {
         SimpleMailMessage message = new  SimpleMailMessage();
         message.setTo(email);
-
-        log.info("Sending email to: {}", email); // 로그 추가
-
         message.setSubject("아이디 찾기");
 
-        StringBuffer sb = new StringBuffer();
-        sb.append("가입하신 아이디는");
-        sb.append(System.lineSeparator());
+        String text = "가입하신 아이디는 " + username + "입니다";
 
-        for(int i=0;i<username.size()-1;i++) {
-            sb.append(username.get(i));
-            sb.append(System.lineSeparator());
-        }
-        sb.append(username.get(username.size()-1)).append("입니다");
-
-        message.setText(sb.toString());
-
+        message.setText(text);
         new Thread(() -> {
             log.info("Sending email...");
             try {
@@ -61,6 +49,25 @@ public class MailService {
                 log.info("Email sent successfully.");
             } catch (Exception e) {
                 log.error("Failed to send email: {}", e.getMessage(), e);
+            }
+        }).start();
+    }
+
+    public void sendDeactivateVerifyCode(String email, String deteactiveCode) {
+        SimpleMailMessage message = new  SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("회원탈퇴");
+
+        String text = "회원탈퇴를 위한 인증코드는 " + deteactiveCode + "입니다";
+
+        message.setText(text);
+        new Thread(() -> {
+            log.info("Sending email...");
+            try {
+                mailSender.send(message);
+                log.info("Email sent successfully."); // 로그 추가
+            } catch (Exception e) {
+                log.error("Failed to send email: {}", e.getMessage(), e); // 에러 로그 추가
             }
         }).start();
     }
