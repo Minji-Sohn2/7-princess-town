@@ -49,8 +49,8 @@ public class PostController {
     }
 
     //게시글 선택 조회 API
-    @GetMapping("/boards/{boardId}/posts/{postId}")
-    public PostResponseDto getPost(@PathVariable Long boardId, @PathVariable Long postId){
+    @GetMapping("/posts/{postId}")
+    public PostResponseDto getPost(@PathVariable Long postId){
 
         postService.incrementViewCount(postId);
 

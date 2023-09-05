@@ -94,6 +94,19 @@
         /*    border: none;*/
         /*    cursor: pointer;*/
         /*}*/
+
+        /* 이미지 업로드 및 미리보기 스타일 */
+        .image-upload-div, .image-preview-div {
+            margin-bottom: 15px;
+        }
+
+        /* 이미지 미리보기 스타일 */
+        #imagePreview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -134,8 +147,11 @@
             <input type="text" id="postTitle" name="title" required><br>
             <label for="postContents">내용:</label>
             <textarea id="postContents" name="contents" rows="4" required></textarea><br>
-            <label for="postImage">이미지 업로드:</label>
-            <input type="file" id="postImage" name="postImage"><br>
+            <div class="image-upload-div">
+                <label for="postImage">이미지 업로드:</label>
+                <input type="file" id="postImage" name="postImage"><br>
+                <img id="imagePreview">
+            </div>
             <button type="button" id="writePostButton">작성</button>
             <button type="button" id="cancelButton">취소</button>
         </form>
@@ -193,6 +209,34 @@
                 }
             });
         });
+
+        // 이미지 파일 선택 시 미리보기
+        $("#postImage").change(function() {
+            previewImage(this);
+        });
+
+        // 이미지 파일 선택 시 미리보기
+        $("#postImage").change(function() {
+            previewImage(this);
+        });
+
+// 이미지 파일 미리보기를 추가하는 함수
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // 이미지 파일 미리보기를 표시할 요소 선택
+                    var imagePreview = $("#imagePreview");
+
+                    // 이미지 파일 미리보기 업데이트
+                    imagePreview.attr("src", e.target.result);
+                };
+
+                // 이미지 파일 읽기
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
         $("#writePostButton").click(function() {
             var boardId = $("#boardId").val();
