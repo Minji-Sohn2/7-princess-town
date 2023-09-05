@@ -128,8 +128,8 @@ public class ViewController {
 
     // view.html 부분
     @GetMapping("/login-page")
-    public String loginAndsignupPage() {
-        return "ex";
+    public String indexPage() {
+        return "index";
     }
 
     @GetMapping("/editpost/{podstId}")
