@@ -1,473 +1,201 @@
-@charset "UTF-8";
-/* -------------------------------- 
-
-Primary style
-
--------------------------------- */
-html * {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
-
-*, *:after, *:before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; }
-
+/* 기본 설정 */
 body {
-  font-size: 100%;
-  font-family: "PT Sans", sans-serif;
-  color: #505260;
-  background-color: #fff; }
-
-a {
-  color: #2f889a;
-  text-decoration: none; }
-
-img {
-  max-width: 100%; }
-
-input, textarea {
-  font-family: "PT Sans", sans-serif;
-  font-size: 16px;
-  font-size: 1rem; }
-  input::-ms-clear, textarea::-ms-clear {
-    display: none; }
-
-/* -------------------------------- 
-
-Main components 
-
--------------------------------- */
-header[role=banner] {
-  position: relative;
-  height: 50px;
-  background: #343642; }
-  header[role=banner] #cd-logo {
-    float: left;
-    margin: 4px 0 0 5%;
-    /* reduce logo size on mobile and make sure it is left aligned with the transform-origin property */
-    transform-origin: 0 50%;
-    /* 수정된 부분 */
-    transform: scale(0.8); }
-    header[role=banner] #cd-logo img {
-      display: block; }
-  header[role=banner]::after {
-    /* clearfix */
-    content: '';
-    display: table;
-    clear: both; }
-  @media only screen and (min-width: 768px) {
-    header[role=banner] {
-      height: 80px; }
-      header[role=banner] #cd-logo {
-        margin: 20px 0 0 5%;
-        transform: scale(1); } }
-
-.main-nav {
-  float: right;
-  margin-right: 5%;
-  width: 44px;
-  height: 100%;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/148866/cd-icon-menu.svg") no-repeat center center;
-  cursor: pointer; }
-  .main-nav ul {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    transform: translateY(-100%); }
-    .main-nav ul.is-visible {
-      top: 9.4em; 
-      list-style: none; /* 기본 불릿 제거 */
-      padding-left: 0;
-    }
-  .main-nav a {
-    display: block;
-    height: 50px;
-    line-height: 50px;
-    padding-left: 5%;
-    background: #292a34;
-    border-top: 1px solid #3b3d4b;
-    color: #FFF; }
-  @media only screen and (min-width: 768px) {
-    .main-nav {
-      width: auto;
-      height: auto;
-      background: none;
-      cursor: auto; }
-      .main-nav ul {
-        position: static;
-        width: auto;
-        transform: translateY(0);
-        line-height: 80px; }
-        .main-nav ul.is-visible {
-          transform: translateY(0);}
-      .main-nav li {
-        display: inline-block;
-        margin-left: 1em; }
-        .main-nav li:nth-last-child(2) {
-          margin-left: 2em; }
-      .main-nav a {
-        display: inline-block;
-        height: auto;
-        line-height: normal;
-        background: transparent; }
-        .main-nav a.cd-signin, .main-nav a.cd-signup {
-          padding: .6em 1em;
-          border: 1px solid rgba(255, 255, 255, 0.6);
-          border-radius: 50em;
-          text-decoration: none; }
-        .main-nav a.cd-signup {
-          background: #2f889a;
-          border: none; } }
-
-/* -------------------------------- 
-
-xsigin/signup popup 
-
--------------------------------- */
-.cd-user-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(52, 54, 66, 0.9);
-  z-index: 3;
-  overflow-y: auto;
-  cursor: pointer;
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s; }
-  .cd-user-modal.is-visible {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.3s; }
-    .cd-user-modal.is-visible .cd-user-modal-container {
-      -webkit-transform: translateY(0);
-      -moz-transform: translateY(0);
-      -ms-transform: translateY(0);
-      -o-transform: translateY(0);
-      transform: translateY(0); }
-
-.cd-user-modal-container {
-  position: relative;
-  width: 90%;
-  max-width: 600px;
-  background: #FFF;
-  margin: 3em auto 4em;
-  cursor: auto;
-  border-radius: 0.25em;
-  -webkit-transform: translateY(-30px);
-  -moz-transform: translateY(-30px);
-  -ms-transform: translateY(-30px);
-  -o-transform: translateY(-30px);
-  transform: translateY(-30px);
-  -webkit-transition-property: transform;
-  -moz-transition-property: transform;
-  -o-transition-property: transform;
-  transition-property: transform;
-  -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  -o-transition-duration: 0.3s;
-  transition-duration: 0.3s; }
-  .cd-user-modal-container .cd-switcher {
-    list-style: none;
-    padding-left: 0;
-  }
-  .cd-user-modal-container .cd-switcher::after {
-    clear: both;
-    content: "";
-    display: block; }
-  .cd-user-modal-container .cd-switcher li {
-    width: 50%;
-    float: left;
-    text-align: center; }
-    .cd-user-modal-container .cd-switcher li:first-child a {
-      border-radius: .25em 0 0 0; }
-    .cd-user-modal-container .cd-switcher li:last-child a {
-      border-radius: 0 .25em 0 0; }
-  .cd-user-modal-container .cd-switcher a {
-    display: block;
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    background: #d2d8d8;
-    color: #809191; }
-    .cd-user-modal-container .cd-switcher a.selected {
-      background: #FFF;
-      color: #505260; }
-  @media only screen and (min-width: 600px) {
-    .cd-user-modal-container {
-      margin: 4em auto; }
-      .cd-user-modal-container .cd-switcher a {
-        height: 70px;
-        line-height: 70px; } }
-
-.cd-form {
-  padding: 1.4em; }
-  .cd-form .fieldset {
-    position: relative;
-    margin: 1.4em 0; }
-    .cd-form .fieldset:first-child {
-      margin-top: 0; }
-    .cd-form .fieldset:last-child {
-      margin-bottom: 0; }
-  .cd-form label {
-    font-size: 14px;
-    font-size: 0.875rem; }
-    .cd-form label.image-replace {
-      /* replace text with an icon */
-      display: inline-block;
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      bottom: auto;
-      -webkit-transform: translateY(-50%);
-      -moz-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-      -o-transform: translateY(-50%);
-      transform: translateY(-50%);
-      height: 20px;
-      width: 20px;
-      overflow: hidden;
-      text-indent: 100%;
-      white-space: nowrap;
-      color: transparent;
-      text-shadow: none;
-      background-repeat: no-repeat;
-      background-position: 50% 0; }
-    .cd-form label.cd-username {
-      background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/148866/cd-icon-username.svg"); }
-    .cd-form label.cd-email {
-      background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/148866/cd-icon-email.svg"); }
-    .cd-form label.cd-password {
-      background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/148866/cd-icon-password.svg"); }
-  .cd-form input {
-    margin: 0;
-    padding: 0;
-    border-radius: 0.25em; }
-    .cd-form input.full-width {
-      width: 100%; }
-    .cd-form input.has-padding {
-      padding: 12px 20px 12px 50px; }
-    .cd-form input.has-border {
-      border: 1px solid #d2d8d8;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none; }
-      .cd-form input.has-border:focus {
-        border-color: #343642;
-        box-shadow: 0 0 5px rgba(52, 54, 66, 0.1);
-        outline: none; }
-    .cd-form input.has-error {
-      border: 1px solid #d76666; }
-    .cd-form input[type=password] {
-      /* space left for the HIDE button */
-      padding-right: 65px; }
-    .cd-form input[type=submit] {
-      padding: 16px 0;
-      cursor: pointer;
-      background: #2f889a;
-      color: #FFF;
-      font-weight: bold;
-      border: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none; }
-      .no-touch .cd-form input[type=submit]:hover, .no-touch .cd-form input[type=submit]:focus {
-        background: #3599ae;
-        outline: none; }
-  .cd-form .hide-password {
-    display: inline-block;
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 6px 15px;
-    border-left: 1px solid #d2d8d8;
-    top: 50%;
-    bottom: auto;
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    transform: translateY(-50%);
-    font-size: 14px;
-    font-size: 0.875rem;
-    color: #343642; }
-  .cd-form .cd-error-message {
-    display: inline-block;
-    position: absolute;
-    left: -5px;
-    bottom: -35px;
-    background: rgba(215, 102, 102, 0.9);
-    padding: .8em;
-    z-index: 2;
-    color: #FFF;
-    font-size: 13px;
-    font-size: 0.8125rem;
-    border-radius: 0.25em;
-    /* prevent click and touch events */
-    pointer-events: none;
-    visibility: hidden;
-    opacity: 0;
-    -webkit-transition: opacity 0.2s;
-    -moz-transition: opacity 0.2s;
-    -ms-transition: opacity 0.2s;
-    -o-transition: opacity 0.2s;
-    transition: opacity 0.2s;}
-    .cd-form .cd-error-message::after {
-      /* triangle */
-      content: '';
-      position: absolute;
-      left: 22px;
-      bottom: 100%;
-      width: 0;
-      height: 0;
-      border-left: 16px solid transparent;
-      border-right: 16px solid transparent;
-      border-bottom: 16px solid rgba(215, 102, 102, 0.9); }
-    .cd-form .cd-error-message.is-visible {
-      opacity: 1;
-      visibility: visible;
-      -webkit-transition: opacity 0.2s;
-      -moz-transition: opacity 0.2s;
-      -ms-transition: opacity 0.2s;
-      -o-transition: opacity 0.2s;
-      transition: opacity 0.2s; }
-  @media only screen and (min-width: 600px) {
-    .cd-form {
-      padding: 2em; }
-      .cd-form .fieldset {
-        margin: 2em 0; }
-        .cd-form .fieldset:first-child {
-          margin-top: 0; }
-        .cd-form .fieldset:last-child {
-          margin-bottom: 0; }
-      .cd-form input.has-padding {
-        padding: 16px 20px 16px 50px; }
-      .cd-form input[type=submit] {
-        padding: 16px 0; } }
-
-.cd-form-message {
-  padding: 1.4em 1.4em 0;
-  font-size: 14px;
-  font-size: 0.875rem;
-  line-height: 1.4;
-  text-align: center; }
-  @media only screen and (min-width: 600px) {
-    .cd-form-message {
-      padding: 2em 2em 0; } }
-
-.cd-form-bottom-message {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  bottom: -50px;
-  text-align: center;
-  font-size: 14px;
-  font-size: 0.875rem; }
-  .cd-form-bottom-message a {
-    color: #FFF;
-    text-decoration: underline; }
-
-.cd-close-form {
-  /* form X button on top right */
-  display: block;
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  right: 0;
-  top: -40px;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/148866/cd-icon-close.svg") no-repeat center center;
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden; }
-  @media only screen and (min-width: 1170px) {
-    .cd-close-form {
-      display: none; } }
-
-#cd-login, #cd-signup, #cd-reset-password {
-  display: none; 
-  text-decoration: none;}
-
-#cd-login.is-selected, #cd-signup.is-selected, #cd-reset-password.is-selected {
-  display: block; }
-
-/* 카카오 로그인 버튼 css */
-#login-kakao-btn {
-  padding: 0.6em 1em;
-  border: none;
-  border-radius: 5px;
-  background-color: #f7e600; /* 카카오 브랜드 컬러 */
-  color: #000; /* 버튼 텍스트 색상 */
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  background-color: #fafafa;  /* 좀 더 밝은 배경색으로 설정 */
+  font-family: 'Noto Sans KR', sans-serif;
+  line-height: 1.5;  /* 기본 줄 간격 설정 */
 }
 
-#login-kakao-btn:hover {
-  background-color: #ffeb3b; /* 호버 시 색상 변경 */
+.ui.form .field > label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;  /* 라벨의 색상을 약간 어둡게 설정 */
+}
+
+.ui.menu {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;  /* 메뉴의 배경색을 흰색으로 설정 */
+}
+
+.ui.button {
+  margin-top: 20px;
+  transition: background-color 0.3s, transform 0.3s;  /* 버튼 호버 및 클릭 효과 추가 */
+  height: 45px;
+  font-size: 16px;
+  padding: 0 20px;
+}
+
+.ui.button:hover {
+  background-color: #ddd;  /* 버튼의 배경색을 호버 시 약간 어둡게 설정 */
+}
+
+.ui.button:active {
+  transform: scale(0.98);  /* 버튼을 클릭할 때 약간 축소되는 효과 설정 */
+}
+
+
+.cd-form-bottom-message {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* 입력창 및 버튼 크기 및 위치 조정 */
+.ui.form .field input {
+  height: 45px;
+  font-size: 16px;
+}
+
+.ui.action.input button {
+  height: 45px;
+}
+
+/* 입력창과 버튼을 같은 라인에 배치 */
+.field .input-button-container {
+  display: flex;
+  align-items: center;
+}
+
+.field .input-button-container input,
+.field .input-button-container button {
+  margin: 0;
+}
+
+/* 입력창 옆에 버튼을 배치할 스타일 */
+.field .input-button-container button {
+  margin-left: 10px;
+}
+
+/* 버튼 간 간격 조정 */
+#reset-sendVerificationCode,
+#verifyPhoneNumber,
+#sendTempPassword,
+#tempLoginButton {
+  margin-right: 5px; /* 간격 조정 */
+  margin-bottom: 10px;
+}
+
+
+#modalContainer {
+  display : none;
+}
+
+.custom-image-button {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.custom-image-button:hover {
+  transform: scale(1.05); /* Hover 시 버튼이 약간 확대되는 효과를 줍니다. */
+}
+
+.icon-img {
+  display: block;
+  width: 125px; /* 이미지의 기본 크기를 설정합니다. 필요한 크기로 조절하세요. */
+  height: auto;
+  transition: opacity 0.3s;
+}
+
+.custom-image-button:hover .icon-img {
+  opacity: 0.8; /* Hover 시 이미지의 투명도를 약간 줄여서 효과를 줍니다. */
+}
+
+/* 모달 윈도우 디자인 개선 */
+.ui.modal {
+  background-color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;  /* 모달의 모서리를 약간 둥글게 설정 */
+  overflow: hidden;  /* 모달의 내부 요소가 넘칠 때 숨김 처리 */
+}
+
+.ui.modal .header {
+  background-color: #f6f6f6;  /* 모달의 헤더 부분 배경색 설정 */
+  border-bottom: 1px solid #e5e5e5;  /* 헤더 아래에 경계선 추가 */
+  padding: 15px;  /* 헤더 내부 패딩 설정 */
+  font-weight: bold;  /* 헤더 텍스트 굵게 설정 */
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .login-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 20px;
 }
 
-/* 오른쪽에 버튼을 위치시키기 위한 스타일 */
-.input-with-button {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: 10px; /* 상단 간격 조절 */
-  margin-bottom: 30px; /* 하단 간격 조절 */
+.login-buttons .ui.button {
+  width: 70%; /* 버튼의 폭을 늘림 */
 }
 
-.input-with-button input {
-  margin-right: 15px; /* 입력창과 버튼 사이의 간격 조절 */
-}
-
-/* 인증번호 전송 버튼 스타일 변경 */
-#sendVerificationCode {
-  padding: 0.2em 0.6em;
-  border: 1px solid #2f889a;
-  border-radius: 30em;
-  background: #2f889a;
+.primary-button {
+  background-color: #007bff;
   color: #fff;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
+  width: 120px;
 }
 
-/* 인증번호 확인 버튼 스타일 변경 */
-#verifyCodeButton {
-  padding: 0.2em 0.6em;
-  border: 1px solid #d2d8d8;
-  border-radius: 30em;
-  font-weight: bold;
-  color: #2f889a;
-  cursor: pointer;
+.login-footer {
+  margin-top: 20px;
+  text-align: center;
 }
 
-.file-input-label {
+/*!* 로그인 모달 크기 및 스타일링 *!*/
+/*.ui.segment.modal#loginModal {*/
+/*    width: 600px; !* 모달의 폭 조절 *!*/
+/*    padding: 30px 40px; !* 모달의 내부 패딩 *!*/
+/*    position: fixed; !* 중앙에 위치시키기 위한 스타일링 시작 *!*/
+/*    top: 50%;*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -50%);*/
+/*    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); !* 약간의 그림자 효과 *!*/
+/*}*/
+
+/*!* 로그인 모달 내부 버튼 및 폼 스타일링 *!*/
+/*.login-container .ui.form .field {*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+/* 기존의 CSS... */
+
+/* 로그인 모달 스타일 */
+.ui.segment.modal#loginModal {
+  width: 100%;  /* 폼의 너비를 60%로 확장 */
+  max-width: 650px;  /* 최대 너비 설정 */
+  margin: 50px auto;  /* 중앙 정렬 */
+  padding: 40px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);  /* 그림자 효과 강화 */
+}
+
+#loginModal {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed #2f889a;
-  border-radius: 5px;
-  padding: 20px;
-  cursor: pointer;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
 }
 
-.file-input-label .icon {
-  font-size: 24px;
-  color: #2f889a;
-  margin-right: 10px;
-}
+/*!* 로그인 필드 스타일 *!*/
+/*#loginModal .ui.form .field input {*/
+/*    width: 100%;  !* 가로폭 100%로 확장 *!*/
+/*    border-radius: 5px;  !* 모서리 둥글게 *!*/
+/*    padding: 10px 15px;  !* 내부 패딩 추가 *!*/
+/*    border: 1px solid #ddd;  !* 경계선 추가 *!*/
+/*}*/
 
+/*!* 로그인 버튼 및 SNS 로그인 버튼 스타일 *!*/
+/*#loginModal .login-buttons .ui.button {*/
+/*    width: 100%;  !* 버튼 가로폭 100%로 확장 *!*/
+/*    margin-top: 10px;  !* 상단 마진 추가 *!*/
+/*}*/
 
-.cd-form input#signup-profileImage {
-  display: none; /* 기본 파일 선택 창 숨김 */
-}
+/*!*#loginModal .custom-image-button {*!*/
+/*!*    width: 48%;  !* 카카오와 네이버 버튼 너비 조절 *!*!*/
+/*!*}*!*/
+
+/*#loginModal .login-buttons {*/
+/*    width: 100%;  !* 버튼 컨테이너의 가로 길이를 최대로 확장 *!*/
+/*}*/
+

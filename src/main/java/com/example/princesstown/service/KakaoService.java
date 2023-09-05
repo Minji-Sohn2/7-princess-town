@@ -1,11 +1,11 @@
 package com.example.princesstown.service;
 
 import com.example.princesstown.dto.getInfo.KakaoUserInfoDto;
+import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.kakao.KakaoRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
-import com.example.princesstown.service.awsS3.S3Uploader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -37,7 +37,6 @@ public class KakaoService {
     private final KakaoRepository kakaoRepository;
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
-    private final S3Uploader s3Uploader;
 
     @Value("${kakao.client.id}")
     private String client_id;
@@ -47,23 +46,28 @@ public class KakaoService {
     @Value("${kakao.redirect.url}")
     private String redirect_url;
 
+    @Value("${kakao.client.secret}")
+    private String client_secret;
+
     // 카카오 로그인 처리 메서드
-    public String kakaoLogin(String code, MultipartFile profileImage) throws IOException {
+    public ResponseEntity<ApiResponseDto> kakaoLogin(String code) throws IOException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         // 인가코드 : 인가 서버로부터 받는 액세스 토큰을 요청할 수 있는 코드
         // 액세스 토큰 : 인가 서버에서 가지고 있는 사용자 정보, 리소스 접근 권한을 가지고 있는 토큰
         String accessToken = getToken(code);
+        log.info("인가 코드 : " + code);
+        log.info("액세스 토큰 : " + accessToken);
 
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
 
         // 3. 필요시에 회원가입
-        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo, profileImage);
+        User kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
-        // 4. JWT 토큰 반환
-        String createToken = jwtUtil.createToken(kakaoUser.getUsername());
+        // 4. 로그인
+        ResponseEntity<ApiResponseDto> kakaoLoginResponse = kakaoLogin(kakaoUser);
 
-        return createToken;
+        return kakaoLoginResponse;
     }
 
     // "인가 코드"로 "액세스 토큰" 요청하는 메서드
@@ -74,12 +78,15 @@ public class KakaoService {
                 .path("/oauth/token")
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("client_id", client_id)
+                .queryParam("client_secret", client_secret)
                 .queryParam("redirect_uri", redirect_url)
                 .queryParam("code", code)
                 .queryParam("state", "1234")
                 .encode()
                 .build()
                 .toUri();
+
+        log.info("URI: {}", uri);
 
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
@@ -119,6 +126,7 @@ public class KakaoService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        log.info("Kakao accessToken : " + accessToken);
 
         // HTTP POST 요청 보내기
         // post요청에서 .body()를 사용하여 바디를 보내야됨(본문이 필요o)
@@ -140,39 +148,70 @@ public class KakaoService {
         String nickname = jsonNode.get("properties").get("nickname").asText(); // 카카오 아이디
 
         log.info("카카오 사용자 정보: " + id + ", " + nickname);
-        return new KakaoUserInfoDto(id, nickname);
+        return new KakaoUserInfoDto(nickname, id);
     }
 
     // 필요시에 회원가입하는 메서드
-    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo, MultipartFile profileImage) throws IOException {
-        String nickname = kakaoUserInfo.getNickname();
-        User kakaoUser = kakaoRepository.findByNickname(nickname);
+    private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
+        String kakaoUsername = kakaoUserInfo.getUsername() + "_kakaoUsername_";
+        User kakaoUser = kakaoRepository.findByUsernameStartingWith(kakaoUsername);
+        log.info("user : " + kakaoUser);
 
-        // 중복된 닉네임인지 확인
-        if (kakaoUser != null) {
-            log.info(nickname + "이미 존재하는 닉네임입니다.");
-
+        if (kakaoUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
-            String uniqueNickname = kakaoUserInfo.getNickname() + "Kakao" + UUID.randomUUID();
+            String uniqueNickname = kakaoUserInfo.getNickname() + "_KakaoNickname_" + UUID.randomUUID();
+            String uniqueUsername = kakaoUserInfo.getUsername() + "_KakaoUsername_" + UUID.randomUUID();
             kakaoUserInfo.setNickname(uniqueNickname);
+            kakaoUserInfo.setUsername(uniqueUsername);
+
+            // password 생성
+            String UUIDpassword = UUID.randomUUID().toString();
+            String encodedPassword = passwordEncoder.encode(UUIDpassword);
+
+            // 회원가입
+            kakaoUser = new User(kakaoUserInfo, encodedPassword);
+            log.info("kakao user : " + kakaoUser);
+
+//            // 기본 이미지 설정
+//            String imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
+//            kakaoUser.setProfileImage(imageUrl);
+
+            // DB에 저장
+            userRepository.save(kakaoUser);
         }
-
-        // password 생성
-        String UUIDpassword = UUID.randomUUID().toString();
-        String encodedPassword = passwordEncoder.encode(UUIDpassword);
-
-        if (profileImage != null) {
-            // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 kakaoUser.profileImage에 직접 객체에 저장이 됨
-            String imageUrl = s3Uploader.upload(profileImage, "profile-images");
-            kakaoUser.setProfileImage(imageUrl);
-        }
-
-        // 회원가입
-        kakaoUser = new User(kakaoUserInfo, encodedPassword);
-
-        // DB에 저장
-        userRepository.save(kakaoUser);
-
         return kakaoUser;
     }
+
+    // 로그인
+    public ResponseEntity<ApiResponseDto> kakaoLogin(User kakaoUser) {
+        log.info("start");
+        String kakaoUsername = kakaoUser.getUsername();
+        String kakaoPassword = kakaoUser.getPassword();
+
+        // 위에서 받아온 username과 일치하는 User 가져오기
+        User checkKakaoUser = kakaoRepository.findByUsername(kakaoUsername);
+
+        // DB에 없는 사용자인 경우 혹은 인코딩되지 않은 임시 비밀번호를 인코딩하여 DB 저장된 인코딩된 임시 비밀번호랑 같지 않을 때
+        if (checkKakaoUser == null || !kakaoPassword.equals(checkKakaoUser.getPassword())) {
+            log.info(checkKakaoUser.getPassword());
+            log.info(kakaoUsername);
+            log.info(kakaoPassword);
+            log.error("로그인 정보가 일치하지 않습니다.");
+            throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
+        }
+
+        // 토큰 생성
+        String token = jwtUtil.createToken(kakaoUsername);
+        log.info("token : " + token);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", token);
+
+        return ResponseEntity.status(200).headers(headers).body(new ApiResponseDto(HttpStatus.OK.value(), " 카카오로 로그인이 성공적으로 되었습니다!.", checkKakaoUser));
+    }
+
+    // 로그인 데이터 반환
+//    public ResponseEntity<ApiResponseDto> kakaoResponse(User kakaoUser) {
+//        User user
+//    }
 }

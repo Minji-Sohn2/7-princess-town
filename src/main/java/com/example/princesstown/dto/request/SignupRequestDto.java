@@ -1,5 +1,6 @@
 package com.example.princesstown.dto.request;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -14,10 +15,12 @@ public class SignupRequestDto {
     private String nickname;
 
     @Email(message = "이메일 형식에 맞지 않습니다.")
-    @NotBlank
+    @NotBlank(message = "이메일은 필수 입력 값입니다.")
     private String email;
 
+    @NotBlank
     private String phoneNumber;
+
     private MultipartFile profileImage;
     private String phoneVerifyCode;
 }

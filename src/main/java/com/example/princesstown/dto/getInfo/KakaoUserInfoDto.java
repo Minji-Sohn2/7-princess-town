@@ -6,8 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class KakaoUserInfoDto {
-    private String id;
+    private String username;
     private String nickname;
+
+    public KakaoUserInfoDto(String nickname, String id) {
+        this.username = id;
+        this.nickname = nickname;
+    }
+
 }

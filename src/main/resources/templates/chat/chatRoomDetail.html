@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>채팅방 페이지</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <!-- js Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/chatRoomDetail.css">
+
+</head>
+<body>
+<div id="app" v-cloak>
+    <!--  상단바  -->
+    <div id="header">
+        <div id="room-info">
+            <h2 id="room-name">상단바<span class="badge badge-info badge-pill"></span></h2>
+        </div>
+    </div>
+    <!--  상단바 끝  -->
+
+    <div class="container">
+
+        <!--  채팅방 이름/ 버튼  -->
+        <div class="chat-header">
+            <div class="col-md-6">
+                <h2>{{roomName}} <span class="badge badge-info badge-pill"></span></h2>
+                <button class="btn btn-light btn-sm" id="changeRoomName">이름 수정</button>
+            </div>
+            <div class="col-md-6 text-right">
+                <button class="btn btn-light btn-sm" id="getThisChatRoomMembersBtn">참여자</button>
+                <button class="btn btn-info btn-sm" id="inviteModalBtn">초대</button>
+                <button class="btn btn-danger btn-sm" @click="leaveChatRoom">채팅방 나가기</button>
+            </div>
+        </div>
+
+        <!--  채팅 내용  -->
+        <ul class="list-group" id="message-upper-container">
+
+            <button class="btn btn-secondary btn-block" @click="loadMoreChatHistory">More</button>
+
+            <li class="list-group-item" v-for="message in messages">
+                <div class="message-container">
+                    <div class="sender-profile">
+                        <img class="user-img" id="user-other"
+                             src="//gravatar.com/avatar/00034587632094500000000000000000?d=retro"/>
+                        {{message.sender}}
+                    </div>
+                    <div class="sender-message-info">
+                        <h5>
+                            {{message.message}}
+                        </h5>
+                        <div>
+                            {{message.createdAt}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <!--  입력칸  -->
+        <div class="input-group fixed-bottom" id="input-container">
+            <div class="input-group-prepend">
+                <label class="input-group-text">내용</label>
+            </div>
+            <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('TALK')">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" @click="sendMessage('TALK')">보내기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 대화상대 확인하기 모달 -->
+    <div class="modal-overlay" id="chatMembersModalOverlay"></div>
+    <div class="register-modal" id="registerChatMemberModal">
+        <h3 class="modal-title" id="chatMemberModalTitle">채팅방 참여자</h3>
+        <div class="modal-content">
+
+            <div id="member-container">
+                <!-- 대화상대 리스트 -->
+                <div class="search-result" id="memberListContainer" v-for="member in members">
+                    <div class="member-result-card" id="member-{{member.id}}">
+                        <div class="user-profile-container">
+                            <div class="user-username">
+                                {{member.username}}
+                            </div>
+                            <div class="user-nickname">
+                                {{member.nickname}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="close-modal-button" id="closeChatMemberModal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 대화상대 초대하기 모달 -->
+<div class="modal-overlay" id="inviteUserModalOverlay"></div>
+<div class="register-modal" id="registerInviteUserModal">
+    <h3 class="modal-title" id="inviteUserModalTitle">대화상대 초대하기</h3>
+    <div class="modal-content">
+
+        <!-- 채팅방 생성 1. 초대할 사용자 선택 -->
+        <div id="search-container">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="초대할 대화상대 검색" id="searchInput">
+                <button class="btn btn-outline-secondary" type="button" id="submitSearchKeyword">검색</button>
+            </div>
+
+            <!-- 대화상대 검색 결과 -->
+            <div class="search-result" id="searchResultsContainer">
+
+            </div>
+        </div>
+
+        <!-- 채팅방 생성 2. 완료 -->
+        <div id="complete-creating" style="display: none">
+            <h4>초대 완료</h4>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitSelectUser">초대</button>
+            <button class="close-modal-button" id="closeCreateRoomModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 채팅방 이름 변경하기 모달 -->
+<div class="modal-overlay" id="changeRoomNameModalOverlay"></div>
+<div class="register-modal" id="registerChangeRoomNameModal">
+    <h3 class="modal-title" id="changeRoomNameModalTitle">채팅방 이름 변경하기</h3>
+    <div class="modal-content">
+        <!-- 채팅방 이름 변경 1. 새로운 채팅방 이름 입력 -->
+        <div class="input-group mb-3" id="new-roomname-container">
+            <input type="text" class="form-control" placeholder="새로운 채팅방 이름" id="roomNameInput">
+        </div>
+
+        <!-- 채팅방 이름 변경 2. 완료 -->
+        <div id="complete-changing" style="display: none">
+            <h4>변경 완료</h4>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitNewRoomName">변경</button>
+            <button class="close-modal-button" id="closeChangeRoomNameModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript -->
+<script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
+<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+
+<!-- static js -->
+<script src="/js/chatRoomDetail.js"></script>
+
+</body>
+</html>

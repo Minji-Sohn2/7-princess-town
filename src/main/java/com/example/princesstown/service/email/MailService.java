@@ -1,7 +1,7 @@
 package com.example.princesstown.service.email;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -10,30 +10,19 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MailService {
-    @Autowired
-    private JavaMailSender mailSender;
 
-    public void sendUsernames(String email, List<String> username) {
+    private final JavaMailSender mailSender;
+
+    public void sendUsernames(String email, String username) {
         SimpleMailMessage message = new  SimpleMailMessage();
         message.setTo(email);
-
-        log.info("Sending email to: {}", email); // 로그 추가
-
         message.setSubject("아이디 찾기");
 
-        StringBuffer sb = new StringBuffer();
-        sb.append("가입하신 아이디는");
-        sb.append(System.lineSeparator());
+        String text = "가입하신 아이디는 " + username + "입니다";
 
-        for(int i=0;i<username.size()-1;i++) {
-            sb.append(username.get(i));
-            sb.append(System.lineSeparator());
-        }
-        sb.append(username.get(username.size()-1)).append("입니다");
-
-        message.setText(sb.toString());
-
+        message.setText(text);
         new Thread(() -> {
             log.info("Sending email...");
             try {
@@ -45,12 +34,31 @@ public class MailService {
         }).start();
     }
 
-    public void sendAuthNum(String email, String authNum) {
+    public void sendTemporaryPassword(String email, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("비밀번호 찾기 임시 비밀번호");
+
+        String text = "임시 비밀번호는 " + tempPassword + "입니다";
+
+        message.setText(text);
+        new Thread(() -> {
+            log.info("Sending email...");
+            try {
+                mailSender.send(message);
+                log.info("Email sent successfully.");
+            } catch (Exception e) {
+                log.error("Failed to send email: {}", e.getMessage(), e);
+            }
+        }).start();
+    }
+
+    public void sendDeactivateVerifyCode(String email, String deteactiveCode) {
         SimpleMailMessage message = new  SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("비밀번호 찾기 인증번호");
+        message.setSubject("회원탈퇴");
 
-        String text = "인증번호는 " + authNum + "입니다";
+        String text = "회원탈퇴를 위한 인증코드는 " + deteactiveCode + "입니다";
 
         message.setText(text);
         new Thread(() -> {

@@ -31,6 +31,6 @@ public class Location {
     @OneToMany(mappedBy = "location")
     private List<User> users = new ArrayList<>(); // Location과 User 간의 일대다 관계 설정
 
-    @OneToMany(mappedBy = "location")
-    private List<Post> locationPosts = new ArrayList<>(); // Location과 Post 간의 일대다 관계 설정
+//    @OneToMany(mappedBy = "location")
+//    private List<Post> locationPosts = new ArrayList<>(); // Location과 Post 간의 일대다 관계 설정
 }
