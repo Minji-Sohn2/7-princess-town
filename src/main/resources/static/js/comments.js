@@ -1090,18 +1090,6 @@ function likesClick(postId, commentId, cnt) {
             "Authorization": token
         },
         data: {},
-        beforeSend: function() {
-            $('#eventLoading').show();
-            $('body').on('scroll touchmove mousewheel', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            });
-        },
-        complete:function() {
-            $('#eventLoading').hide();
-            $('body').off('scroll touchmove mousewheel')
-        },
         success: function (data) {
 
             const updateCnt = cnt += 1;
@@ -1141,18 +1129,6 @@ function unlikesClick(postId, commentId, cnt) {
             "Authorization": token
         },
         data: {},
-        beforeSend: function() {
-            $('#eventLoading').show();
-            $('body').on('scroll touchmove mousewheel', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            });
-        },
-        complete:function() {
-            $('#eventLoading').hide();
-            $('body').off('scroll touchmove mousewheel')
-        },
         success: function (data) {
 
             const updateCnt = cnt -= 1;
@@ -1192,18 +1168,6 @@ function replyLikesClick(postId, commentId, replyId, cnt) {
             "Authorization": token
         },
         data: {},
-        beforeSend: function() {
-            $('#eventLoading').show();
-            $('body').on('scroll touchmove mousewheel', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            });
-        },
-        complete:function() {
-            $('#eventLoading').hide();
-            $('body').off('scroll touchmove mousewheel')
-        },
         success: function (data) {
             const updateCnt = cnt += 1;
 
@@ -1240,18 +1204,6 @@ function replyUnlikesClick(postId, commentId, replyId, cnt) {
             "Authorization": token
         },
         data: {},
-        beforeSend: function() {
-            $('#eventLoading').show();
-            $('body').on('scroll touchmove mousewheel', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            });
-        },
-        complete:function() {
-            $('#eventLoading').hide();
-            $('body').off('scroll touchmove mousewheel')
-        },
         success: function (data) {
 
             const updateCnt = cnt -= 1;
