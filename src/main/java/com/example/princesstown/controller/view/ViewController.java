@@ -120,17 +120,28 @@ public class ViewController {
     @GetMapping("/createpost")
     public String createPostView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-            List<BoardResponseDto> boardList = boardService.getBoard();
-            model.addAttribute("boardList", boardList);
+        List<BoardResponseDto> boardList = boardService.getBoard();
+        model.addAttribute("boardList", boardList);
 
         return "writePost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
     }
 
     // view.html 부분
-    @GetMapping("/login-page")
-    public String indexPage() {
-        return "index";
-    }
+//    @GetMapping("/login-page")
+//    public String indexPage(Model model) {
+//        //게시판 목록
+//        List<BoardResponseDto> boardList = boardService.getBoard();
+//        model.addAttribute("boardList", boardList);
+//
+//        //인기 게시글
+//        List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
+//        model.addAttribute("topPosts", topPosts);
+//
+//        //전체 게시글
+//        List<PostResponseDto> posts = postService.getPosts();
+//        model.addAttribute("posts", posts);
+//        return "index";
+//    }
 
     @GetMapping("/editpost/{podstId}")
     public String editPostView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -139,5 +150,18 @@ public class ViewController {
         model.addAttribute("boardList", boardList);
 
         return "editpost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
+    }
+
+    // 채팅 리스트 화면
+    @GetMapping("/chatRooms")
+    public String rooms() {
+        return "chat/myChatRooms";
+    }
+
+    // 채팅방 입장 화면
+    @GetMapping("/chatRooms/{roomId}")
+    public String roomDetail(Model model, @PathVariable String roomId) {
+        model.addAttribute("roomId", roomId);
+        return "chat/chatRoomDetail";
     }
 }
