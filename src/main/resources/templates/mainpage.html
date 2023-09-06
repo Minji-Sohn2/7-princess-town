@@ -14,7 +14,7 @@
 <div class="ui secondary pointing menu" id="header">
     <div id="header-info">
         <div id="header-name">
-            <h2>상단바</h2>
+            <h2>토마토</h2>
         </div>
         <div class="header-buttons">
             <!-- 로그인과 회원가입 버튼에 데이터-modal 속성 추가 -->
@@ -27,7 +27,6 @@
             <!--  <div id="token-expiry">로그인 만료 시간 : <span id="expiry-time"></span></div>-->
         </div>
     </div>
-
 </div>
 
 <!-- 메인페이지 -->
@@ -44,7 +43,8 @@
                 <li><a href="/view/mainpage">전체게시판</a></li>
                 <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
                 <th:block th:each="board : ${boardList}">
-                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
+                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                    </li>
                 </th:block>
             </ul>
         </div>
@@ -75,7 +75,8 @@
                             </a>
                         </div>
                         <div class="post-info-container">
-                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                            <span class="post-info"
+                                  th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
                         </div>
                     </div>
                 </li>
@@ -94,7 +95,8 @@
                         </div>
                         <div class="post-info-container">
                             <!-- 게시물 정보를 표시합니다 -->
-                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                            <span class="post-info"
+                                  th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
                         </div>
                     </div>
                 </li>
