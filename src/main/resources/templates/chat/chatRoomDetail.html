@@ -25,8 +25,15 @@
 <div id="app" v-cloak>
     <!--  상단바  -->
     <div id="header">
-        <div id="room-info">
-            <h2 id="room-name">상단바<span class="badge badge-info badge-pill"></span></h2>
+        <div id="header-info">
+            <div id="header-name">
+                <h2>상단바<span class="badge badge-info badge-pill"></span></h2>
+            </div>
+
+            <div class="header-buttons">
+                <a class="header-button myPage" id="mainPageButton" href="/view/mainpage">메인페이지</a>
+                <button class="header-button logout" id="logoutButton" @click="logout">로그아웃</button>
+            </div>
         </div>
     </div>
     <!--  상단바 끝  -->
