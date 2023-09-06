@@ -1,109 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>게시판 및 인기검색어</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <link rel="stylesheet" href="/css/mainpage.css">
+    <title>우리동네 커뮤니티 토마토</title>
 
-        .content {
-            display: flex;
-            width: 50%;
-        }
-
-        .sidebar {
-            padding: 20px;
-            background-color: #f2f2f2;
-            min-width: 200px;
-        }
-
-        .box {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .board-list, .search-ranking {
-            list-style: none;
-            padding: 0;
-            margin: 0; /* remove default margin for ul/ol */
-        }
-
-        .board-list li, .search-ranking li {
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .board-list li:last-child, .search-ranking li:last-child {
-            margin-bottom: 0;
-        }
-
-        .post-title {
-            font-weight: bold;
-            text-align: left;
-        }
-
-        .post-info {
-            font-size: 12px;
-            color: #777;
-            text-align: right;
-            margin-top: 3px;
-        }
-
-        .post {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 15px;
-            background-color: #fff;
-            margin: 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .post-content {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .post-title-container {
-            flex-grow: 1;
-            margin-right: 10px;
-        }
-
-        .post-info-container {
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .main-content {
-            margin-left: 20px;
-        }
-    </style>
 </head>
 <body>
-<div class="content">
-    <div class="sidebar">
+
+<!-- Header -->
+<div class="ui secondary pointing menu" id="header">
+    <div id="header-info">
+        <div id="header-name">
+            <h2>상단바</h2>
+        </div>
+        <div class="header-buttons">
+            <!-- 로그인과 회원가입 버튼에 데이터-modal 속성 추가 -->
+            <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>
+            <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>
+            <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">회원탈퇴</a>
+            <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">프로필</a>
+            <a class="item" id="myChatRooms-btn" href="/view/chatRooms">내 채팅방</a>
+            <a class="item" id="logout-btn" href="#0">로그아웃</a>
+            <!--  <div id="token-expiry">로그인 만료 시간 : <span id="expiry-time"></span></div>-->
+        </div>
+    </div>
+
+</div>
+
+<!-- 메인페이지 -->
+<div class="content-mainpage">
+    <div class="sidebar-mainpage">
         <div class="box">
             <h2 class="h2">인기검색어</h2>
             <ol class="search-ranking">
-            <!--<li>검색어 1</li>-->
+                <!--<li>검색어 1</li>-->
             </ol>
         </div>
         <div>
@@ -169,59 +102,290 @@
         </div>
     </div>
 </div>
+
+<!-- 프로필 정보 모달 창 -->
+<div class="ui modal" id="profileModal">
+    <i class="close icon"></i>
+    <div class="header">
+        개인정보
+        <button class="ui right floated button" id="editProfile">수정</button>
+        <button class="ui right floated button" id="saveProfile">저장</button>
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="profile-usernameInput" placeholder="아이디" readonly>
+            </div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
+            </div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
+            </div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" name="profile-emailInput" placeholder="이메일" readonly>
+            </div>
+            <div class="field">
+                <label>전화번호</label>
+                <input type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
+            </div>
+            <div class="field">
+                <label>프로필 이미지</label>
+                <input type="file" name="profile-imageInput">
+            </div>
+            <div class="field">
+                <label>반경 설정</label>
+                <select class="ui dropdown" id="radiusSelect">
+                    <option value="1">1km</option>
+                    <option value="2">2km</option>
+                    <option value="3">3km</option>
+                    <option value="4">4km</option>
+                    <option value="5">5km</option>
+                    <option value="custom">직접 입력</option>
+                </select>
+                <input type="number" id="customRadiusInput" placeholder="반경 (km)" style="display:none;">
+            </div>
+        </div>
+        <button class="ui button" id="setLocation">위치 설정</button>
+        <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+    </div>
+</div>
+
+
+<!-- Signup Form -->
+<div class="ui segment" id="modalContainer">
+    <div class="ui segment modal" id="signupModal">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" id="signup-usernameInput" placeholder="아이디">
+            </div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" id="signup-passwordInput" placeholder="비밀번호">
+            </div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" id="signup-nicknameInput" placeholder="닉네임">
+            </div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" id="signup-emailInput" placeholder="이메일">
+            </div>
+            <div class="field">
+                <label>전화번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-phoneNumberInput" placeholder="전화번호">
+                    <button class="ui button" id="signup-sendVerificationCode">인증번호 전송</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>인증번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-verifyCodeInput" placeholder="인증번호">
+                    <button class="ui button" id="signup-verificationCode">인증번호 확인</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>프로필 이미지</label>
+                <input type="file" name="profileImage">
+            </div>
+            <div class="inline field">
+                <div class="ui checkbox">
+                    <input type="checkbox" id="accept-terms">
+                    <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
+                </div>
+            </div>
+            <button class="ui button" type="submit">회원가입</button>
+        </form>
+        <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+    </div>
+</div>
+
+<!-- Login Form -->
+<div class="ui segment modal" id="loginModal">
+    <div class="login-container">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="login-usernameInput" placeholder="아이디">
+            </div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="login-passwordInput" placeholder="비밀번호">
+            </div>
+            <div class="login-buttons">
+                <button class="ui button primary-button" type="submit">로그인</button>
+                <button class="custom-image-button" id="naverLogin">
+                    <img src="/img/loginButton/naverButton.png" class="icon-img">
+                </button>
+                <button class="custom-image-button" id="kakaoLogin">
+                    <img src="/img/loginButton/kakaoButton.png" class="icon-img">
+                </button>
+            </div>
+        </form>
+        <div class="login-footer">
+            <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
+            <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
+            <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Deactivation Form -->
+<div class="ui segment modal" id="deactivationModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <!-- 전화번호 입력 및 인증번호 전송 -->
+            <div class="field">
+                <label>전화번호</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 인증번호 확인 -->
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>회원탈퇴 인증코드 발송</label>
+                <div class="input-button-container">
+                    <input type="email" id="deactive-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendDeactiveCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 이메일로 받은 회원탈퇴 코드 확인 -->
+            <div class="field">
+                <label>이메일로 받은 회원탈퇴 코드</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-deactivationCodeInput" placeholder="회원탈퇴 코드를 입력해주세요">
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 회원탈퇴 최종 확인 -->
+            <div class="field">
+                <div class="ui checkbox">
+                    <input type="checkbox" id="confirmDeactivation">
+                    <label>정말 회원탈퇴를 진행하시겠습니까?</label>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <!-- 회원탈퇴 버튼 -->
+            <button class="ui button red" id="finalDeactivationButton" disabled>회원탈퇴</button>
+        </form>
+        <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+    </div>
+</div>
+
+<!-- Temp Password Login Form -->
+<div class="ui segment modal" id="tempLoginModal">
+    <form class="ui form">
+        <div class="field">
+            <label>아이디</label>
+            <input type="text" name="tempLogin-usernameInput" placeholder="아이디">
+        </div>
+        <div class="field">
+            <label>임시 비밀번호</label>
+            <input type="password" name="tempLogin-passwordInput" placeholder="임시 비밀번호">
+        </div>
+        <button class="ui button" type="submit">임시 비밀번호로 로그인</button>
+    </form>
+</div>
+
+
+<!-- Password Reset Form -->
+<div class="ui segment modal" id="passwordResetModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디 인증</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-usernameInput" placeholder="아이디를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verifyUsername">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>임시 비밀번호 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="passwordReset-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendTempPassword">Send</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label style="margin-bottom: -10px;">임시 비밀번호로 임시 로그인 후, 비밀번호를 변경해주세요.</label>
+                <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+    </div>
+</div>
+
+<!-- Username Find Form -->
+<div class="ui segment modal" id="usernameFindModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendVerificationCode">인증번호 전송</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-verifyPhoneNumber">인증번호 확인</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>아이디 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendUsername">Send</button>
+                </div>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/dist/jwt-decode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<script src="/js/app.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // ... (이전 JavaScript 코드 생략)
-
-        // 검색 폼 제출 시 처리
-        $(".search-form").submit(function(event) {
-            event.preventDefault(); // 기본 제출 동작 방지
-
-            var searchType = $("#searchType").val();
-            var searchKeyword = $("#searchKeyword").val();
-
-            if (searchType === "title") {
-                window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
-            } else if (searchType === "contents") {
-                window.location.href = "/view/searchContent?contents=" + encodeURIComponent(searchKeyword);
-            } else if (searchType === "titleAndContents") {
-                window.location.href = "/view/searchKeyword?keyword=" + encodeURIComponent(searchKeyword);
-            }
-        });
-    });
-
-    //인기 검색어
-    $(document).ready(function() {
-        // 인기검색어 데이터를 가져와서 HTML에 렌더링하는 함수
-        function renderPopularSearches(data) {
-            var searchRanking = $(".search-ranking");
-            searchRanking.empty(); // 기존 목록 비우기
-
-            $.each(data, function(index, popularSearch) {
-                var listItem = $("<li>").text(popularSearch.keyword);
-                listItem.on("click", function() {
-                    // 검색어 클릭 시 검색 결과 페이지로 이동
-                    var keyword = encodeURIComponent(popularSearch.keyword);
-                    var searchType = "titleAndContents"; // 예시로 제목+내용 검색 유형 사용
-                    window.location.href = "/view/searchKeyword?searchType=" + searchType + "&keyword=" + keyword;
-                });
-                searchRanking.append(listItem);
-            });
-        }
-
-        // 백엔드 API 호출하여 인기검색어 데이터 가져오기
-        $.ajax({
-            url: "/api/popular-searches",
-            method: "GET",
-            success: function(data) {
-                renderPopularSearches(data);
-            },
-            error: function() {
-                console.error("Error fetching popular searches data.");
-            }
-        });
-    });
-</script>
 </html>

@@ -11,8 +11,9 @@ $(document).ready(function() {
 			$('.item:contains("회원가입")').show();
 			$('.item:contains("프로필")').hide();
 			$('.item:contains("회원탈퇴")').hide();
+			$('#myChatRooms-btn').hide();
 		} else {
-			var username = Cookies.get('username');
+			const username = localStorage.getItem('loginUsername');
 			if (username) {
 				$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
 				$('.item:contains("회원가입")').hide();
@@ -20,6 +21,7 @@ $(document).ready(function() {
 				$('.item:contains("로그인")').hide();
 				$('.item:contains("회원탈퇴")').show();
 				$('.item:contains("프로필")').show();
+				$('#myChatRooms-btn').show();
 			}
 		}
 	}
@@ -215,7 +217,8 @@ $(document).ready(function() {
 			success: function (response) {
 				alert("성공적으로 회원가입이 되었습니다!");
 				$('.item:contains("회원가입")').hide();
-				window.location.href = '/';
+				// window.location.href = '/';
+				location.reload();
 			},
 			error: function (error) {
 				alert("회원가입 실패. 다시 확인해주세요.");
@@ -268,8 +271,9 @@ $(document).ready(function() {
 
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
-				Cookies.set('username', username, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate})
+				localStorage.setItem('loginUsername', username);
+				// Cookies.set('username', username, {expires: expirationDate});
+				// Cookies.set('userId', userId, {expires: expirationDate})
 
 				$loginModal.modal('hide');
 				$signupModal.modal('hide');
@@ -279,7 +283,8 @@ $(document).ready(function() {
 				// 로그인 상태 UI 업데이트
 				$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
 
-				window.location.href = '/';
+				// window.location.href = '/';
+				location.reload();
 			},
 			error: function (error) {
 				alert("로그인 실패. 다시 시도해주세요.");
@@ -328,7 +333,8 @@ $(document).ready(function() {
 		const newURL = window.location.href.split("?")[0];
 		window.history.replaceState({}, document.title, newURL);
 
-		window.location.href = "/"
+		// window.location.href = "/"
+		location.reload();
 	}
 
 
@@ -373,7 +379,8 @@ $(document).ready(function() {
 		const newURL = window.location.href.split("?")[0];
 		window.history.replaceState({}, document.title, newURL);
 
-		window.location.href = "/"
+		// window.location.href = "/"
+		location.reload();
 	}
 
 	// 로그아웃 버튼 클릭 이벤트
@@ -405,7 +412,8 @@ $(document).ready(function() {
 					Cookies.remove('username');
 					Cookies.remove('userId')
 					updateLoginStatus();
-					window.location.href = "/"
+					// window.location.href = "/"
+					location.reload();
 				} else {
 					alert("로그아웃 실패: " + response.message);
 				}
@@ -740,7 +748,8 @@ $(document).ready(function() {
 
 				alert("성공적으로 로그인 했습니다!");
 
-				window.location.href = '/';
+				// window.location.href = '/';
+				location.reload();
 			},
 			error: function (error) {
 				alert("로그인 실패. 다시 시도해주세요.");
@@ -856,6 +865,53 @@ $(document).ready(function() {
 				alert(error);
 			}
 		});
+	});
+
+
+	// 	메인페이지
+	// 인기검색어 데이터를 가져와서 HTML에 렌더링하는 함수
+	function renderPopularSearches(data) {
+		var searchRanking = $(".search-ranking");
+		searchRanking.empty(); // 기존 목록 비우기
+
+		$.each(data, function(index, popularSearch) {
+			var listItem = $("<li>").text(popularSearch.keyword);
+			listItem.on("click", function() {
+				// 검색어 클릭 시 검색 결과 페이지로 이동
+				var keyword = encodeURIComponent(popularSearch.keyword);
+				var searchType = "titleAndContents"; // 예시로 제목+내용 검색 유형 사용
+				window.location.href = "/view/searchKeyword?searchType=" + searchType + "&keyword=" + keyword;
+			});
+			searchRanking.append(listItem);
+		});
+	}
+
+	// 백엔드 API 호출하여 인기검색어 데이터 가져오기
+	$.ajax({
+		url: "/api/popular-searches",
+		method: "GET",
+		success: function(data) {
+			renderPopularSearches(data);
+		},
+		error: function() {
+			console.error("Error fetching popular searches data.");
+		}
+	});
+
+	// 검색 폼 제출 시 처리
+	$(".search-form").submit(function(event) {
+		event.preventDefault(); // 기본 제출 동작 방지
+
+		var searchType = $("#searchType").val();
+		var searchKeyword = $("#searchKeyword").val();
+
+		if (searchType === "title") {
+			window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
+		} else if (searchType === "contents") {
+			window.location.href = "/view/searchContent?contents=" + encodeURIComponent(searchKeyword);
+		} else if (searchType === "titleAndContents") {
+			window.location.href = "/view/searchKeyword?keyword=" + encodeURIComponent(searchKeyword);
+		}
 	});
 });
 
