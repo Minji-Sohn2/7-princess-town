@@ -132,7 +132,6 @@ public class PostService {
     // 게시글 등록 API
     public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId, MultipartFile postImage) {
         Board board =boardRepository.findById(boardId).orElseThrow();
-
         if(user == null){
             throw new IllegalArgumentException("허가되지 않은 사용자입니다.");
         }
@@ -153,10 +152,10 @@ public class PostService {
         }
 
         Post post = new Post(postRequestDto, user, board, 0L, postImageUrl);
+        post.setLocation(user.getLocation());
         postRepository.save(post);
 
         return new PostResponseDto(post);
-
 
     }
 
