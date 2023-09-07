@@ -4,24 +4,88 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
-  <link rel="stylesheet" href="/css/ex.css">
+  <link rel="stylesheet" href="https://webfontworld.github.io/NanumSquare/NanumSquare.css">
+  <link rel="stylesheet" href="https://webfontworld.github.io/t money/TmoneyRoundWind.css">
+  <link rel="stylesheet" href="https://webfontworld.github.io/daegu/DalseoHealing.css">
+  <link rel="stylesheet" href="/css/style.css">
   <title>Document</title>
 </head>
 <body>
 
-<!-- Header -->
-<div class="ui secondary pointing menu">
-  <!-- 로그인과 회원가입 버튼에 데이터-modal 속성 추가 -->
-  <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>
-  <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>
-  <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">회원탈퇴</a>
-  <a class="item" data-modal="#profileModal" id="profile-btn" href="#0" >프로필</a>
-  <a class="item" id="logout-btn" href="#0">로그아웃</a>
-  <!--  <div id="token-expiry">로그인 만료 시간 : <span id="expiry-time"></span></div>-->
+<!--&lt;!&ndash; 토글 버튼에 아이콘 추가 &ndash;&gt;-->
+<!--<button id="toggleSidebarButton" class="ui icon button">-->
+<!--  <i class="bars icon"></i> &lt;!&ndash; 아이콘 추가 &ndash;&gt;-->
+<!--</button>-->
+
+<!--<div class="ui sidebar inverted vertical menu">-->
+<!--  <a class="item">1</a>-->
+<!--  <a class="item">2</a>-->
+<!--  <a class="item">3</a>-->
+<!--</div>-->
+<!--<div class="pusher">-->
+<!--  &lt;!&ndash; Site content !&ndash;&gt;-->
+<!--</div>-->
+
+
+<!--&lt;!&ndash; Header &ndash;&gt;-->
+<!--<div class="ui secondary pointing menu">-->
+<!--  &lt;!&ndash; 로그인과 회원가입 버튼에 데이터-modal 속성 추가 &ndash;&gt;-->
+<!--  <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>-->
+<!--  <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>-->
+<!--  <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">회원탈퇴</a>-->
+<!--  <a class="item" data-modal="#profileModal" id="profile-btn" href="#0" >프로필</a>-->
+<!--  <a class="item" id="logout-btn" href="#0">로그아웃</a>-->
+<!--  &lt;!&ndash;  <div id="token-expiry">로그인 만료 시간 : <span id="expiry-time"></span></div>&ndash;&gt;-->
+<!--</div>-->
+
+<button id="user-icon" class="ui icon button">
+  <i class="user icon"></i>
+</button>
+<div class="ui vertical menu" id="user-menu">
+   <div class="header" id="menu-header">User</div>
+   <div class="menu">
+     <a class="item" data-modal="#loginModal" id="login-btn" href="#0">
+        <i class="sign-in icon"></i> 로그인
+     </a>
+     <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">
+       <i class="user plus icon"></i> 회원가입
+     </a>
+    <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">
+      <i class="user circle icon"></i> 프로필
+    </a>
+    <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
+      <i class="sign-out icon"></i> 로그아웃
+    </a>
+     <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">
+       <i class="user times icon"></i> 회원탈퇴
+     </a>
+   </div>
+  <div class="divider"></div>
+</div>
+
+<!-- 로그아웃 모달 창 -->
+<div class="ui basic modal" id="logout-confirm-modal">
+  <div class="ui icon header">
+    <i class="sign-out icon"></i>
+    로그아웃 확인
+  </div>
+  <div class="content">
+    <p>로그아웃 하시겠습니까?</p>
+  </div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      취소
+    </div>
+    <div class="ui green ok inverted button">
+      <i class="checkmark icon"></i>
+      확인
+    </div>
+  </div>
 </div>
 
 <!-- 프로필 정보 모달 창 -->
-<div class="ui modal" id="profileModal">
+<div  id="profileModal" class="ui modal">
   <i class="close icon"></i>
   <div class="header">
     개인정보
@@ -34,28 +98,40 @@
         <label>아이디</label>
         <input type="text" name="profile-usernameInput" placeholder="아이디" readonly>
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>비밀번호</label>
         <input type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>닉네임</label>
         <input type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>이메일</label>
         <input type="email" name="profile-emailInput" placeholder="이메일" readonly>
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>전화번호</label>
         <input type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
-      </div>
-      <div class="field">
-        <label>프로필 이미지</label>
-        <input type="file" name="profile-imageInput">
-      </div>
+        <div style="margin-top: 50px;"></div>
+        <div class="field">
+          <label>프로필 이미지</label>
+          <div class="input-file-container">
+          <input type="file" id="profile-imageInput" name="profile-imageInput" style="display: none;">
+          <label for="profile-imageInput">
+            <i class="images icon"></i>
+          </label>
+          <span id="selectedFileName"></span>
+          </div>
+        </div>
+        <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>반경 설정</label>
+        <div class = "location-input-button-container">
         <select class="ui dropdown" id="radiusSelect">
           <option value="1">1km</option>
           <option value="2">2km</option>
@@ -64,14 +140,16 @@
           <option value="5">5km</option>
           <option value="custom">직접 입력</option>
         </select>
-        <input type="number" id="customRadiusInput" placeholder="반경 (km)" style="display:none;">
+          <button class="ui button" id="setLocation">위치 설정</button>
+        </div>
       </div>
     </div>
-    <button class="ui button" id="setLocation">위치 설정</button>
+      <div style="margin-top: 30px;"></div>
+      <p></p>
     <a href="/" class="cd-form-bottom-message">Back to log-in</a>
   </div>
 </div>
-
+</div>
 
 <!-- Signup Form -->
 <div class="ui segment" id="modalContainer">
@@ -81,24 +159,29 @@
         <label>아이디</label>
         <input type="text" id="signup-usernameInput" placeholder="아이디">
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>비밀번호</label>
         <input type="password" id="signup-passwordInput" placeholder="비밀번호">
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>닉네임</label>
         <input type="text" id="signup-nicknameInput" placeholder="닉네임">
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>이메일</label>
         <input type="email" id="signup-emailInput" placeholder="이메일">
       </div>
+      <div style="margin-top: 50px;"></div>
       <div class="field">
         <label>전화번호</label>
         <div class="ui action input">
           <input type="text" id="signup-phoneNumberInput" placeholder="전화번호">
           <button class="ui button" id="signup-sendVerificationCode">인증번호 전송</button>
         </div>
+        <div style="margin-top: 50px;"></div>
       </div>
       <div class="field">
         <label>인증번호</label>
@@ -107,19 +190,31 @@
           <button class="ui button" id="signup-verificationCode">인증번호 확인</button>
         </div>
       </div>
-      <div class="field">
-        <label>프로필 이미지</label>
-        <input type="file" name="profileImage">
-      </div>
+      <div style="margin-top: 50px;"></div>
+        <div class="field">
+          <label>프로필 이미지</label>
+          <div class="input-file-container">
+            <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
+            <label for="signup-profileImageInput">
+              <i class="images icon"></i>
+            </label>
+            <span id="signup-selectedFileName"></span>
+          </div>
+        </div>
+      <div style="margin-top: 30px;"></div>
+      <div class="signup-center-content">
       <div class="inline field">
         <div class="ui checkbox">
           <input type="checkbox" id="accept-terms">
           <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
         </div>
       </div>
+      <div style="margin-top: 30px;"></div>
       <button class="ui button" type="submit">회원가입</button>
+      <div style="margin-top: 50px;"></div>
+      <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+      </div>
     </form>
-    <a href="/" class="cd-form-bottom-message">Back to log-in</a>
   </div>
 </div>
 
@@ -136,15 +231,20 @@
         <input type="password" name="login-passwordInput" placeholder="비밀번호">
       </div>
       <div class="login-buttons">
-        <button class="ui button primary-button" type="submit">로그인</button>
+        <button class="ui button" type="submit">로그인</button>
+          <div class="social-login-text">소셜로그인</div>
+        <div class="custom-button-container">
         <button class="custom-image-button" id="naverLogin">
-          <img src="/img/loginButton/naverButton.png" class="icon-img">
+          <img src="/img/loginButton/naverButton.png" class="custom-icon-img">
         </button>
         <button class="custom-image-button" id="kakaoLogin">
-          <img src="/img/loginButton/kakaoButton.png" class="icon-img">
+          <img src="/img/loginButton/kakaoButton.png" class="custom-icon-img">
         </button>
+        </div>
       </div>
     </form>
+    <div style="margin-top: 50px;"></div>
+    <div class="divider"></div>
     <div class="login-footer">
       <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
       <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
@@ -193,18 +293,40 @@
         <div style="margin-top: 50px;"></div>
       </div>
       <!-- 회원탈퇴 최종 확인 -->
-      <div class="field">
-        <div class="ui checkbox">
-          <input type="checkbox" id="confirmDeactivation">
-          <label>정말 회원탈퇴를 진행하시겠습니까?</label>
-        </div>
-      </div>
-      <div style="margin-top: 50px;"></div>
+<!--      <div class="field">-->
+<!--        <div class="ui checkbox">-->
+<!--          <input type="checkbox" id="confirmDeactivation">-->
+<!--          <label>정말 회원탈퇴를 진행하시겠습니까?</label>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div style="margin-top: 30px;"></div>
       <!-- 회원탈퇴 버튼 -->
-      <button class="ui button red" id="finalDeactivationButton" disabled>회원탈퇴</button>
+      <button class="ui button red" id="deactivationButton">회원탈퇴</button>
     </form>
-    </form>
+    <div style="margin-top: 30px;"></div>
     <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+  </div>
+</div>
+
+<!-- 회원탈퇴 확인 모달 창 -->
+<div class="ui modal"  id="deactivationConfirmModal">
+  <i class="close icon"></i>
+  <div class="header">
+    회원탈퇴 확인
+  </div>
+  <div class="content">
+    <p>정말 회원탈퇴를 진행하시겠습니까?</p>
+    <p>회원탈퇴 시 모든 데이터가 삭제되며, 로그인이 불가능합니다.</p>
+    <!-- 확인 체크박스 -->
+    <div class="ui checkbox">
+      <input type="checkbox" id="confirmDeactivation">
+      <label>위 내용을 확인하였으며, 회원탈퇴에 동의합니다.</label>
+    </div>
+  </div>
+  <div class="actions">
+    <!-- 확인 및 취소 버튼 -->
+    <button class="ui button red" id="confirmDeactivationButton" disabled>회원탈퇴</button>
+    <button class="ui button" id="cancelDeactivation">취소</button>
   </div>
 </div>
 
