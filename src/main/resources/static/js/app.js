@@ -158,13 +158,7 @@ $(document).ready(function() {
 				$("input[name='profile-nicknameInput']").val(response.nickname);
 				$("input[name='profile-emailInput']").val(response.email);
 				$("input[name='profile-phoneNumberInput']").val(response.phoneNumber);
-
-				// 비밀번호 필드를 *로 변환
-				var passwordField = $("input[name='profile-passwordInput']");
-				passwordField.data('original-password', response.password)
-				var maskedLength = response.password.length;
-				passwordField.attr('type', 'text');
-				passwordField.val('*'.repeat(maskedLength));
+				$("input[name='profile-passwordInput']").val(response.password);
 
 				// 위치 정보 필드 처리
 				currentLatitude = response.latitude;
@@ -897,10 +891,8 @@ $(document).ready(function() {
 
 	// 프로필 정보 저장 버튼 클릭 이벤트
 	$('#saveProfile').click(function () {
-		// 원래 비밀번호로 변환
-		var originalPassword = $("input[name='profile-passwordInput']").data('original-password');
-		var profileImage = $('input[name="profile-imageInput"]')[0];
-
+		var newPassword = $("input[name='profile-passwordInput']").val();
+		var profileImage = $('input[name="profile-ImageInput"]')[0];
 		var formData = new FormData();
 
 		if (profileImage && profileImage.files.length > 0) {
@@ -921,7 +913,9 @@ $(document).ready(function() {
 		}
 
 		function makeAjaxCall() {
-			formData.append('password', originalPassword);
+			if (newPassword !== "********") {
+				formData.append('password', newPassword);
+			}
 			formData.append('nickname', $("input[name='profile-nicknameInput']").val());
 			formData.append('email', $("input[name='profile-emailInput']").val());
 			formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
