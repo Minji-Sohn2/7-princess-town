@@ -172,11 +172,7 @@ public class AuthenticationService {
                 headers.add(JwtUtil.AUTHORIZATION_HEADER, token);
                 log.info("header info : " + headers);
 
-                // userId 받아오기
-                Long userId = tempLoginUser.getUserId(); // userId 추출
-                log.info("userId : " + userId);
-
-                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", userId));
+                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", tempLoginUser));
 
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패"));

@@ -153,14 +153,14 @@ public class KakaoService {
 
     // 필요시에 회원가입하는 메서드
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
-        String kakaoUsername = kakaoUserInfo.getUsername() + "_kakaoUsername_";
+        String kakaoUsername = kakaoUserInfo.getUsername() + "_KakaoUser_";
         User kakaoUser = kakaoRepository.findByUsernameStartingWith(kakaoUsername);
         log.info("user : " + kakaoUser);
 
         if (kakaoUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
-            String uniqueNickname = kakaoUserInfo.getNickname() + "_KakaoNickname_" + UUID.randomUUID();
-            String uniqueUsername = kakaoUserInfo.getUsername() + "_KakaoUsername_" + UUID.randomUUID();
+            String uniqueNickname = kakaoUserInfo.getNickname() + "_Kakao";
+            String uniqueUsername = kakaoUserInfo.getUsername() + "_KakaoUser_" + UUID.randomUUID();
             kakaoUserInfo.setNickname(uniqueNickname);
             kakaoUserInfo.setUsername(uniqueUsername);
 

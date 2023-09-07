@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,9 +29,9 @@ public class NaverController {
 
         ApiResponseDto apiResponseBody = responseDto.getBody();
         User userData = (User) apiResponseBody.getData();
-        String username = userData.getUsername();
+        String nickname = userData.getNickname();
         Long userId = userData.getUserId();
-        log.info("네이버서버에서 보내는 username : " + username);
+        log.info("네이버서버에서 보내는 nickname : " + nickname);
         log.info("네이버서버에서 보내는 userId : " + userId);
 
         HttpHeaders apiRespnseHeader = responseDto.getHeaders();
@@ -41,7 +42,8 @@ public class NaverController {
         }
         log.info("네이버서버에서 보내는 token : " + token);
 
-        return "redirect:/view/login-page?success=naver&username=" + username + "&userId=" + userId + "&token=" + token;
+        String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
+        return "redirect:/view/login-page?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
     }
 }
 
