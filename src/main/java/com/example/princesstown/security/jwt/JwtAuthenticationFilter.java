@@ -2,6 +2,7 @@ package com.example.princesstown.security.jwt;
 
 import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.dto.response.LoginResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -67,15 +68,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // username,userId 받아오기
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         Long userId = ((UserDetailsImpl) authResult.getPrincipal()).getUserId();
+        String nickname = ((UserDetailsImpl) authResult.getPrincipal()).getNickname();
         log.info("Authenticated username: " + username);
         log.info("Authenticated userId : " + userId);
+
+        LoginResponseDto responseDto = new LoginResponseDto(userId, nickname);
 
         // JWT 생성 후 Response 객체의 헤더에 추가함
         String token = jwtUtil.createToken(username);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         // 로그인 성공시 상태코드,메세지 반환
-        ApiResponseDto apiResponseDto = new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", userId);
+        ApiResponseDto apiResponseDto = new ApiResponseDto(HttpStatus.OK.value(), "로그인 성공", responseDto);
         String json = new ObjectMapper().writeValueAsString(apiResponseDto);
 
         response.setContentType("application/json");
