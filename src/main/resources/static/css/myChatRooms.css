@@ -1,5 +1,6 @@
 body {
-    font-family: Arial, sans-serif;
+    background-color: #fafafa;  /* 좀 더 밝은 배경색으로 설정 */
+    font-family: 'Noto Sans KR', sans-serif;
     margin: 0;
     padding: 0;
 }

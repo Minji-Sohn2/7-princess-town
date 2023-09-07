@@ -4,20 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>게시판 및 인기검색어</title>
+    <title>토마토</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+        }
+
+        /* 상단바 */
+        #header {
+            background-color: #3f3d6c;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        #header-info {
+            display: flex;
+            justify-content: space-between; /* header-name 과 header-buttons 정렬 */
+            align-items: center;
+            width: 100%;
+        }
+
+        #header-name {
+            display: flex;
+            align-items: center;
+        }
+
+        #header-name h2 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            float: right;
+        }
+
+        .header-button {
+            background-color: #ceace1;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+
+            margin-right: 0.8rem;
         }
 
         .content {
             display: flex;
-            width: 50%;
+            padding-top: 10px;
         }
 
         .sidebar {
@@ -98,6 +137,20 @@
     </style>
 </head>
 <body>
+<!--  상단바  -->
+<div id="header">
+    <div id="header-info">
+        <div id="header-name">
+            <h2>토마토<span class="badge badge-info badge-pill"></span></h2>
+        </div>
+
+        <div class="header-buttons">
+            <a class="header-button myPage" id="mainPageButton" href="/view/mainpage">메인페이지</a>
+            <button class="header-button logout" id="logoutButton" @click="logout">로그아웃</button>
+        </div>
+    </div>
+</div>
+<!--  상단바 끝  -->
 <div class="content">
     <div class="sidebar">
         <div class="box">

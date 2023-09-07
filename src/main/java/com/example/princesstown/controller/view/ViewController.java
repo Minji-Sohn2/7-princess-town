@@ -2,10 +2,11 @@ package com.example.princesstown.controller.view;
 
 import com.example.princesstown.dto.response.BoardResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
+import com.example.princesstown.dto.response.SimpleProfileDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.board.BoardService;
 import com.example.princesstown.service.post.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +19,17 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/view")
+@RequiredArgsConstructor
 public class ViewController {
 
     private final BoardService boardService;
     private final PostService postService;
 
-    @Autowired
-    public ViewController(BoardService boardService, PostService postService) {
-        this.boardService = boardService;
-        this.postService = postService;
-    }
+//    @Autowired
+//    public ViewController(BoardService boardService, PostService postService) {
+//        this.boardService = boardService;
+//        this.postService = postService;
+//    }
 
     //메인페이지
     @GetMapping("/mainpage")
@@ -163,5 +165,12 @@ public class ViewController {
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
         return "chat/chatRoomDetail";
+    }
+
+    @GetMapping("/mypage")
+    public String getMyPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        SimpleProfileDto profileDto = new SimpleProfileDto(userDetails.getUser());
+        model.addAttribute("profile", profileDto);
+        return "myPage";
     }
 }

@@ -3,7 +3,7 @@ package com.example.princesstown.dto.response;
 import com.example.princesstown.entity.Post;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 public class PostResponseDto {
@@ -15,8 +15,10 @@ public class PostResponseDto {
     private Long likeCnt; // 좋아요 수
     private int viewCount;
     private String postImageUrl;
-    private LocalDateTime createdAt; // 게시글 생성시간
-    private LocalDateTime modifiedAt; // 게시글 수정시간
+//    private LocalDateTime createdAt; // 게시글 생성시간
+    private String createdAt; // 게시글 생성시간
+//    private LocalDateTime modifiedAt; // 게시글 수정시간
+    private String modifiedAt; // 게시글 수정시간
 //    private List<CommentResponseDto> commentList; // 게시글에 포함된 댓글목록
 
 
@@ -29,8 +31,10 @@ public class PostResponseDto {
         this.likeCnt = post.getLikeCnt();
         this.viewCount = post.getViewCount();
         this.postImageUrl = post.getPostImageUrl();
-        this.createdAt = post.getCreatedAt();
-        this.modifiedAt = post.getModifiedAt();
+//        this.createdAt = post.getCreatedAt();
+        this.createdAt = post.getCreatedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
+//        this.modifiedAt = post.getModifiedAt();
+        this.modifiedAt = post.getModifiedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
 
     }
 }

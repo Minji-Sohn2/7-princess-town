@@ -1,6 +1,10 @@
 [v-cloak] {
     display: none;
 }
+body {
+    background-color: #fafafa;
+    font-family: 'Noto Sans KR', sans-serif;
+}
 
 /* 상단바 */
 #header {
@@ -90,7 +94,6 @@
 .message-container {
     display: flex;
     align-items: center;
-    /* Add any additional styling you need */
 }
 
 .sender-profile {
@@ -98,17 +101,17 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-right: 10px; /* Adjust spacing as needed */
+    margin-right: 10px;
 }
 
 .user-img {
-    width: 30px; /* Adjust image size as needed */
-    height: 30px; /* Adjust image size as needed */
-    margin-right: 10px; /* Adjust spacing as needed */
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
 }
 
 .sender-message-info {
-    flex: 9; /* Allow the message info to take remaining space */
+    flex: 9;
 }
 
 /* 입력칸 */
