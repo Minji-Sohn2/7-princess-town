@@ -101,7 +101,7 @@ public class ViewController {
         postService.incrementViewCount(postId); // 이 부분 추가
         model.addAttribute("post", post);
 
-        return "detailpost"; // 이 부분은 HTML 템플릿의 이름과 일치해야 합니다.
+        return "postDetails"; // 이 부분은 HTML 템플릿의 이름과 일치해야 합니다.
     }
 
     // 게시판 선택 조회 API

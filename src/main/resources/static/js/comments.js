@@ -13,7 +13,7 @@ function maskingName(username) {
             "*".repeat(Math.max(0, username.length - 5)) +
             username.slice(-3)
         );
-    } else if (username.length >= 4){
+    } else if (username.length >= 4) {
         return (
             username.slice(0, 2) +
             "*".repeat(Math.max(0, username.length - 3)) +
@@ -61,7 +61,7 @@ if (token) {
     })
 
     const tokenData = payload.exp;
-    const expirationTimeInMillis= tokenData * 1000;
+    const expirationTimeInMillis = tokenData * 1000;
     const timeUntilExpiration = expirationTimeInMillis - Date.now();
     setTimeout(deleteToken, timeUntilExpiration);
 
@@ -91,7 +91,7 @@ $.ajax({
     success: function (data) {
         const commentsList = data.result.comments.length;
 
-        $('.comment-h2').text("댓글 ( 댓글수 : " + commentsList + " )");
+        $('.comment-h5').text(" ( 댓글수 : " + commentsList + " )");
     }
 })
 
@@ -136,15 +136,15 @@ $(document).ready(function () {
             url: `/api/posts/${postId}/comments?page=${page}&size=${pageSize}`,
             method: "GET",
             dataType: "json",
-            beforeSend: function() {
+            beforeSend: function () {
                 $('#eventLoading').show();
-                $('body').on('scroll touchmove mousewheel', function(e) {
+                $('body').on('scroll touchmove mousewheel', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     return false;
                 });
             },
-            complete:function() {
+            complete: function () {
                 $('#eventLoading').hide();
                 $('body').off('scroll touchmove mousewheel')
             },
@@ -554,15 +554,15 @@ $(document).ready(function () {
                 content: content,
                 emoji: img
             }),
-            beforeSend: function() {
+            beforeSend: function () {
                 $('#eventLoading').show();
-                $('body').on('scroll touchmove mousewheel', function(e) {
+                $('body').on('scroll touchmove mousewheel', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     return false;
                 });
             },
-            complete:function() {
+            complete: function () {
                 $('#eventLoading').hide();
                 $('body').off('scroll touchmove mousewheel')
             },
@@ -600,7 +600,7 @@ $(document).ready(function () {
                     success: function (data) {
                         const commentsList = data.result.comments.length;
 
-                        $('.comment-h2').text("댓글 ( 댓글수 : " + commentsList + " )");
+                        $('.comment-h5').text(" ( 댓글수 : " + commentsList + " )");
                     }
                 })
             },
@@ -656,15 +656,15 @@ $(document).ready(function () {
                         content: content,
                         emoji: img
                     }),
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#eventLoading').show();
-                        $('body').on('scroll touchmove mousewheel', function(e) {
+                        $('body').on('scroll touchmove mousewheel', function (e) {
                             e.preventDefault();
                             e.stopPropagation();
                             return false;
                         });
                     },
-                    complete:function() {
+                    complete: function () {
                         $('#eventLoading').hide();
                         $('body').off('scroll touchmove mousewheel')
                     },
@@ -733,15 +733,15 @@ $(document).ready(function () {
                         "Content-Type": "application/json",
                         "Authorization": token
                     },
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#eventLoading').show();
-                        $('body').on('scroll touchmove mousewheel', function(e) {
+                        $('body').on('scroll touchmove mousewheel', function (e) {
                             e.preventDefault();
                             e.stopPropagation();
                             return false;
                         });
                     },
-                    complete:function() {
+                    complete: function () {
                         $('#eventLoading').hide();
                         $('body').off('scroll touchmove mousewheel')
                     },
@@ -784,7 +784,7 @@ $(document).ready(function () {
                             success: function (data) {
                                 const commentsList = data.result.comments.length;
 
-                                $('.comment-h2').text("댓글 ( 댓글수 : " + commentsList + " )");
+                                $('.comment-h5').text(" ( 댓글수 : " + commentsList + " )");
                             }
                         })
                     },
@@ -831,15 +831,15 @@ function replyCreate(postId, commentId) {
             content: createReplyValue,
             emoji: img
         }),
-        beforeSend: function() {
+        beforeSend: function () {
             $('#eventLoading').show();
-            $('body').on('scroll touchmove mousewheel', function(e) {
+            $('body').on('scroll touchmove mousewheel', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
             });
         },
-        complete:function() {
+        complete: function () {
             $('#eventLoading').hide();
             $('body').off('scroll touchmove mousewheel')
         },
@@ -968,15 +968,15 @@ function replyEdit(postId, commentId, replyId) {
                     content: replyContexts,
                     emoji: img
                 }),
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#eventLoading').show();
-                    $('body').on('scroll touchmove mousewheel', function(e) {
+                    $('body').on('scroll touchmove mousewheel', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
                     });
                 },
-                complete:function() {
+                complete: function () {
                     $('#eventLoading').hide();
                     $('body').off('scroll touchmove mousewheel')
                 },
@@ -1038,15 +1038,15 @@ function replyDelete(postId, commentId, replyId) {
                     "Authorization": token
                 },
                 data: {},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#eventLoading').show();
-                    $('body').on('scroll touchmove mousewheel', function(e) {
+                    $('body').on('scroll touchmove mousewheel', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
                     });
                 },
-                complete:function() {
+                complete: function () {
                     $('#eventLoading').hide();
                     $('body').off('scroll touchmove mousewheel')
                 },

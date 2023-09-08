@@ -47,24 +47,45 @@ body {
     padding-bottom: 10px;
 }
 
+/* footer */
+.footer {
+    color: grey;
+    text-align: center;
+    border-top: 1px solid black;
+    width: 100%;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    background-color: #242428;
+}
+
+.footer > p {
+    font-family: 'Gugi', cursive;
+    font-size: 30px;
+    margin-top: 50px;
+}
+
+.footer > div {
+    margin: auto;
+}
+
 /* 사용자 메뉴 */
 .ui.form .field > label {
     margin-bottom: 8px;
     font-weight: bold;
-    color: #555;  /* 라벨의 색상을 약간 어둡게 설정 */
+    color: #555; /* 라벨의 색상을 약간 어둡게 설정 */
 }
 
 .ui.menu {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;  /* 메뉴의 배경색을 흰색으로 설정 */
+    background-color: #fff; /* 메뉴의 배경색을 흰색으로 설정 */
 }
 
 .ui.button:hover {
-    background-color: #ddd;  /* 버튼의 배경색을 호버 시 약간 어둡게 설정 */
+    background-color: #ddd; /* 버튼의 배경색을 호버 시 약간 어둡게 설정 */
 }
 
 .ui.button:active {
-    transform: scale(0.98);  /* 버튼을 클릭할 때 약간 축소되는 효과 설정 */
+    transform: scale(0.98); /* 버튼을 클릭할 때 약간 축소되는 효과 설정 */
 }
 
 .cd-form-bottom-message {
@@ -101,16 +122,17 @@ body {
 /* 입력창과 버튼을 같은 라인에 배치 */
 .field .location-input-button-container {
     display: flex;
-    align-items: center;  /* 세로 방향으로 중앙 정렬 */
-    gap: 10px;  /* 요소들 사이의 간격 */
+    align-items: center; /* 세로 방향으로 중앙 정렬 */
+    gap: 10px; /* 요소들 사이의 간격 */
 }
 
 .field .location-input-button-container select,
 .field .location-input-button-container button {
-    margin: 0;  /* 기본 마진 제거 */
+    margin: 0; /* 기본 마진 제거 */
 }
+
 .field .input-button-container select.ui.dropdown {
-    width: 150px;  /* 원하는 너비로 설정 */
+    width: 150px; /* 원하는 너비로 설정 */
 }
 
 
@@ -131,30 +153,16 @@ body {
 .ui.modal {
     background-color: #fff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    border-radius: 5px;  /* 모달의 모서리를 약간 둥글게 설정 */
-    overflow: hidden;  /* 모달의 내부 요소가 넘칠 때 숨김 처리 */
+    border-radius: 5px; /* 모달의 모서리를 약간 둥글게 설정 */
+    overflow: hidden; /* 모달의 내부 요소가 넘칠 때 숨김 처리 */
 }
 
 .ui.modal .header {
-    background-color: #f6f6f6;  /* 모달의 헤더 부분 배경색 설정 */
-    border-bottom: 1px solid #e5e5e5;  /* 헤더 아래에 경계선 추가 */
-    padding: 15px;  /* 헤더 내부 패딩 설정 */
-    font-weight: bold;  /* 헤더 텍스트 굵게 설정 */
+    background-color: #f6f6f6; /* 모달의 헤더 부분 배경색 설정 */
+    border-bottom: 1px solid #e5e5e5; /* 헤더 아래에 경계선 추가 */
+    padding: 15px; /* 헤더 내부 패딩 설정 */
+    font-weight: bold; /* 헤더 텍스트 굵게 설정 */
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* 로그인 관련 CSS */
@@ -169,7 +177,7 @@ body {
 /* 로그인 모달 스타일 */
 .ui.segment.modal#loginModal {
     max-width: 380px; /* 모달의 최대 너비 설정 */
-    min-height: 600px;  /* 최소 높이 설정 */
+    min-height: 600px; /* 최소 높이 설정 */
     margin: 50px auto; /* 중앙 정렬 */
     border-radius: 10px; /* 모서리 둥글게 */
     justify-content: center;
@@ -177,7 +185,7 @@ body {
 
 .login-container {
     max-width: 380px;
-    min-height: 600px;  /* 최소 높이 설정 */
+    min-height: 600px; /* 최소 높이 설정 */
     margin: 0 auto;
     padding: 25px;
     border-radius: 10px; /* 모서리 둥글게 */
@@ -263,6 +271,7 @@ body {
     margin-right: 20px;
 
 }
+
 .custom-image-button:last-child {
     margin-right: 0; /* 마지막 버튼에는 오른쪽 마진을 0으로 설정 */
 }
@@ -285,25 +294,6 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*회원가입 관련 css*/
 #signupModal {
     max-width: 450px; /* 최대 가로 길이를 450px로 설정 */
@@ -311,26 +301,26 @@ body {
 }
 
 #signupModal .ui.form {
-    margin: 0 auto;    /* 중앙 정렬 */
-    padding: 20px;     /* 내부 패딩 추가 */
-    min-height: 700px;  /* 최소 높이 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px; /* 내부 패딩 추가 */
+    min-height: 700px; /* 최소 높이 설정 */
     width: 450px;
 }
 
 
 label[for="signup-profileImageInput"] {
     display: inline-block; /* 인라인 블록 요소로 설정 */
-    width: 100px;          /* 너비 설정 */
-    height: 50px;          /* 높이 설정 */
-    padding-top: 10px;         /* 내부 패딩 설정 */
-    text-align: center;    /* 텍스트를 중앙에 정렬 */
-    cursor: pointer;           /* 마우스 포인터를 손가락 모양으로 변경 */
+    width: 100px; /* 너비 설정 */
+    height: 50px; /* 높이 설정 */
+    padding-top: 10px; /* 내부 패딩 설정 */
+    text-align: center; /* 텍스트를 중앙에 정렬 */
+    cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
 
 }
 
 label[for="signup-profileImageInput"] .icon {
-    font-size: 20px;         /* 아이콘의 크기 조절 */
-    vertical-align: middle;  /* 아이콘을 수직 중앙에 위치시킵니다 */
+    font-size: 20px; /* 아이콘의 크기 조절 */
+    vertical-align: middle; /* 아이콘을 수직 중앙에 위치시킵니다 */
     margin-right: 90px;
 }
 
@@ -346,52 +336,31 @@ label[for="signup-profileImageInput"] .icon {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*프로필 관련 css*/
 .ui.modal#profileModal {
-    width:450px;
+    width: 450px;
 }
 
 .ui.modal#profileModal .content {
-    margin: 0 auto;    /* 중앙 정렬 */
-    padding: 20px;     /* 내부 패딩 추가 */
-    min-height: 800px;  /* 최소 높이 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px; /* 내부 패딩 추가 */
+    min-height: 800px; /* 최소 높이 설정 */
     width: 450px;
-    overflow-y: auto;   /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
+    overflow-y: auto; /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
 }
 
 label[for="profile-imageInput"] {
     display: inline-block; /* 인라인 블록 요소로 설정 */
-    width: 100px;          /* 너비 설정 */
-    height: 50px;          /* 높이 설정 */
-    padding-top: 10px;         /* 내부 패딩 설정 */
-    text-align: center;    /* 텍스트를 중앙에 정렬 */
-    cursor: pointer;           /* 마우스 포인터를 손가락 모양으로 변경 */
+    width: 100px; /* 너비 설정 */
+    height: 50px; /* 높이 설정 */
+    padding-top: 10px; /* 내부 패딩 설정 */
+    text-align: center; /* 텍스트를 중앙에 정렬 */
+    cursor: pointer; /* 마우스 포인터를 손가락 모양으로 변경 */
 }
 
 label[for="profile-imageInput"] .icon {
-    font-size: 20px;         /* 아이콘의 크기 조절 */
-    vertical-align: middle;  /* 아이콘을 수직 중앙에 위치시킵니다 */
+    font-size: 20px; /* 아이콘의 크기 조절 */
+    vertical-align: middle; /* 아이콘을 수직 중앙에 위치시킵니다 */
     margin-right: 90px;
 }
 
@@ -416,78 +385,26 @@ label[for="profile-imageInput"] .icon {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* 회원탈퇴 관련 css*/
 #deactivationModal .ui.segment {
-    border: none;              /* 경계선 제거 */
-    box-shadow: none;          /* 그림자 제거 */
+    border: none; /* 경계선 제거 */
+    box-shadow: none; /* 그림자 제거 */
     background-color: transparent; /* 배경색 제거 */
-    margin: 0 auto;    /* 중앙 정렬 */
-    padding: 20px;     /* 내부 패딩 추가 */
-    min-height: 600px;  /* 최소 높이 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 20px; /* 내부 패딩 추가 */
+    min-height: 600px; /* 최소 높이 설정 */
     width: 400px;
-    overflow-y: auto;   /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
+    overflow-y: auto; /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
 }
 
 #deactivationModal {
-    width:500px;
-    min-height: 600px;  /* 최소 높이 설정 */
+    width: 500px;
+    min-height: 600px; /* 최소 높이 설정 */
 }
 
 #deactive-deactivationCodeInput {
     width: 277px; /* 원하는 크기로 조정하세요. */
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #user-menu {
@@ -528,7 +445,7 @@ label[for="profile-imageInput"] .icon {
 
 /* 메뉴 헤더 스타일 */
 #user-menu .header {
-    font-family : 'DalseoHealing';
+    font-family: 'DalseoHealing';
     padding: 8px;
     margin-left: 7px;
     font-weight: bold;
@@ -537,7 +454,7 @@ label[for="profile-imageInput"] .icon {
 
 /* 메뉴 항목 스타일 */
 #user-menu .menu a.item {
-    font-family : 'DalseoHealing';
+    font-family: 'DalseoHealing';
     color: #333;
     font-size: 12px;
     padding: 9px 16px;
@@ -563,7 +480,7 @@ label[for="profile-imageInput"] .icon {
 
 /* styles.css */
 .welcome-msg {
-    font-family : 'DalseoHealing';
+    font-family: 'DalseoHealing';
     font-size: 16px;
     font-weight: bold;
     color: #333;
