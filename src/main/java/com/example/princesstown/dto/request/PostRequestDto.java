@@ -17,5 +17,7 @@ public class PostRequestDto {
     private MultipartFile newPostImage;
 
     private String postImageUrl; // 이미지 URL
+    private Double latitude;
+    private Double longitude;
 
 }

@@ -15,4 +15,5 @@ public class ProfileEditRequestDto {
     private MultipartFile profileImage;
     private Double latitude;
     private Double longitude;
+    private Double radius; // 수정시 설정한 반경값
 }

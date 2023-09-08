@@ -1,7 +1,6 @@
 package com.example.princesstown.controller.post;
 
 import com.example.princesstown.dto.comment.RestApiResponseDto;
-import com.example.princesstown.dto.request.PostByLocationRequestDto;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
@@ -37,10 +36,10 @@ public class PostController {
     }
 
     // 위치반경 내 게시글 조회
-    @GetMapping("/auth/location/posts/{id}")
-    public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
-        return locationService.getPostsInRadius(id, requestDto);
-    }
+//    @PostMapping("/location/posts/{id}")
+//    public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
+//        return locationService.getPostsInRadius(id, requestDto);
+//    }
 
     //선택 게시판 게시글 전체 조회
     @GetMapping("/boards/{boardId}/posts")
@@ -103,6 +102,7 @@ public class PostController {
                 return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패했습니다."));
             }
         }
+
 
         postService.createPost(postRequestDto, userDetails.getUser(), boardId, postImage);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));
