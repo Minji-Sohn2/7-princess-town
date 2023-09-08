@@ -32,6 +32,10 @@ public class UserDetailsImpl implements UserDetails {
         return user.getNickname();
     }
 
+    public String getProfileImage() {
+        return user.getProfileImage();
+    }
+
     public Long getUserId() {
         return user.getUserId();
     }
