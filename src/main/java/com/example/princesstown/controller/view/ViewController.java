@@ -31,7 +31,7 @@ public class ViewController {
 
     //메인페이지
     @GetMapping("/mainpage")
-    public String viewMainPage(Model model) {
+    public String viewMainPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         //게시판 목록
         List<BoardResponseDto> boardList = boardService.getBoard();
         model.addAttribute("boardList", boardList);
@@ -40,9 +40,17 @@ public class ViewController {
         List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
         model.addAttribute("topPosts", topPosts);
 
-        //전체 게시글
-        List<PostResponseDto> posts = postService.getPosts();
-        model.addAttribute("posts", posts);
+        // 로그인한 경우
+        if (userDetails != null) {
+            // 위치 반경 내 게시글
+            Long userId = userDetails.getUser().getUserId();
+            List<PostResponseDto> nearbyPosts = postService.getPostsAroundUser(userId);
+            model.addAttribute("posts", nearbyPosts);
+        } else {
+            // 로그인하지 않은 경우
+            List<PostResponseDto> allPosts = postService.getPosts();
+            model.addAttribute("posts", allPosts);
+        }
 
         return "mainpage";
     }
