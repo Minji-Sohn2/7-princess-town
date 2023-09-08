@@ -155,11 +155,6 @@ const vm = new Vue({
         handleConnectionError() {
             alert("서버 연결에 실패 하였습니다. 다시 접속해 주세요.");
             location.href = "/chat/room";
-        },
-        logout() {
-            alert('로그아웃');
-            Cookies.remove('Authorization', {path: '/'});
-            window.location.href = "/view/mainpage";
         }
     }
 });

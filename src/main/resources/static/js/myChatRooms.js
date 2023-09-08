@@ -163,7 +163,7 @@ document.getElementById('registerNewChatRoom').addEventListener('click', functio
 // 새로운 채팅방 정보 전송
 function createNewChatRoom(newChatRoomName) {
 
-    const memberIdList = selectedUserIds.map(userId => ({ userId }));
+    const memberIdList = selectedUserIds.map(userId => ({userId}));
     console.log(memberIdList);
     let data = {
         "chatRoomName": newChatRoomName,
@@ -234,19 +234,9 @@ function enterRoom(roomId, roomName) {
     location.href = "/view/chatRooms/" + roomId;
 }
 
-// -----------------------로그아웃--------------------------
-document.getElementById('logoutButton').addEventListener('click', logout);
-
-function logout() {
-    alert('로그아웃');
-    Cookies.remove('Authorization', {path: '/'});
-    window.location.href = "/view/mainpage";
-}
-
 //---------------------- 페이지 로딩 시 -----------------------
 function initializePage() {
     getAllMyRooms();
-    document.getElementById('logoutButton').addEventListener('click', logout);
 }
 
 initializePage();
