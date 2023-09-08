@@ -88,18 +88,12 @@ public class UserService {
 
             // S3에 이미지 업로드
             try {
-                String imageUrl;
-
                 if (requestDto.getProfileImage() != null) {
                     // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
-                    imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
+                   String imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
+                    // 이미지 URL을 설정
+                    user.setProfileImage(imageUrl);
                 }
-//                    // 이미지가 없는 경우 기본 이미지 URL을 설정
-//                    imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
-
-//                // 이미지 URL을 설정
-//                user.setProfileImage(imageUrl);
-
             } catch (IOException e) {
                 // 로깅 또는 적절한 에러 메시지를 반환
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미지 업로드 중 오류가 발생했습니다."));

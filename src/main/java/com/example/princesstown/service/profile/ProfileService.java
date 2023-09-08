@@ -46,8 +46,8 @@ public class ProfileService {
         }
 
         // 위치 업데이트 로직
-        if (requestDto.getLatitude() != null && requestDto.getLongitude() != null) {
-            locationService.updateLocationAndRelatedEntities(userId, requestDto.getLatitude(), requestDto.getLongitude());
+        if (requestDto.getLatitude() != null && requestDto.getLongitude() != null && requestDto.getRadius() != null) {
+            locationService.updateLocationAndRelatedEntities(userId, requestDto.getLatitude(), requestDto.getLongitude(), requestDto.getRadius());
         }
 
         // DB에서 조회한 유저 정보를 가져옴
@@ -99,13 +99,19 @@ public class ProfileService {
 
     // 프로필 이미지 업데이트
     public void UpdateProfileImage(ProfileEditRequestDto requestDto, User user) throws IOException {
-        String imageUrl;
 
-        if (requestDto.getProfileImage() != null) {
-            imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
-            user.setProfileImage(imageUrl);
+        // S3에 이미지 업로드
+        try {
+            if (requestDto.getProfileImage() != null) {
+                // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
+                String imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
+                log.info("imageUrl : " + imageUrl);
+                // 이미지 URL을 설정
+                user.setProfileImage(imageUrl);
+            }
+        } catch (IOException e) {
+            // 로깅 또는 적절한 에러 메시지를 반환
+            log.info(e.getMessage());
         }
-//            imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
-
     }
 }

@@ -152,12 +152,11 @@ public class PostService {
 
         }
 
-//        Long locationId = user.getLocation().getLocationId();
         Post post = new Post(postRequestDto, user, board, 0L, postImageUrl);
-//        post.setLocation(user.getLocation());
         postRepository.save(post);
 
         return new PostResponseDto(post);
+
 
     }
 

@@ -1,7 +1,27 @@
 $(document).ready(function() {
 
+
+	// 아이콘 버튼과 메뉴 요소를 가져옵니다.
+	const userIcon = document.getElementById('user-icon');
+	const userMenu = document.getElementById('user-menu');
+
+	// 아이콘 버튼을 클릭할 때 메뉴를 토글합니다.
+	userIcon.addEventListener('click', () => {
+		console.log("start")
+		userMenu.classList.toggle('active');
+	});
+
+	// 다른 곳을 클릭하면 메뉴를 닫습니다.
+	document.addEventListener('click', (event) => {
+		if (!userIcon.contains(event.target) && !userMenu.contains(event.target)) {
+			userMenu.classList.remove('active');
+		}
+	});
+
 	// 페이지 로드 시 로그인 상태 확인
 	updateLoginStatus();
+
+	updateProfileImage();
 
 	function updateLoginStatus() {
 		var token = Cookies.get('Authorization');
@@ -12,9 +32,9 @@ $(document).ready(function() {
 			$('.item:contains("프로필")').hide();
 			$('.item:contains("회원탈퇴")').hide();
 		} else {
-			var username = Cookies.get('username');
-			if (username) {
-				$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
+			var nickname = Cookies.get('nickname');
+			if (nickname) {
+				$('#menu-header').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 				$('.item:contains("회원가입")').hide();
 				$('.item:contains("로그아웃")').show();
 				$('.item:contains("로그인")').hide();
@@ -24,12 +44,107 @@ $(document).ready(function() {
 		}
 	}
 
+	function updateProfileImage() {
+		var token = Cookies.get('Authorization');
+		var profileImage = Cookies.get('profileImage');
+
+		if (token && profileImage) {
+			$('#profile-picture').attr("src", profileImage).show();
+			$('#user-icon .user.icon').hide();
+		} else {
+			$('#user-icon .user.icon').show();
+		}
+
+		if (token && !profileImage) {
+			$('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
+			$('#user-icon .user.icon').hide();
+		}
+	}
+
+	// 토글 버튼에 클릭 이벤트 핸들러 추가
+	$('#toggleSidebarButton').click(function() {
+		$('.ui.sidebar').sidebar('toggle'); // 사이드바를 토글합니다.
+	});
+
+
 	// 모달 초기화
-	const $signupModal = $('#signupModal').modal();
-	const $loginModal = $('#loginModal').modal();
-	const $passwordResetModal = $('#passwordResetModal').modal();
-	const $usernameFindModal = $('#usernameFindModal').modal();
-	const $deactivationModal = $('#deactivationModal').modal();
+	const $signupModal = $('#signupModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $loginModal = $('#loginModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $passwordResetModal = $('#passwordResetModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $usernameFindModal = $('#usernameFindModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $deactivationModal = $('#deactivationModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $logoutModal = $('#logout-confirm-modal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $profileModal = $('#profileModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $deactivationConfirmModal = $('#deactivationConfirmModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+// user-icon 버튼 클릭 시 user-menu 토글
+	$('#user-icon').on('click', function() {
+		$('#user-menu').toggle();
+	});
+
 
 	// 페이지 로드 시 '저장' 버튼 숨기기
 	$('#saveProfile').hide();
@@ -41,6 +156,9 @@ $(document).ready(function() {
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
 		$loginModal.modal('show');
+		$logoutModal.modal('hide');
+		$profileModal.modal('hide');
+		$deactivationConfirmModal.modal('hide');
 	});
 
 	// 회원가입 모달 표시
@@ -49,7 +167,10 @@ $(document).ready(function() {
 		event.stopPropagation(); // 이벤트 버블링 중지
 		$loginModal.modal('hide');
 		$deactivationModal.modal('hide');
+		$deactivationConfirmModal.modal('hide');
 		$signupModal.modal('show');
+		$logoutModal.modal('hide');
+		$profileModal.modal('hide');
 	});
 
 
@@ -58,15 +179,31 @@ $(document).ready(function() {
 		event.preventDefault();
 		event.stopPropagation();
 		$deactivationModal.modal('show');
+		// $deactivationConfirmModal.modal('hide');
 		$loginModal.modal('hide');
 		$signupModal.modal('hide');
+		$logoutModal.modal('hide');
+		$profileModal.modal('hide');
+	});
+
+	// 로그아웃 모달 표시
+	$('.item:contains("로그아웃")').on('click', function (event) {
+		console.log("로그아웃 클릭 이벤트 시작");
+		event.preventDefault();
+		event.stopPropagation();
+		$logoutModal.modal('show');
+		$loginModal.modal('hide');
+		$signupModal.modal('hide');
+		$deactivationModal.modal('hide');
+		$deactivationConfirmModal.modal('hide');
+		$profileModal.modal('hide');
 	});
 
 	// 비밀번호 재설정 모달 표시
 	$('.item:contains("비밀번호 찾기")').on('click', function (event) {
 		console.log("비밀번호 찾기 클릭 이벤트 시작");
 		event.preventDefault();
-		event.stopPropagation(); // 이벤트 버블링 중지
+		event.stopPropagation();
 		$passwordResetModal.modal('show');
 		console.log("비밀번호 찾기 클릭 이벤트 종료");
 	});
@@ -80,14 +217,14 @@ $(document).ready(function() {
 		console.log("아이디 찾기 클릭 이벤트 종료");
 	});
 
+
 	// 프로필 버튼 클릭 시 모달 표시
 	$('#profile-btn').on('click', function () {
 		$('#profileModal').modal('show');
 		$signupModal.modal('hide');
 		$loginModal.modal('hide');
-		$passwordResetModal.modal('hide');
-		$usernameFindModal.modal('hide');
 		$deactivationModal.modal('hide');
+		$logoutModal.modal('hide');
 
 		var token = Cookies.get('Authorization');
 		// "Bearer "가 붙어 있지 붙여줌
@@ -108,13 +245,7 @@ $(document).ready(function() {
 				$("input[name='profile-nicknameInput']").val(response.nickname);
 				$("input[name='profile-emailInput']").val(response.email);
 				$("input[name='profile-phoneNumberInput']").val(response.phoneNumber);
-
-				// 비밀번호 필드를 *로 변환
-				var passwordField = $("input[name='profile-passwordInput']");
-				passwordField.data('original-password', response.password)
-				var maskedLength = response.password.length;
-				passwordField.attr('type', 'text');
-				passwordField.val('*'.repeat(maskedLength));
+				$("input[name='profile-passwordInput']").val(response.password);
 
 				// 위치 정보 필드 처리
 				currentLatitude = response.latitude;
@@ -196,10 +327,11 @@ $(document).ready(function() {
 		}
 
 		var formData = new FormData();
-		var profileImage = $('input[name="profileImage"]')[0];
+		var profileImage = $('input[name="signup-profileImageInput"]')[0];
 		if (profileImage && profileImage.files.length > 0) {
 			formData.append('profileImage', profileImage.files[0]);
 		}
+
 		formData.append('username', username);
 		formData.append('password', password);
 		formData.append('nickname', nickname);
@@ -223,28 +355,42 @@ $(document).ready(function() {
 		});
 	});
 
+
 	// 파일 선택 input 엘리먼트 가져오기
 	const fileInput = document.querySelector('input[name="profile-imageInput"]');
-	const selectedImage = document.getElementById('selectedImage');
+	const signupFileInput = document.querySelector('input[name="signup-profileImageInput"]');
+	const selectedFileNameSpan = document.getElementById('selectedFileName');
+	const signupSelectedFileNameSpan = document.getElementById('signup-selectedFileName');
 
 	if (fileInput) {
 		fileInput.addEventListener('change', function () {
 			const selectedFile = fileInput.files[0];
-			if (selectedFile && selectedImage) {
-				selectedImage.src = URL.createObjectURL(selectedFile);
-				selectedImage.style.display = 'block';
+			if (selectedFile) {
+				selectedFileNameSpan.textContent = selectedFile.name;
+			} else {
+				selectedFileNameSpan.textContent = ''; // 파일 선택 취소 시 텍스트 제거
 			}
 		});
 	}
 
+	if (signupFileInput) {
+		signupFileInput.addEventListener('change', function () {
+			const selectedFile = signupFileInput.files[0];
+			if (selectedFile) {
+				signupSelectedFileNameSpan.textContent = selectedFile.name;
+			} else {
+				signupSelectedFileNameSpan.textContent = '';
+			}
+		})
+	}
 
 	// 로그인 버튼 클릭 이벤트
 	$('#loginModal button[type="submit"]').on('click', function (event) {
 		event.preventDefault();
 
 		// 사용자가 입력한 아이디와 비밀번호 가져오기
-		var username = $('input[name="login-usernameInput"]').val();
-		var password = $('input[name="login-passwordInput"]').val();
+		const username = $('input[name="login-usernameInput"]').val();
+		const password = $('input[name="login-passwordInput"]').val();
 
 		$.ajax({
 			url: "/api/users/login",
@@ -252,34 +398,43 @@ $(document).ready(function() {
 			contentType: "application/json",
 			data: JSON.stringify({username: username, password: password}),
 			success: function (res, status, xhr) {
+				console.log(res.data)
 				console.log("status : " + status)
 
 				// HTTP 헤더에서 토큰 가져오기
-				var token = xhr.getResponseHeader("Authorization");
+				const token = xhr.getResponseHeader("Authorization");
 				console.log("token : " + token)
 
-				// 서버 응답에서 userId 꺼내오기
-				console.log("userId : " + res.data)
-				var userId = res.data;
+				// 서버 응답에서 userId, nickname 꺼내오기
+				const userId = res.data.userId;
+				const nickname = res.data.nickname;
+				const profileImage = res.data.profileImage;
+				console.log("profileImage : " + profileImage)
 
 				// 쿠키 만료일 설정
-				var expirationDate = new Date();
+				const expirationDate = new Date();
 				expirationDate.setDate(expirationDate.getDate() + 1);
 
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
-				Cookies.set('username', username, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate})
+				Cookies.set('nickname', nickname, {expires: expirationDate});
+				Cookies.set('userId', userId, {expires: expirationDate});
+
+				if (profileImage !== null) {
+					Cookies.set('profileImage', profileImage, {expires: expirationDate});
+				}
 
 				$loginModal.modal('hide');
 				$signupModal.modal('hide');
 
+
 				alert("성공적으로 로그인 했습니다!");
 
-				// 로그인 상태 UI 업데이트
-				$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
+				// 로그인 상태 UI ni
+				$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
 				window.location.href = '/';
+
 			},
 			error: function (error) {
 				alert("로그인 실패. 다시 시도해주세요.");
@@ -305,24 +460,27 @@ $(document).ready(function() {
 	if (window.location.href.includes("success=naver")) {
 		const urlParams = new URLSearchParams(window.location.search);
 
-		const username = urlParams.get("username");
+		const nickname = urlParams.get("nickname");
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
+		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+
 
 		// 로그인 정보를 쿠키에 저장
-		Cookies.set("username", username, {expires: 1});
+		Cookies.set("nickname", nickname, {expires: 1});
 		Cookies.set("userId", userId, {expires: 1});
 		Cookies.set("Authorization", token, {expires: 1});
-
-		alert("성공적으로 로그인 했습니다!");
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: 1});
 
 		// 로그인 상태 UI 업데이트
-		$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
+		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
 		// 모달 숨기기
 		$loginModal.modal('hide');
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
+
+		alert("성공적으로 로그인 했습니다!");
 
 		// 현재 페이지의 URL에서 'success=kakao'를 제거
 		const newURL = window.location.href.split("?")[0];
@@ -330,7 +488,6 @@ $(document).ready(function() {
 
 		window.location.href = "/"
 	}
-
 
 
 	// 카카오 정보 가져오기
@@ -350,24 +507,26 @@ $(document).ready(function() {
 	if (window.location.href.includes("success=kakao")) {
 		const urlParams = new URLSearchParams(window.location.search);
 
-		const username = urlParams.get("username");
+		const nickname = urlParams.get("nickname");
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
+		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
 		// 로그인 정보를 쿠키에 저장
-		Cookies.set("username", username, {expires: 1});
+		Cookies.set("nickname", nickname, {expires: 1});
 		Cookies.set("userId", userId, {expires: 1});
 		Cookies.set("Authorization", token, {expires: 1});
-
-		alert("성공적으로 로그인 했습니다!");
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: 1});
 
 		// 로그인 상태 UI 업데이트
-		$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
+		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
 		// 모달 숨기기
 		$loginModal.modal('hide');
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
+
+		alert("성공적으로 로그인 했습니다!");
 
 		// 현재 페이지의 URL에서 'success=kakao'를 제거
 		const newURL = window.location.href.split("?")[0];
@@ -376,19 +535,18 @@ $(document).ready(function() {
 		window.location.href = "/"
 	}
 
-	// 로그아웃 버튼 클릭 이벤트
-	$(document).on('click', '#logout-btn', function (event) {
-		event.preventDefault();
-
-		console.log("logout start")
+	// 로그아웃 확인 모달의 확인 버튼 클릭 시 로그아웃 이벤트 실행
+	$('#logout-confirm-modal .ui.green.ok.inverted.button').on('click', function () {
+		// 확인 버튼을 클릭하면 로그아웃을 실행
+		console.log("로그아웃 시작");
 
 		var token = Cookies.get('Authorization');
-		// "Bearer "가 붙어 있지 붙여줌
 		if (!token.startsWith("Bearer ")) {
 			token = "Bearer " + token;
 		}
 
-		console.log("token : " + token)
+		console.log("token : " + token);
+
 		$.ajax({
 			url: "/api/users/logout",
 			type: "POST",
@@ -396,26 +554,24 @@ $(document).ready(function() {
 				xhr.setRequestHeader("Authorization", token);
 			},
 			success: function (response) {
-
-				// console.log(`response : ${response}`)
-
 				if (response.status === 200) {
 					alert(response.message);
 					Cookies.remove('Authorization');
-					Cookies.remove('username');
-					Cookies.remove('userId')
-					updateLoginStatus();
-					window.location.href = "/"
+					Cookies.remove('nickname');
+					Cookies.remove('userId');
+					Cookies.remove('profileImage');
+					window.location.href = "/";
 				} else {
 					alert("로그아웃 실패: " + response.message);
 				}
 			},
 			error: function (error) {
-				console.log("end logout")
+				console.log("로그아웃 종료");
 				alert("로그아웃 요청 실패: " + error.statusText);
 			}
 		});
 	});
+
 
 	// 회원탈퇴 인증번호 전송
 	$('#deactive-sendVerificationCode').on('click', function() {
@@ -481,40 +637,59 @@ $(document).ready(function() {
 		}
 	});
 
-	// 체크박스 상태에 따라 회원탈퇴 버튼 활성화/비활성화 처리
-	$('#confirmDeactivation').on('change', function() {
+	// 회원탈퇴 버튼 활성화/비활성화 처리
+	$('#deactivationButton').on('click', function (event) {
+		event.preventDefault();
+		event.stopPropagation(); // 이벤트 버블링 중지
+		console.log("start")
 		let phoneNumber = $('#deactive-phoneNumberInput').val();
 		let inputCode = $('#deactive-verifyCodeInput').val();
 		let email = $('#deactive-emailInput').val();
 		let deactivationCode = $('#deactive-deactivationCodeInput').val();
 
-		if($(this).prop('checked')) {
-			if (!email || !phoneNumber || !inputCode || !deactivationCode) {
-				$('#finalDeactivationButton').prop('disabled', true);
-				$(this).prop('checked', false); // 체크박스 체크 해제
-				alert("모든 필드를 입력해주세요.");
-				return;
-			} else {
-				$('#finalDeactivationButton').prop('disabled', false);
-			}
+		if (!email || !phoneNumber || !inputCode || !deactivationCode) {
+			alert("모든 필드를 입력해주세요.");
+			return;
 		} else {
-			$('#finalDeactivationButton').prop('disabled', true);
+			$deactivationConfirmModal.modal('show');
+		}
+	});
+
+	// 체크박스 상태에 따라 회원탈퇴 버튼 활성화/비활성화 처리
+	$('#confirmDeactivation').on('change', function () {
+
+		if ($(this).prop('checked')) {
+				$('#confirmDeactivationButton').prop('disabled', false);
+			} else {
+			$('#confirmDeactivationButton').prop('disabled', true);
 		}
 	});
 
 	// 최종 회원탈퇴 처리
-	$('#finalDeactivationButton').on('click', function() {
+	$('#confirmDeactivationButton').on('click', function () {
 		let inputCode = $('#deactive-deactivationCodeInput').val();
+		let token = Cookies.get('Authorization');
+		console.log("inputCode : " + inputCode)
+		console.log("token : " + token)
 
 		$.ajax({
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader("Authorization", token);
+			},
 			url: "/api/users/account/deactivate",
 			type: 'DELETE',
-			data: { inputCode: inputCode },
-			success: function(response) {
+			data: {inputCode: inputCode},
+			success: function (response) {
+				// 쿠키삭제
+				Cookies.remove('Authorization');
+				Cookies.remove('nickname');
+				Cookies.remove('userId');
+				Cookies.remove('profileImage');
+
 				alert("회원탈퇴가 완료되었습니다.");
 				window.location.reload();
 			},
-			error: function(error) {
+			error: function (error) {
 				alert("인증이 되지 않았거나 알 수 없는 이유로 회원탈퇴가 실패되었습니다. 다시 시도해주세요");
 			}
 		});
@@ -720,8 +895,10 @@ $(document).ready(function() {
 				console.log("token : " + token)
 
 				// 서버 응답에서 userId 꺼내오기
-				console.log("userId : " + res.data)
-				var userId = res.data;
+				console.log("tempuser : " + res.data)
+				var userId = res.data.userId;
+				var nickname = res.data.nickname;
+				var profileImage = res.data.profileImage;
 
 				// 쿠키 만료일 설정
 				var expirationDate = new Date();
@@ -729,14 +906,17 @@ $(document).ready(function() {
 
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
-				Cookies.set('username', username, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate})
+				Cookies.set('nickname', nickname, {expires: expirationDate});
+				Cookies.set('userId', userId, {expires: expirationDate});
+				if (!profileImage) {
+					Cookies.set('profileImage', profileImage, {expires: expirationDate});
+				}
 
 				$loginModal.modal('hide');
 				$signupModal.modal('hide');
 
 				// 로그인 상태 UI 업데이트
-				$('#login-btn').replaceWith('<li class="welcome-msg">' + username + '님 환영합니다.</li>');
+				$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
 				alert("성공적으로 로그인 했습니다!");
 
@@ -796,25 +976,45 @@ $(document).ready(function() {
 		$('#editProfile').hide();
 	});
 
+	// $('#radiusSelect').dropdown({
+	// 	onChange: function (value) {
+	// 		if (value === "custom") {
+	// 			$('#customRadiusInput').show();
+	// 		}
+	// 	}
+	// });
 
 	// 프로필 정보 저장 버튼 클릭 이벤트
 	$('#saveProfile').click(function () {
-		// 원래 비밀번호로 변환
-		var originalPassword = $("input[name='profile-passwordInput']").data('original-password');
-
+		var newPassword = $("input[name='profile-passwordInput']").val();
+		var profileImage = $("input[name='profile-imageInput']")[0];
 		var formData = new FormData();
-		var profileImage = $('input[name="profile-imageInput"]')[0];
+
 		if (profileImage && profileImage.files.length > 0) {
 			formData.append('profileImage', profileImage.files[0]);
 		}
-		formData.append('password', originalPassword);
+		if (newPassword !== "********") {
+			formData.append('password', newPassword);
+		}
+
+		// 반경 설정 값 가져오기
+		var selectedRadiusValue = $('#radiusSelect').val();
+		// var customRadiusInputValue = $('#customRadiusInput').val();
+
+		var finalRadius;
+		if (selectedRadiusValue === 'custom') {
+			finalRadius = customRadiusInputValue; // 직접입력
+		} else {
+			finalRadius = selectedRadiusValue; // 선택값
+		}
+
+
+		formData.append('radius', finalRadius); // 결정된 반경 값 추가
 		formData.append('nickname', $("input[name='profile-nicknameInput']").val());
 		formData.append('email', $("input[name='profile-emailInput']").val());
 		formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
 		formData.append('latitude', currentLatitude); // 위도 추가
 		formData.append('longitude', currentLongitude); // 경도 추가
-
-		var token = decodeURIComponent(Cookies.get('Authorization'));
 
 		$.ajax({
 			url: `/api/users/profile`,
@@ -823,23 +1023,32 @@ $(document).ready(function() {
 			processData: false, // 데이터를 처리하지 않도록 설정
 			contentType: false, // 컨텐츠 타입을 설정하지 않도록 설정
 			beforeSend: function (xhr) {
+				var token = decodeURIComponent(Cookies.get('Authorization'));
+
 				// 토큰을 Authorization 헤더에 설정
 				xhr.setRequestHeader('Authorization', token);
 			},
 			success: function (response) {
 
 				// 사용자 이름 변경 후
-				var newUsername = $("input[name='profile-usernameInput']").val();
+				var newNickname = $("input[name='profile-nicknameInput']").val();
 
-				// 기존 사용자 이름 쿠키 삭제
-				Cookies.remove('username');
-
-				// 새로운 사용자 이름 쿠키 저장
-				Cookies.set('username', newUsername);
+				// 이미지URL 가져오기
+				const newprofileImage = response.data.profileImage;
+				console.log("profileImage : " + profileImage)
 
 				// 쿠키 만료일 설정
 				var expirationDate = new Date();
 				expirationDate.setDate(expirationDate.getDate() + 1);
+
+				if (newNickname) {
+					Cookies.set('nickname', newNickname, {expires: expirationDate});
+				}
+
+				if (newprofileImage) {
+					Cookies.set('profileImage', newprofileImage, {expires: expirationDate});
+				}
+
 
 				// 수정 가능한 필드들의 readonly 속성 추가
 				$('#profileModal input').prop('readonly', true);
@@ -851,9 +1060,11 @@ $(document).ready(function() {
 				alert("프로필 정보가 성공적으로 업데이트되었습니다.");
 				$('#editProfile').show();
 				$('#saveProfile').hide();
+
+				window.location.href = '/';
 			},
 			error: function (error) {
-				alert(error);
+				alert("프로필 업데이트가 실패했습니다.");
 			}
 		});
 	});

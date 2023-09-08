@@ -31,6 +31,9 @@ public class Location {
     @Column(name = "last_update")
     private LocalDateTime lastUpdate; // 위치 업데이트 시간 기록
 
+    @Column
+    private Double radius;
+
     @OneToMany(mappedBy = "location")
     private List<User> users = new ArrayList<>(); // Location과 User 간의 일대다 관계 설정
 

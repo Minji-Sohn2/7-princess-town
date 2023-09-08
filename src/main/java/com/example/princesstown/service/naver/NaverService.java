@@ -145,14 +145,14 @@ public class NaverService {
 
     // 필요시에 회원가입하는 메서드
     private User registerNaverUserIfNeeded(NaverUserInfoDto naverUserInfo) throws IOException {
-        String naverUsername = naverUserInfo.getUsername() + "_NaverUsername_";
+        String naverUsername = naverUserInfo.getUsername() + "_NaverUser_";
         User naverUser = naverRepository.findByUsernameStartingWith(naverUsername);
         log.info("user : " + naverUser);
 
             if (naverUser == null) {
             // nickname의 경우 중복 방지를 위해 무작위 UUID 추가 -> 프론트에서 프로필 재설정 필요 메세지 띄우기
-            String uniqueNickname = naverUserInfo.getNickname() + "_NaverNickame_" + UUID.randomUUID();
-            String uniqueUsername = naverUserInfo.getUsername() + "_NaverUsername_" + UUID.randomUUID();
+            String uniqueNickname = naverUserInfo.getNickname() + "_Naver";
+            String uniqueUsername = naverUserInfo.getUsername() + "_NaverUser_" + UUID.randomUUID();
             naverUserInfo.setNickname(uniqueNickname);
             naverUserInfo.setUsername(uniqueUsername);
 

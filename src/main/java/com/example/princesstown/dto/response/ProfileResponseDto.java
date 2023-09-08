@@ -21,7 +21,7 @@ public class ProfileResponseDto {
 
     public ProfileResponseDto(User user, Location location) {
         this.username = user.getUsername();
-        this.password = user.getPassword();
+        this.password = "********";
         this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
