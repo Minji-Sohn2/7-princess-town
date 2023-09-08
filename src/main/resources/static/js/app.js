@@ -50,18 +50,18 @@ $(document).ready(function () {
         var token = Cookies.get('Authorization');
         var profileImage = Cookies.get('profileImage');
 
-        if (token && profileImage) {
-            $('#profile-picture').attr("src", profileImage).show();
-            $('.user.icon').hide();
-        } else {
-            $('.user.icon').show();
-        }
+		if (token && profileImage) {
+			$('#profile-picture').attr("src", profileImage).show();
+			$('#user-icon .user.icon').hide();
+		} else {
+			$('#user-icon .user.icon').show();
+		}
 
-        if (token && !profileImage) {
-            $('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
-            $('.user.icon').hide();
-        }
-    }
+		if (token && !profileImage) {
+			$('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
+			$('#user-icon .user.icon').hide();
+		}
+	}
 
     // 토글 버튼에 클릭 이벤트 핸들러 추가
     $('#toggleSidebarButton').click(function () {
@@ -69,15 +69,84 @@ $(document).ready(function () {
     });
 
 
-    // 모달 초기화
-    const $signupModal = $('#signupModal').modal();
-    const $loginModal = $('#loginModal').modal();
-    const $passwordResetModal = $('#passwordResetModal').modal();
-    const $usernameFindModal = $('#usernameFindModal').modal();
-    const $deactivationModal = $('#deactivationModal').modal();
-    const $logoutModal = $('#logout-confirm-modal').modal();
-    const $profileModal = $('#profileModal').modal();
-    const $deactivationConfirmModal = $('#deactivationConfirmModal').modal();
+	// 모달 초기화
+	const $signupModal = $('#signupModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $loginModal = $('#loginModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $passwordResetModal = $('#passwordResetModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $usernameFindModal = $('#usernameFindModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $deactivationModal = $('#deactivationModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $logoutModal = $('#logout-confirm-modal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $profileModal = $('#profileModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+	const $deactivationConfirmModal = $('#deactivationConfirmModal').modal({
+		onShow: function() {
+			$('#user-menu').hide();
+		},
+		onHide: function() {
+			$('#user-icon').show();
+		}
+	});
+
+// user-icon 버튼 클릭 시 user-menu 토글
+	$('#user-icon').on('click', function() {
+		$('#user-menu').toggle();
+	});
+
 
     // 페이지 로드 시 '저장' 버튼 숨기기
     $('#saveProfile').hide();
@@ -929,17 +998,31 @@ $(document).ready(function () {
         var profileImage = $("input[name='profile-imageInput']")[0];
         var formData = new FormData();
 
-        if (profileImage && profileImage.files.length > 0) {
-            formData.append('profileImage', profileImage.files[0]);
-        }
-        if (newPassword !== "********") {
-            formData.append('password', newPassword);
-        }
-        formData.append('nickname', $("input[name='profile-nicknameInput']").val());
-        formData.append('email', $("input[name='profile-emailInput']").val());
-        formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
-        formData.append('latitude', currentLatitude); // 위도 추가
-        formData.append('longitude', currentLongitude); // 경도 추가
+		if (profileImage && profileImage.files.length > 0) {
+			formData.append('profileImage', profileImage.files[0]);
+		}
+		if (newPassword !== "********") {
+			formData.append('password', newPassword);
+		}
+
+		// 반경 설정 값 가져오기
+		var selectedRadiusValue = $('#radiusSelect').val();
+		// var customRadiusInputValue = $('#customRadiusInput').val();
+
+		var finalRadius;
+		if (selectedRadiusValue === 'custom') {
+			finalRadius = customRadiusInputValue; // 직접입력
+		} else {
+			finalRadius = selectedRadiusValue; // 선택값
+		}
+
+
+		formData.append('radius', finalRadius); // 결정된 반경 값 추가
+		formData.append('nickname', $("input[name='profile-nicknameInput']").val());
+		formData.append('email', $("input[name='profile-emailInput']").val());
+		formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
+		formData.append('latitude', currentLatitude); // 위도 추가
+		formData.append('longitude', currentLongitude); // 경도 추가
 
         $.ajax({
             url: `/api/users/profile`,

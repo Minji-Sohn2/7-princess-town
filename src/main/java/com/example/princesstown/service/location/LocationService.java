@@ -82,7 +82,7 @@ public class LocationService {
 
     // 위치를 업데이트 하는 메서드
     @Transactional
-    public void updateLocationAndRelatedEntities(Long id, Double latitude, Double longitude) {
+    public void updateLocationAndRelatedEntities(Long id, Double latitude, Double longitude, Double radius) {
         LocalDateTime now = LocalDateTime.now();
 
         Optional<Location> optionalLocation = locationRepository.findByUsers_UserId(id);
@@ -94,6 +94,7 @@ public class LocationService {
 
         location.setLatitude(latitude);
         location.setLongitude(longitude);
+        location.setRadius(radius);
         location.setLastUpdate(now);
 
         Location updatedLocation = locationRepository.save(location);

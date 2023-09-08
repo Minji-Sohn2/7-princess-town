@@ -70,6 +70,7 @@ body {
     width: 150px;  /* 원하는 너비로 설정 */
 }
 
+
 /* 버튼 간 간격 조정 */
 #reset-sendVerificationCode,
 #verifyPhoneNumber,
@@ -97,6 +98,7 @@ body {
   padding: 15px;  /* 헤더 내부 패딩 설정 */
   font-weight: bold;  /* 헤더 텍스트 굵게 설정 */
 }
+
 
 
 
@@ -256,6 +258,9 @@ body {
 
 
 
+
+
+
 /*회원가입 관련 css*/
 #signupModal {
     max-width: 450px; /* 최대 가로 길이를 450px로 설정 */
@@ -296,6 +301,7 @@ label[for="signup-profileImageInput"] .icon {
 .input-file-container label {
     cursor: pointer; /* 추가 */
 }
+
 
 
 
@@ -365,6 +371,8 @@ label[for="profile-imageInput"] .icon {
     text-align: center; /* 텍스트 정렬도 중앙으로 설정 */
     margin-top: 50px;
 }
+
+
 
 
 
