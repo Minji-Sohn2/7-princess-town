@@ -141,7 +141,8 @@ $(document).ready(function() {
 	});
 
 // user-icon 버튼 클릭 시 user-menu 토글
-	$('#user-icon').on('click', function() {
+	$('#user-icon').on('click', function(event) {
+		event.stopPropagation();
 		$('#user-menu').toggle();
 	});
 

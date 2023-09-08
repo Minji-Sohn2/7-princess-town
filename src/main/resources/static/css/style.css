@@ -451,11 +451,6 @@ label[for="profile-imageInput"] .icon {
     display: none; /* 초기에 메뉴를 숨김 */
 }
 
-#user-menu.active {
-    display: block; /* 버튼을 클릭할 때 메뉴를 표시 */
-}
-
-
 /* 사용자 아이콘 버튼 스타일 */
 #user-icon {
     background-color: transparent;
