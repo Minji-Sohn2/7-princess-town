@@ -26,13 +26,10 @@ public class Location {
     private Double longitude; // 경도
 
     @Column
-    private Double radius; // 선택한 반경을 갖고 있어야 게시글을 조회할때 꺼내와서 사용할 수 있지 않을까?
+    private Double radius;
 
     @Column(name = "last_update")
     private LocalDateTime lastUpdate; // 위치 업데이트 시간 기록
-
-    @Column
-    private Double radius;
 
     @OneToMany(mappedBy = "location")
     private List<User> users = new ArrayList<>(); // Location과 User 간의 일대다 관계 설정

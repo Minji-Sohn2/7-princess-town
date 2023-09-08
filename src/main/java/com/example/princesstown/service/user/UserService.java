@@ -1,12 +1,12 @@
 package com.example.princesstown.service.user;
 
-import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.ProfileResponseDto;
 import com.example.princesstown.dto.search.SearchUserResponseDto;
 import com.example.princesstown.dto.search.SimpleUserInfoDto;
 import com.example.princesstown.dto.search.UserSearchCond;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
@@ -188,5 +188,17 @@ public class UserService {
         }
 
         return new ArrayList<>(map.values());
+    }
+
+    //userId로 해당 유저의 위치정보를 가져오는 메소드
+    public Optional<Location> getUserLocation(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            return Optional.ofNullable(user.getLocation());
+        }
+
+        return Optional.empty();
     }
 }

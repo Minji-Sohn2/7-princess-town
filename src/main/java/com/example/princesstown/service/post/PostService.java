@@ -11,6 +11,7 @@ import com.example.princesstown.repository.post.PostLikesRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import com.example.princesstown.repository.post.SearchHistoryRepository;
 import com.example.princesstown.service.awsS3.S3Uploader;
+import com.example.princesstown.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +36,64 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikesRepository postLikesRepository;
     private final SearchHistoryRepository searchHistoryRepository;
-//    private final JwtUtil jwtUtil;
+    private final UserService userService;
+
+
+    //위치반경내 게시물 조회
+    public List<PostResponseDto> getPostsAroundUser(Long userId) {
+        // 1. 사용자의 위치 정보 가져오기
+        Optional<Location> userLocationOpt = userService.getUserLocation(userId);
+
+        if (!userLocationOpt.isPresent()) {
+            // 사용자의 위치 정보가 없으면 빈 목록 반환
+            return Collections.emptyList();
+        }
+
+        Location userLocation = userLocationOpt.get();
+
+        // 2. 반경 내의 게시글 조회
+        List<Post> allPosts = postRepository.findAll(); // 모든 게시글 조회
+
+        // 3. 반경 내의 게시글 필터링
+        List<PostResponseDto> nearbyPosts = new ArrayList<>();
+        for (Post post : allPosts) {
+            if (isWithinRadius(userLocation, post.getLocation())) {
+                // PostResponseDto를 생성하여 데이터를 복사
+                PostResponseDto postResponseDto = new PostResponseDto(post);
+                nearbyPosts.add(postResponseDto);
+            }
+        }
+
+        return nearbyPosts;
+    }
+
+    private boolean isWithinRadius(Location userLocation, Location postLocation) {
+        // 반경 내에 있는지 여부를 판단하는 로직을 구현
+        double userLatitude = userLocation.getLatitude();
+        double userLongitude = userLocation.getLongitude();
+        double postLatitude = postLocation.getLatitude();
+        double postLongitude = postLocation.getLongitude();
+
+        double distance = calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude);
+
+        // 반경 내에 있는 게시글인지 여부 판단
+        double radius = userLocation.getRadius();
+        return distance <= radius;
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        // 좌표 간의 거리 계산 로직을 구현
+        // 실제 거리 계산에는 좌표를 이용하는 라이브러리를 사용하는 것이 좋습니다.
+        // 여기에서는 간단한 예시로 표시했습니다.
+        double earthRadius = 6371; // 지구 반지름 (킬로미터)
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadius * c;
+    }
 
     // 게시글 전체 조회 API
     @Transactional(readOnly = true)
