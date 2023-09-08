@@ -18,9 +18,10 @@ $(document).ready(function() {
 		}
 	});
 
-
 	// 페이지 로드 시 로그인 상태 확인
 	updateLoginStatus();
+
+	updateProfileImage();
 
 	function updateLoginStatus() {
 		var token = Cookies.get('Authorization');
@@ -40,6 +41,23 @@ $(document).ready(function() {
 				$('.item:contains("회원탈퇴")').show();
 				$('.item:contains("프로필")').show();
 			}
+		}
+	}
+
+	function updateProfileImage() {
+		var token = Cookies.get('Authorization');
+		var profileImage = Cookies.get('profileImage');
+
+		if (token && profileImage) {
+			$('#profile-picture').attr("src", profileImage).show();
+			$('.user.icon').hide();
+		} else {
+			$('.user.icon').show();
+		}
+
+		if (token && !profileImage) {
+			$('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
+			$('.user.icon').hide();
 		}
 	}
 
@@ -241,47 +259,31 @@ $(document).ready(function() {
 
 		var formData = new FormData();
 		var profileImage = $('input[name="signup-profileImageInput"]')[0];
-
-		function makeAjaxCall() {
-			formData.append('username', username);
-			formData.append('password', password);
-			formData.append('nickname', nickname);
-			formData.append('email', email);
-			formData.append('phoneNumber', phoneNumber);
-
-			$.ajax({
-				url: "/api/users/signup",
-				type: "POST",
-				data: formData,
-				processData: false,
-				contentType: false,
-				success: function (response) {
-					alert("성공적으로 회원가입이 되었습니다!");
-					$('.item:contains("회원가입")').hide();
-					window.location.href = '/';
-				},
-				error: function (error) {
-					alert("회원가입 실패. 다시 확인해주세요.");
-				}
-			});
-		}
-
 		if (profileImage && profileImage.files.length > 0) {
 			formData.append('profileImage', profileImage.files[0]);
-			makeAjaxCall();  // 이미지가 이미 선택되어 있으면 바로 AJAX 호출
-		} else {
-			// 사용자가 이미지를 선택하지 않았을 때 기본 이미지를 추가
-			fetch('/static/img/defaultImg/quokka.jpg')
-				.then(response => response.blob())
-				.then(blob => {
-					const file = new File([blob], "quokka.jpg", { type: "image/jpeg" });
-					formData.append('profileImage', file);
-					makeAjaxCall();  // 기본 이미지가 추가된 후 AJAX 호출
-				})
-				.catch(error => {
-					console.error("Error fetching the default image:", error);
-				});
 		}
+
+		formData.append('username', username);
+		formData.append('password', password);
+		formData.append('nickname', nickname);
+		formData.append('email', email);
+		formData.append('phoneNumber', phoneNumber);
+
+		$.ajax({
+			url: "/api/users/signup",
+			type: "POST",
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function (response) {
+				alert("성공적으로 회원가입이 되었습니다!");
+				$('.item:contains("회원가입")').hide();
+				window.location.href = '/';
+			},
+			error: function (error) {
+				alert("회원가입 실패. 다시 확인해주세요.");
+			}
+		});
 	});
 
 
@@ -337,6 +339,8 @@ $(document).ready(function() {
 				// 서버 응답에서 userId, nickname 꺼내오기
 				const userId = res.data.userId;
 				const nickname = res.data.nickname;
+				const profileImage = res.data.profileImage;
+				console.log("profileImage : " + profileImage)
 
 				// 쿠키 만료일 설정
 				const expirationDate = new Date();
@@ -345,10 +349,15 @@ $(document).ready(function() {
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
 				Cookies.set('nickname', nickname, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate})
+				Cookies.set('userId', userId, {expires: expirationDate});
+
+				if (profileImage !== null) {
+					Cookies.set('profileImage', profileImage, {expires: expirationDate});
+				}
 
 				$loginModal.modal('hide');
 				$signupModal.modal('hide');
+
 
 				alert("성공적으로 로그인 했습니다!");
 
@@ -356,6 +365,7 @@ $(document).ready(function() {
 				$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
 				window.location.href = '/';
+
 			},
 			error: function (error) {
 				alert("로그인 실패. 다시 시도해주세요.");
@@ -384,12 +394,14 @@ $(document).ready(function() {
 		const nickname = urlParams.get("nickname");
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
+		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+
 
 		// 로그인 정보를 쿠키에 저장
 		Cookies.set("nickname", nickname, {expires: 1});
 		Cookies.set("userId", userId, {expires: 1});
 		Cookies.set("Authorization", token, {expires: 1});
-
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: 1});
 
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
@@ -407,7 +419,6 @@ $(document).ready(function() {
 
 		window.location.href = "/"
 	}
-
 
 
 	// 카카오 정보 가져오기
@@ -430,11 +441,13 @@ $(document).ready(function() {
 		const nickname = urlParams.get("nickname");
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
+		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
 		// 로그인 정보를 쿠키에 저장
 		Cookies.set("nickname", nickname, {expires: 1});
 		Cookies.set("userId", userId, {expires: 1});
 		Cookies.set("Authorization", token, {expires: 1});
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: 1});
 
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
@@ -477,6 +490,7 @@ $(document).ready(function() {
 					Cookies.remove('Authorization');
 					Cookies.remove('nickname');
 					Cookies.remove('userId');
+					Cookies.remove('profileImage');
 					window.location.href = "/";
 				} else {
 					alert("로그아웃 실패: " + response.message);
@@ -601,6 +615,7 @@ $(document).ready(function() {
 				Cookies.remove('Authorization');
 				Cookies.remove('nickname');
 				Cookies.remove('userId');
+				Cookies.remove('profileImage');
 
 				alert("회원탈퇴가 완료되었습니다.");
 				window.location.reload();
@@ -814,6 +829,7 @@ $(document).ready(function() {
 				console.log("tempuser : " + res.data)
 				var userId = res.data.userId;
 				var nickname = res.data.nickname;
+				var profileImage = res.data.profileImage;
 
 				// 쿠키 만료일 설정
 				var expirationDate = new Date();
@@ -822,7 +838,10 @@ $(document).ready(function() {
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
 				Cookies.set('nickname', nickname, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate})
+				Cookies.set('userId', userId, {expires: expirationDate});
+				if (!profileImage) {
+					Cookies.set('profileImage', profileImage, {expires: expirationDate});
+				}
 
 				$loginModal.modal('hide');
 				$signupModal.modal('hide');
@@ -892,80 +911,72 @@ $(document).ready(function() {
 	// 프로필 정보 저장 버튼 클릭 이벤트
 	$('#saveProfile').click(function () {
 		var newPassword = $("input[name='profile-passwordInput']").val();
-		var profileImage = $('input[name="profile-ImageInput"]')[0];
+		var profileImage = $("input[name='profile-imageInput']")[0];
 		var formData = new FormData();
 
 		if (profileImage && profileImage.files.length > 0) {
 			formData.append('profileImage', profileImage.files[0]);
-			makeAjaxCall();  // 이미지가 이미 선택되어 있으면 바로 AJAX 호출
-		} else {
-			// 사용자가 이미지를 선택하지 않았을 때 기본 이미지를 추가
-			fetch('/static/img/defaultImg/quokka.jpg')
-				.then(response => response.blob())
-				.then(blob => {
-					const file = new File([blob], "quokka.jpg", { type: "image/jpeg" });
-					formData.append('profileImage', file);
-					makeAjaxCall();  // 기본 이미지가 추가된 후 AJAX 호출
-				})
-				.catch(error => {
-					console.error("Error fetching the default image:", error);
-				});
 		}
+		if (newPassword !== "********") {
+			formData.append('password', newPassword);
+		}
+		formData.append('nickname', $("input[name='profile-nicknameInput']").val());
+		formData.append('email', $("input[name='profile-emailInput']").val());
+		formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
+		formData.append('latitude', currentLatitude); // 위도 추가
+		formData.append('longitude', currentLongitude); // 경도 추가
 
-		function makeAjaxCall() {
-			if (newPassword !== "********") {
-				formData.append('password', newPassword);
-			}
-			formData.append('nickname', $("input[name='profile-nicknameInput']").val());
-			formData.append('email', $("input[name='profile-emailInput']").val());
-			formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
-			formData.append('latitude', currentLatitude); // 위도 추가
-			formData.append('longitude', currentLongitude); // 경도 추가
+		$.ajax({
+			url: `/api/users/profile`,
+			type: 'PUT',
+			data: formData, // FormData 객체 전송
+			processData: false, // 데이터를 처리하지 않도록 설정
+			contentType: false, // 컨텐츠 타입을 설정하지 않도록 설정
+			beforeSend: function (xhr) {
+				var token = decodeURIComponent(Cookies.get('Authorization'));
 
-			$.ajax({
-				url: `/api/users/profile`,
-				type: 'PUT',
-				data: formData, // FormData 객체 전송
-				processData: false, // 데이터를 처리하지 않도록 설정
-				contentType: false, // 컨텐츠 타입을 설정하지 않도록 설정
-				beforeSend: function (xhr) {
-					var token = decodeURIComponent(Cookies.get('Authorization'));
+				// 토큰을 Authorization 헤더에 설정
+				xhr.setRequestHeader('Authorization', token);
+			},
+			success: function (response) {
 
-					// 토큰을 Authorization 헤더에 설정
-					xhr.setRequestHeader('Authorization', token);
-				},
-				success: function (response) {
+				// 사용자 이름 변경 후
+				var newNickname = $("input[name='profile-nicknameInput']").val();
 
-					// 사용자 이름 변경 후
-					var newNickname = $("input[name='profile-nicknameInput']").val();
+				// 이미지URL 가져오기
+				const newprofileImage = response.data.profileImage;
+				console.log("profileImage : " + profileImage)
 
-					if(newNickname) {
-						Cookies.remove('nickname');
+				// 쿠키 만료일 설정
+				var expirationDate = new Date();
+				expirationDate.setDate(expirationDate.getDate() + 1);
 
-						// 쿠키 만료일 설정
-						var expirationDate = new Date();
-						expirationDate.setDate(expirationDate.getDate() + 1);
-
-						// 새로운 사용자 이름 쿠키 저장
-						Cookies.set('nickname', newNickname, {expires: expirationDate});
-					}
-
-					// 수정 가능한 필드들의 readonly 속성 추가
-					$('#profileModal input').prop('readonly', true);
-					$('#customRadiusInput').prop('readonly', true);
-					$('#radiusSelect').prop('disabled', true);
-					$('#setLocation').prop('disabled', true);
-
-					// 수정 완료 버튼 숨김, 수정 버튼 표시
-					alert("프로필 정보가 성공적으로 업데이트되었습니다.");
-					$('#editProfile').show();
-					$('#saveProfile').hide();
-				},
-				error: function (error) {
-					alert(error);
+				if (newNickname) {
+					Cookies.set('nickname', newNickname, {expires: expirationDate});
 				}
-			});
-		}
+
+				if (newprofileImage) {
+					Cookies.set('profileImage', newprofileImage, {expires: expirationDate});
+				}
+
+
+				// 수정 가능한 필드들의 readonly 속성 추가
+				$('#profileModal input').prop('readonly', true);
+				$('#customRadiusInput').prop('readonly', true);
+				$('#radiusSelect').prop('disabled', true);
+				$('#setLocation').prop('disabled', true);
+
+				// 수정 완료 버튼 숨김, 수정 버튼 표시
+				alert("프로필 정보가 성공적으로 업데이트되었습니다.");
+				$('#editProfile').show();
+				$('#saveProfile').hide();
+
+				window.location.href = '/';
+			},
+			error: function (error) {
+				alert("프로필 업데이트가 실패했습니다.");
+			}
+		});
 	});
 });
 
