@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,36 +11,22 @@
   <title>Document</title>
 </head>
 <body>
+<!-- Header -->
+<div class="ui secondary pointing menu" id="header">
+  <div id="header-info">
+    <div id="header-name">
+      <h2>토마토</h2>
+    </div>
+    <div class="header-buttons">
 
-<!--&lt;!&ndash; 토글 버튼에 아이콘 추가 &ndash;&gt;-->
-<!--<button id="toggleSidebarButton" class="ui icon button">-->
-<!--  <i class="bars icon"></i> &lt;!&ndash; 아이콘 추가 &ndash;&gt;-->
-<!--</button>-->
+      <a class="item" id="myChatRooms-btn" href="/view/chatRooms">내 채팅방</a>
+      <button id="user-icon" class="ui icon button">
+        <i class="user icon"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
-<!--<div class="ui sidebar inverted vertical menu">-->
-<!--  <a class="item">1</a>-->
-<!--  <a class="item">2</a>-->
-<!--  <a class="item">3</a>-->
-<!--</div>-->
-<!--<div class="pusher">-->
-<!--  &lt;!&ndash; Site content !&ndash;&gt;-->
-<!--</div>-->
-
-
-<!--&lt;!&ndash; Header &ndash;&gt;-->
-<!--<div class="ui secondary pointing menu">-->
-<!--  &lt;!&ndash; 로그인과 회원가입 버튼에 데이터-modal 속성 추가 &ndash;&gt;-->
-<!--  <a class="item" data-modal="#loginModal" id="login-btn" href="#0">로그인</a>-->
-<!--  <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">회원가입</a>-->
-<!--  <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">회원탈퇴</a>-->
-<!--  <a class="item" data-modal="#profileModal" id="profile-btn" href="#0" >프로필</a>-->
-<!--  <a class="item" id="logout-btn" href="#0">로그아웃</a>-->
-<!--  &lt;!&ndash;  <div id="token-expiry">로그인 만료 시간 : <span id="expiry-time"></span></div>&ndash;&gt;-->
-<!--</div>-->
-
-<button id="user-icon" class="ui icon button">
-  <i class="user icon"></i>
-</button>
 <div class="ui vertical menu" id="user-menu">
    <div class="header" id="menu-header">User</div>
    <div class="menu">

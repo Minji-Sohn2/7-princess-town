@@ -240,7 +240,7 @@ document.getElementById('logoutButton').addEventListener('click', logout);
 function logout() {
     alert('로그아웃');
     Cookies.remove('Authorization', {path: '/'});
-    window.location.href = "/auth/login-page";
+    window.location.href = "/view/mainpage";
 }
 
 //---------------------- 페이지 로딩 시 -----------------------

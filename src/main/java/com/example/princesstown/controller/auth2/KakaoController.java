@@ -43,7 +43,7 @@ public class KakaoController {
         log.info("카카오서버에서 보내는 token : " + token);
 
         String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
-        return "redirect:/view/login-page?success=kakao&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
+        return "redirect:/view/mainpage?success=kakao&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
     }
 }
 

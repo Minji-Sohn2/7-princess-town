@@ -89,9 +89,13 @@ public class WebSecurityConfig {
 
 
         // 로그인 페이지 설정
+//        http.formLogin((formLogin) ->
+//                formLogin
+//                        .loginPage("/view/login-page").permitAll()
+//        );
         http.formLogin((formLogin) ->
                 formLogin
-                        .loginPage("/view/login-page").permitAll()
+                        .loginPage("/view/mainpage").permitAll()
         );
 
         // JWT 관련 필터를 Spring Security 필터 체인에 추가

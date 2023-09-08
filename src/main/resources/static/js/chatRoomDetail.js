@@ -159,7 +159,7 @@ const vm = new Vue({
         logout() {
             alert('로그아웃');
             Cookies.remove('Authorization', {path: '/'});
-            window.location.href = "/auth/login-page";
+            window.location.href = "/view/mainpage";
         }
     }
 });

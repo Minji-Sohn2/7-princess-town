@@ -43,7 +43,7 @@ public class NaverController {
         log.info("네이버서버에서 보내는 token : " + token);
 
         String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
-        return "redirect:/view/login-page?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
+        return "redirect:/view/mainpage?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
     }
 }
 
