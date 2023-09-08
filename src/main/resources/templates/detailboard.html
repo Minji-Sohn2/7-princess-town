@@ -68,7 +68,7 @@
     </div>
     <div class="main-content">
         <div>
-            <form class="search-form">
+            <form class="search-form" style="display: inline-block; vertical-align: top;">
                 <select name="searchType" id="searchType">
                     <option value="title">제목</option>
                     <option value="contents">내용</option>
@@ -77,6 +77,9 @@
                 <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
                 <button type="submit">검색</button>
             </form>
+            <a href="http://localhost:8080/view/createpost" style="display: inline-block; margin-left: 10px;">
+                <button class="btn-create-post">글쓰기</button>
+            </a>
         </div>
         <div class="posts">
             <h2 class="h2">게시글</h2>
@@ -206,7 +209,7 @@
                             <option value="3">3km</option>
                             <option value="4">4km</option>
                             <option value="5">5km</option>
-                            <option value="custom">직접 입력</option>
+<!--                            <option value="custom">직접 입력</option>-->
                         </select>
                         <button class="ui button" id="setLocation">위치 설정</button>
                     </div>

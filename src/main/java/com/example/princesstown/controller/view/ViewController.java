@@ -2,7 +2,6 @@ package com.example.princesstown.controller.view;
 
 import com.example.princesstown.dto.response.BoardResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
-import com.example.princesstown.dto.response.SimpleProfileDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.board.BoardService;
 import com.example.princesstown.service.post.PostService;
@@ -165,12 +164,5 @@ public class ViewController {
     public String roomDetail(Model model, @PathVariable String roomId) {
         model.addAttribute("roomId", roomId);
         return "chat/chatRoomDetail";
-    }
-
-    @GetMapping("/mypage")
-    public String getMyPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        SimpleProfileDto profileDto = new SimpleProfileDto(userDetails.getUser());
-        model.addAttribute("profile", profileDto);
-        return "myPage";
     }
 }
