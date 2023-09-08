@@ -53,7 +53,7 @@ public class Post extends Timestamped{
     private Location location;
 
 
-    //     post를 연관관계의 주인으로 설정. post 엔티티 제거시 연관된 comment 제거.
+    // post를 연관관계의 주인으로 설정. post 엔티티 제거시 연관된 comment 제거.
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
 
