@@ -46,8 +46,8 @@ public class ProfileService {
         }
 
         // 위치 업데이트 로직
-        if (requestDto.getLatitude() != null && requestDto.getLongitude() != null) {
-            locationService.updateLocationAndRelatedEntities(userId, requestDto.getLatitude(), requestDto.getLongitude());
+        if (requestDto.getLatitude() != null && requestDto.getLongitude() != null && requestDto.getRadius() != null) {
+            locationService.updateLocationAndRelatedEntities(userId, requestDto.getLatitude(), requestDto.getLongitude(), requestDto.getRadius());
         }
 
         // DB에서 조회한 유저 정보를 가져옴
