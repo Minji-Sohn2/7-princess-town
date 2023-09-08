@@ -69,10 +69,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         Long userId = ((UserDetailsImpl) authResult.getPrincipal()).getUserId();
         String nickname = ((UserDetailsImpl) authResult.getPrincipal()).getNickname();
+        String profileImage = (((UserDetailsImpl) authResult.getPrincipal()).getProfileImage());
         log.info("Authenticated username: " + username);
         log.info("Authenticated userId : " + userId);
 
-        LoginResponseDto responseDto = new LoginResponseDto(userId, nickname);
+        LoginResponseDto responseDto = new LoginResponseDto(userId, nickname, profileImage);
 
         // JWT 생성 후 Response 객체의 헤더에 추가함
         String token = jwtUtil.createToken(username);
