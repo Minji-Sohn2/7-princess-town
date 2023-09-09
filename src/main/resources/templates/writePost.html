@@ -100,72 +100,75 @@
     </style>
 </head>
 <body>
-<!--  상단바  -->
-<div class="ui secondary pointing menu" id="header">
-    <div id="header-info">
-        <div class="header-logo" id="header-name">
-            <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
-            <a href="/view/mainpage" style="color: #a96b6b">
-                <h2>토마토</h2>
-            </a>
-        </div>
-        <div class="header-buttons">
+<div id="except-footer">
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div class="header-buttons">
 
-            <!--  사용자 버튼  -->
-            <button id="user-icon" class="ui icon button">
-                <i class="user icon"></i>
-                <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
-            </button>
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
+            </div>
         </div>
     </div>
-</div>
-<!--  상단바 끝  -->
+    <!--  상단바 끝  -->
 
-<div class="content-mainpage">
-    <div class="sidebar-mainpage">
-        <div class="box">
-            <h2 class="h2">인기검색어</h2>
-            <ol class="search-ranking">
-            </ol>
-        </div>
-        <div>
-            <ul class="board-list">
-                <li><a href="/view/mainpage">전체게시판</a></li>
-                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
-                <th:block th:each="board : ${boardList}">
-                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
-                </th:block>
-            </ul>
-        </div>
-    </div>
-    <div class="main-content">
-        <h2 class="h2">게시판 선택</h2>
-        <form id="selectPostForm" enctype="multipart/form-data">
-            <div class="custom-container">
-                <select id="boardId" name="boardId" class="custom-select">
-                    <option value="" selected disabled>게시판을 선택하세요</option>
+    <div class="content-mainpage">
+        <div class="sidebar-mainpage">
+            <div class="box">
+                <h2 class="h2">인기검색어</h2>
+                <ol class="search-ranking">
+                </ol>
+            </div>
+            <div>
+                <ul class="board-list">
+                    <li><a href="/view/mainpage">전체게시판</a></li>
                     <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
                     <th:block th:each="board : ${boardList}">
-                        <option th:value="${board.id}" th:text="${board.title}"></option>
+                        <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                        </li>
                     </th:block>
-                </select><br>
-                <button type="button" id="selectBoardButton">게시판 선택 확인</button>
+                </ul>
             </div>
-        </form>
-        <h2 class="h2">게시글 작성</h2>
-        <form id="createPostForm" enctype="multipart/form-data">
-            <label for="postTitle">제목:</label>
-            <input type="text" id="postTitle" name="title" required><br>
-            <label for="postContents">내용:</label>
-            <textarea id="postContents" name="contents" rows="4" required></textarea><br>
-            <div class="image-upload-div">
-                <label for="postImage">이미지 업로드:</label>
-                <input type="file" id="postImage" name="postImage"><br>
-                <img id="imagePreview">
-            </div>
-            <button type="button" id="writePostButton">작성</button>
-            <button type="button" id="cancelButton">취소</button>
-        </form>
+        </div>
+        <div class="main-content">
+            <h2 class="h2">게시판 선택</h2>
+            <form id="selectPostForm" enctype="multipart/form-data">
+                <div class="custom-container">
+                    <select id="boardId" name="boardId" class="custom-select">
+                        <option value="" selected disabled>게시판을 선택하세요</option>
+                        <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                        <th:block th:each="board : ${boardList}">
+                            <option th:value="${board.id}" th:text="${board.title}"></option>
+                        </th:block>
+                    </select><br>
+                    <button type="button" id="selectBoardButton">게시판 선택 확인</button>
+                </div>
+            </form>
+            <h2 class="h2">게시글 작성</h2>
+            <form id="createPostForm" enctype="multipart/form-data">
+                <label for="postTitle">제목:</label>
+                <input type="text" id="postTitle" name="title" required><br>
+                <label for="postContents">내용:</label>
+                <textarea id="postContents" name="contents" rows="4" required></textarea><br>
+                <div class="image-upload-div">
+                    <label for="postImage">이미지 업로드:</label>
+                    <input type="file" id="postImage" name="postImage"><br>
+                    <img id="imagePreview">
+                </div>
+                <button type="button" id="writePostButton">작성</button>
+                <button type="button" id="cancelButton">취소</button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -574,8 +577,8 @@
 
 <script>
 
-    $(document).ready(function() {
-        $("#selectBoardButton").click(function() {
+    $(document).ready(function () {
+        $("#selectBoardButton").click(function () {
             var boardId = $("#boardId").val();
             if (!boardId) {
                 alert("게시판을 선택하세요.");
@@ -584,23 +587,23 @@
             $.ajax({
                 url: `/api/boards/` + boardId,
                 method: "GET",
-                success: function(response) {
+                success: function (response) {
                     alert("게시판 선택 완료!");
                     // 게시판 정보에 따라 폼을 수정할 수 있음
                 },
-                error: function() {
+                error: function () {
                     alert("게시판 정보 불러오기 실패.");
                 }
             });
         });
 
         // 이미지 파일 선택 시 미리보기
-        $("#postImage").change(function() {
+        $("#postImage").change(function () {
             previewImage(this);
         });
 
         // 이미지 파일 선택 시 미리보기
-        $("#postImage").change(function() {
+        $("#postImage").change(function () {
             previewImage(this);
         });
 
@@ -609,7 +612,7 @@
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
 
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     // 이미지 파일 미리보기를 표시할 요소 선택
                     var imagePreview = $("#imagePreview");
 
@@ -622,7 +625,7 @@
             }
         }
 
-        $("#writePostButton").click(function() {
+        $("#writePostButton").click(function () {
             var boardId = $("#boardId").val();
             if (!boardId) {
                 alert("게시판을 먼저 선택하세요.");
@@ -631,7 +634,7 @@
             $("#createPostForm").submit();
         });
 
-        $("#createPostForm").submit(function(event) {
+        $("#createPostForm").submit(function (event) {
             event.preventDefault();
 
             var formData = new FormData($("#createPostForm")[0]);
@@ -654,19 +657,19 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     console.log('FormData:', formData);
                     console.log('postImage:', postImage);
                     alert("게시글을 작성하였습니다!");
                     window.location.href = "/view/mainpage"
                 },
-                error: function() {
+                error: function () {
                     alert("게시글 작성에 실패했습니다.");
                 }
             });
         });
 
-        $("#cancelButton").click(function() {
+        $("#cancelButton").click(function () {
             window.history.back();
         });
     });

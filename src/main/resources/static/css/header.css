@@ -5,6 +5,12 @@ body {
     line-height: 1.5; /* 기본 줄 간격 설정 */
 }
 
+#except-footer {
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 30px;
+}
+
 /* 상단바 */
 #header {
     background-color: #fafafa;
@@ -48,6 +54,12 @@ body {
 }
 
 /* footer */
+footer {
+    height: 0px;
+    position : relative;
+    transform : translateY(-100%);
+}
+
 .footer {
     color: grey;
     text-align: center;
@@ -56,6 +68,9 @@ body {
     padding-bottom: 10px;
     margin-top: 30px;
     background-color: #242428;
+
+    position : relative;
+    transform : translateY(-100%);
 }
 
 .footer > p {

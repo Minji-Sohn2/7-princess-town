@@ -83,329 +83,334 @@
     </style>
 </head>
 <body>
-<!--  상단바  -->
-<div class="ui secondary pointing menu" id="header">
-    <div id="header-info">
-        <div class="header-logo" id="header-name">
-            <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
-            <a href="/view/mainpage" style="color: #a96b6b">
-                <h2>토마토</h2>
-            </a>
-        </div>
-        <div class="header-buttons">
+<div id="except-footer">
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div class="header-buttons">
 
-            <!--  사용자 버튼  -->
-            <button id="user-icon" class="ui icon button">
-                <i class="user icon"></i>
-                <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
-            </button>
-        </div>
-    </div>
-</div>
-<!--  상단바 끝  -->
-
-<!-- 게시글 -->
-<div class="content-mainpage">
-    <div class="sidebar-mainpage">
-        <div class="box">
-            <h2 class="h2">인기검색어</h2>
-            <ol class="search-ranking">
-                <!--<li>검색어 1</li>-->
-            </ol>
-        </div>
-        <div>
-            <ul class="board-list">
-                <li><a href="/view/mainpage">전체게시판</a></li>
-                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
-                <th:block th:each="board : ${boardList}">
-                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
-                    </li>
-                </th:block>
-            </ul>
-        </div>
-    </div>
-    <!--  게시글 상세 시작  -->
-    <div class="main-content">
-        <div class="post-header">
-            <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
-            <div class="post-info">
-                <span th:text="'작성자: ' + ${post.nickname}"></span>
-                <span id="createdAt"></span>
-                <span id="modifiedAt"> | 수정일: </span>
-                <span th:text="' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
             </div>
         </div>
-        <br/>
-        <img class="post-image" id="post-image" th:src="${post.postImageUrl}" alt="게시글 이미지">
-        <div class="post-contents">
-            <p th:text="${post.contents}">
-                게시글 내용이 여기에 들어갑니다.
-            </p>
-        </div>
-        <br/>
-        <div class="post-actions">
-            <button class="action-button" id="likeButton">좋아요</button>
-            <button class="action-button" id="unlikeButton">좋아요 취소</button>
-            <button class="action-button" id="editButton">수정</button>
-            <button class="action-button" id="deleteButton">삭제</button>
-        </div>
     </div>
-</div>
+    <!--  상단바 끝  -->
 
-<!---start-comments-section--->
-<div class="comment-section" style="padding:30px;">
-    <div class="grids_of_2">
-        <div class="grids_of_2" id="comments">
-        </div>
-        <div class="artical-commentbox">
-            <hr style="border-top: 1px solid #6c757d;">
-            <h2 class="comment-h2" style="font-family: 'Jua', sans-serif">댓글<span class="comment-h5"
-                                                                                  style="font-size: 20px"></span></h2>
-            <div class="table-form">
-                <form name="post_comment" style="position: relative">
-                    <div>
-                        <label style="font-family: 'Jua', sans-serif;">닉네임<span>*</span></label>
-                        <h4 id="loginUserName"></h4>
-                    </div>
-                    <div>
-                        <label for="userComment" style="font-family: 'Jua', sans-serif;">댓글창<span>*</span></label>
-                        <button id="show" type="button">😀</button>
-                        <textarea type="text" id="userComment" name="content" placeholder="내용을 입력해주세요."></textarea>
-                    </div>
-                    <div class="background">
-                        <div class="window">
-                            <div class="popup">
-                                <button id="close" type="button">✖️️</button>
-                                <div id="imglist" style="padding-left: 5px">
-                                    <img id="airplane" src="/img/free-sticker-airplane-7496612.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="birthday" src="/img/free-sticker-birthday-boy-7379346.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="cauliflower" src="/img/free-sticker-cauliflower-7598101.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="coffee" src="/img/free-sticker-coffee-shop-7182801.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="confused" src="/img/free-sticker-confused-6684479.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="couple" src="/img/free-sticker-couple-7173075.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="eggplant" src="/img/free-sticker-eggplant-7598097.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="hate" src="/img/free-sticker-hate-7598095.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="hate2" src="/img/free-sticker-hate-7598096.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="heartbeat" src="/img/free-sticker-heartbeat-7173072.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="inspiration" src="/img/free-sticker-inspiration-6684493.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="lazy" src="/img/free-sticker-lazy-7470569.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="patient" src="/img/free-sticker-patient-7268641.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="pet" src="/img/free-sticker-play-with-pet-7260274.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="pet2" src="/img/free-sticker-play-with-pet-7260277.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="read" src="/img/free-sticker-read-7182833.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="sad" src="/img/free-sticker-sad-7598102.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="stay" src="/img/free-sticker-stay-at-home-7546335.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="stir" src="/img/free-sticker-stir-fry-7554151.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="worker" src="/img/free-sticker-worker-7546325.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                </div>
-                            </div>
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="edit-background">
-                        <div class="window">
-                            <div class="editpopup">
-                                <button id="editclose" type="button" onclick="editpopupclose()">✖️️</button>
-                                <div id="editimglist" style="padding-left: 5px">
-                                    <img id="editairplane" src="/img/free-sticker-airplane-7496612.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editbirthday" src="/img/free-sticker-birthday-boy-7379346.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editcauliflower" src="/img/free-sticker-cauliflower-7598101.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editcoffee" src="/img/free-sticker-coffee-shop-7182801.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editconfused" src="/img/free-sticker-confused-6684479.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editcouple" src="/img/free-sticker-couple-7173075.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editeggplant" src="/img/free-sticker-eggplant-7598097.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="edithate" src="/img/free-sticker-hate-7598095.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="edithate2" src="/img/free-sticker-hate-7598096.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editinspiration" src="/img/free-sticker-inspiration-6684493.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editlazy" src="/img/free-sticker-lazy-7470569.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editpatient" src="/img/free-sticker-patient-7268641.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editpet" src="/img/free-sticker-play-with-pet-7260274.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editpet2" src="/img/free-sticker-play-with-pet-7260277.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editread" src="/img/free-sticker-read-7182833.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editsad" src="/img/free-sticker-sad-7598102.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editstay" src="/img/free-sticker-stay-at-home-7546335.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editstir" src="/img/free-sticker-stir-fry-7554151.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editworker" src="/img/free-sticker-worker-7546325.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                </div>
-                            </div>
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reply-background">
-                        <div class="window">
-                            <div class="replypopup">
-                                <button id="replyclose" type="button" onclick="replypopupclose()">✖️️</button>
-                                <div id="replyimglist" style="padding-left: 5px">
-                                    <img id="replyairplane" src="/img/free-sticker-airplane-7496612.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replybirthday" src="/img/free-sticker-birthday-boy-7379346.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replycauliflower" src="/img/free-sticker-cauliflower-7598101.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replycoffee" src="/img/free-sticker-coffee-shop-7182801.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyconfused" src="/img/free-sticker-confused-6684479.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replycouple" src="/img/free-sticker-couple-7173075.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyeggplant" src="/img/free-sticker-eggplant-7598097.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyhate" src="/img/free-sticker-hate-7598095.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyhate2" src="/img/free-sticker-hate-7598096.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyinspiration" src="/img/free-sticker-inspiration-6684493.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replylazy" src="/img/free-sticker-lazy-7470569.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replypatient" src="/img/free-sticker-patient-7268641.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replypet" src="/img/free-sticker-play-with-pet-7260274.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replypet2" src="/img/free-sticker-play-with-pet-7260277.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyread" src="/img/free-sticker-read-7182833.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replysad" src="/img/free-sticker-sad-7598102.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replystay" src="/img/free-sticker-stay-at-home-7546335.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replystir" src="/img/free-sticker-stir-fry-7554151.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="replyworker" src="/img/free-sticker-worker-7546325.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                </div>
-                            </div>
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="editreply-background">
-                        <div class="window">
-                            <div class="editreplypopup">
-                                <button id="editreplyclose" type="button" onclick="editreplypopupclose()">✖️️</button>
-                                <div id="editreplyimglist" style="padding-left: 5px">
-                                    <img id="editreplyairplane" src="/img/free-sticker-airplane-7496612.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplybirthday" src="/img/free-sticker-birthday-boy-7379346.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplycauliflower" src="/img/free-sticker-cauliflower-7598101.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplycoffee" src="/img/free-sticker-coffee-shop-7182801.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyconfused" src="/img/free-sticker-confused-6684479.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplycouple" src="/img/free-sticker-couple-7173075.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyeggplant" src="/img/free-sticker-eggplant-7598097.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyhate" src="/img/free-sticker-hate-7598095.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyhate2" src="/img/free-sticker-hate-7598096.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyinspiration" src="/img/free-sticker-inspiration-6684493.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplylazy" src="/img/free-sticker-lazy-7470569.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplypatient" src="/img/free-sticker-patient-7268641.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplypet" src="/img/free-sticker-play-with-pet-7260274.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplypet2" src="/img/free-sticker-play-with-pet-7260277.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyread" src="/img/free-sticker-read-7182833.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplysad" src="/img/free-sticker-sad-7598102.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplystay" src="/img/free-sticker-stay-at-home-7546335.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplystir" src="/img/free-sticker-stir-fry-7554151.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                    <img id="editreplyworker" src="/img/free-sticker-worker-7546325.png"
-                                         style="height: 100px; width: 100px; cursor: pointer">
-                                </div>
-                            </div>
-                            <div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <button id="createComments" class="btn btn-secondary" type="button">댓글 작성</button>
+    <!-- 게시글 -->
+    <div class="content-mainpage">
+        <div class="sidebar-mainpage">
+            <div class="box">
+                <h2 class="h2">인기검색어</h2>
+                <ol class="search-ranking">
+                    <!--<li>검색어 1</li>-->
+                </ol>
             </div>
-            <div class="clear" id="comment"></div>
+            <div>
+                <ul class="board-list">
+                    <li><a href="/view/mainpage">전체게시판</a></li>
+                    <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                    <th:block th:each="board : ${boardList}">
+                        <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+        <!--  게시글 상세 시작  -->
+        <div class="main-content">
+            <div class="post-header">
+                <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
+                <div class="post-info">
+                    <span th:text="'작성자: ' + ${post.nickname}"></span>
+                    <span id="createdAt"></span>
+                    <span id="modifiedAt"> | 수정일: </span>
+                    <span th:text="' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                </div>
+            </div>
+            <br/>
+            <img class="post-image" id="post-image" th:src="${post.postImageUrl}" alt="게시글 이미지">
+            <div class="post-contents">
+                <p th:text="${post.contents}">
+                    게시글 내용이 여기에 들어갑니다.
+                </p>
+            </div>
+            <br/>
+            <div class="post-actions">
+                <button class="action-button" id="likeButton">좋아요</button>
+                <button class="action-button" id="unlikeButton">좋아요 취소</button>
+                <button class="action-button" id="editButton">수정</button>
+                <button class="action-button" id="deleteButton">삭제</button>
+            </div>
         </div>
     </div>
-</div>
-<nav aria-label="...">
-    <ul class="pagination justify-content-center">
-        <li class="page-item">
-            <a href="#comment" class="page-link prev-page-button" style="cursor: pointer" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        <li class="page-item page-numbers">
-            <a href="#comment" class="page-link page-button active pagenumber"></a>
-        </li>
-        <li class="page-item">
-            <a href="#comment" class="page-link next-page-button" style="cursor: pointer" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
-</nav>
-<br/>
-<div id="eventLoading" class="ui active dimmer" style="position: fixed; display: none;">
-    <div class="ui massive text loader">Loading</div>
+
+    <!---start-comments-section--->
+    <div class="comment-section" style="padding:30px;">
+        <div class="grids_of_2">
+            <div class="grids_of_2" id="comments">
+            </div>
+            <div class="artical-commentbox">
+                <hr style="border-top: 1px solid #6c757d;">
+                <h2 class="comment-h2" style="font-family: 'Jua', sans-serif">댓글<span class="comment-h5"
+                                                                                      style="font-size: 20px"></span>
+                </h2>
+                <div class="table-form">
+                    <form name="post_comment" style="position: relative">
+                        <div>
+                            <label style="font-family: 'Jua', sans-serif;">닉네임<span>*</span></label>
+                            <h4 id="loginUserName"></h4>
+                        </div>
+                        <div>
+                            <label for="userComment" style="font-family: 'Jua', sans-serif;">댓글창<span>*</span></label>
+                            <button id="show" type="button">😀</button>
+                            <textarea type="text" id="userComment" name="content" placeholder="내용을 입력해주세요."></textarea>
+                        </div>
+                        <div class="background">
+                            <div class="window">
+                                <div class="popup">
+                                    <button id="close" type="button">✖️️</button>
+                                    <div id="imglist" style="padding-left: 5px">
+                                        <img id="airplane" src="/img/free-sticker-airplane-7496612.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="birthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="cauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="coffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="confused" src="/img/free-sticker-confused-6684479.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="couple" src="/img/free-sticker-couple-7173075.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="eggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="hate" src="/img/free-sticker-hate-7598095.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="hate2" src="/img/free-sticker-hate-7598096.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="heartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="inspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="lazy" src="/img/free-sticker-lazy-7470569.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="patient" src="/img/free-sticker-patient-7268641.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="pet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="pet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="read" src="/img/free-sticker-read-7182833.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="sad" src="/img/free-sticker-sad-7598102.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="stay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="stir" src="/img/free-sticker-stir-fry-7554151.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="worker" src="/img/free-sticker-worker-7546325.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="edit-background">
+                            <div class="window">
+                                <div class="editpopup">
+                                    <button id="editclose" type="button" onclick="editpopupclose()">✖️️</button>
+                                    <div id="editimglist" style="padding-left: 5px">
+                                        <img id="editairplane" src="/img/free-sticker-airplane-7496612.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editbirthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editcauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editcoffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editconfused" src="/img/free-sticker-confused-6684479.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editcouple" src="/img/free-sticker-couple-7173075.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editeggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="edithate" src="/img/free-sticker-hate-7598095.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="edithate2" src="/img/free-sticker-hate-7598096.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editinspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editlazy" src="/img/free-sticker-lazy-7470569.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editpatient" src="/img/free-sticker-patient-7268641.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editpet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editpet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editread" src="/img/free-sticker-read-7182833.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editsad" src="/img/free-sticker-sad-7598102.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editstay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editstir" src="/img/free-sticker-stir-fry-7554151.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editworker" src="/img/free-sticker-worker-7546325.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reply-background">
+                            <div class="window">
+                                <div class="replypopup">
+                                    <button id="replyclose" type="button" onclick="replypopupclose()">✖️️</button>
+                                    <div id="replyimglist" style="padding-left: 5px">
+                                        <img id="replyairplane" src="/img/free-sticker-airplane-7496612.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replybirthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replycauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replycoffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyconfused" src="/img/free-sticker-confused-6684479.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replycouple" src="/img/free-sticker-couple-7173075.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyeggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyhate" src="/img/free-sticker-hate-7598095.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyhate2" src="/img/free-sticker-hate-7598096.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyinspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replylazy" src="/img/free-sticker-lazy-7470569.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replypatient" src="/img/free-sticker-patient-7268641.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replypet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replypet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyread" src="/img/free-sticker-read-7182833.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replysad" src="/img/free-sticker-sad-7598102.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replystay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replystir" src="/img/free-sticker-stir-fry-7554151.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="replyworker" src="/img/free-sticker-worker-7546325.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="editreply-background">
+                            <div class="window">
+                                <div class="editreplypopup">
+                                    <button id="editreplyclose" type="button" onclick="editreplypopupclose()">✖️️
+                                    </button>
+                                    <div id="editreplyimglist" style="padding-left: 5px">
+                                        <img id="editreplyairplane" src="/img/free-sticker-airplane-7496612.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplybirthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplycauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplycoffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyconfused" src="/img/free-sticker-confused-6684479.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplycouple" src="/img/free-sticker-couple-7173075.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyeggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyhate" src="/img/free-sticker-hate-7598095.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyhate2" src="/img/free-sticker-hate-7598096.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyinspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplylazy" src="/img/free-sticker-lazy-7470569.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplypatient" src="/img/free-sticker-patient-7268641.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplypet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplypet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyread" src="/img/free-sticker-read-7182833.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplysad" src="/img/free-sticker-sad-7598102.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplystay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplystir" src="/img/free-sticker-stir-fry-7554151.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                        <img id="editreplyworker" src="/img/free-sticker-worker-7546325.png"
+                                             style="height: 100px; width: 100px; cursor: pointer">
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <button id="createComments" class="btn btn-secondary" type="button">댓글 작성</button>
+                </div>
+                <div class="clear" id="comment"></div>
+            </div>
+        </div>
+    </div>
+    <nav aria-label="...">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a href="#comment" class="page-link prev-page-button" style="cursor: pointer" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item page-numbers">
+                <a href="#comment" class="page-link page-button active pagenumber"></a>
+            </li>
+            <li class="page-item">
+                <a href="#comment" class="page-link next-page-button" style="cursor: pointer" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <br/>
+    <div id="eventLoading" class="ui active dimmer" style="position: fixed; display: none;">
+        <div class="ui massive text loader">Loading</div>
+    </div>
+
 </div>
 
 <!-- footer 시작 -->
