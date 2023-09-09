@@ -99,7 +99,7 @@ public class LocationService {
 
         Location updatedLocation = locationRepository.save(location);
 
-        // Update the user's location
+        // 유저가 존재할 때 (로그인 한 후, 프로필수정-위치설정 할 때 setLocation 해줌)
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -107,11 +107,13 @@ public class LocationService {
             userRepository.save(user);
         }
 
-        // Update the posts associated with the user's location
-        List<Post> postsInLocation = postRepository.findByLocation(updatedLocation);
-        for (Post post : postsInLocation) {
-            post.setLocation(updatedLocation);
-            postRepository.save(post);
+        // 해당 유저의 게시글이 존재할 때 게시물들의 Location을 update 해주는 로직
+        List<Post> oneUserposts = postRepository.findByUser_UserId(id);
+        if (oneUserposts != null) {
+            for (Post post : oneUserposts) {
+                post.setLocation(updatedLocation);
+                postRepository.save(post);
+            }
         }
     }
 
