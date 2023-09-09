@@ -42,7 +42,7 @@ public class ViewController {
         model.addAttribute("topPosts", topPosts);
 
         //전체 게시글
-        List<PostResponseDto> posts = postService.getPosts();
+        List<PostResponseDto> posts = postService.getPostsPage(0);
         model.addAttribute("posts", posts);
 
         return "mainpage";
@@ -126,23 +126,6 @@ public class ViewController {
 
         return "writePost"; // HTML 템플릿 파일의 이름과 일치해야 합니다.
     }
-
-    // view.html 부분
-//    @GetMapping("/login-page")
-//    public String indexPage(Model model) {
-//        //게시판 목록
-//        List<BoardResponseDto> boardList = boardService.getBoard();
-//        model.addAttribute("boardList", boardList);
-//
-//        //인기 게시글
-//        List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
-//        model.addAttribute("topPosts", topPosts);
-//
-//        //전체 게시글
-//        List<PostResponseDto> posts = postService.getPosts();
-//        model.addAttribute("posts", posts);
-//        return "index";
-//    }
 
     @GetMapping("/editpost/{podstId}")
     public String editPostView(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -13,6 +13,9 @@ import com.example.princesstown.repository.post.SearchHistoryRepository;
 import com.example.princesstown.service.awsS3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,8 @@ public class PostService {
     private final SearchHistoryRepository searchHistoryRepository;
 //    private final JwtUtil jwtUtil;
 
+    private static final int POST_PAGE_SIZE = 20;
+
     // 게시글 전체 조회 API
     @Transactional(readOnly = true)
     public List<PostResponseDto> getPosts() {
@@ -47,6 +52,18 @@ public class PostService {
         }
 
         return postResponseDto;
+    }
+
+    // 게시글 20개씩 페이지로 반환
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> getPostsPage(int page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, POST_PAGE_SIZE, sort);
+
+        return postRepository.findAllByOrderByCreatedAtDesc(pageable)
+                .stream()
+                .map(PostResponseDto::new)
+                .toList();
     }
 
     // 선택 게시판 게시글 전체 조회 API

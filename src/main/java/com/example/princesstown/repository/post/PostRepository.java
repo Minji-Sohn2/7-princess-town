@@ -3,6 +3,7 @@ package com.example.princesstown.repository.post;
 import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.Post;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +17,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 전체 게시글 조회
     List<Post> findAllByOrderByCreatedAtDesc();
 
-//    List<Post> findAllByUserOrderByCreatedAtDesc(User user);
+    // 전체게시글 페이지로 반환
+    List<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     //특정 게시판 게시글 전체 조회
     List<Post> findByBoardIdOrderByCreatedAtDesc(Long boardId);
