@@ -6,7 +6,9 @@ import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.board.BoardService;
 import com.example.princesstown.service.post.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +33,7 @@ public class ViewController {
 
     //메인페이지
     @GetMapping("/mainpage")
-    public String viewMainPage(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String viewMainPage(Model model) {
         //게시판 목록
         List<BoardResponseDto> boardList = boardService.getBoard();
         model.addAttribute("boardList", boardList);
@@ -40,19 +42,35 @@ public class ViewController {
         List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
         model.addAttribute("topPosts", topPosts);
 
-        // 로그인한 경우
-        if (userDetails != null) {
-            // 위치 반경 내 게시글
-            Long userId = userDetails.getUser().getUserId();
-            List<PostResponseDto> nearbyPosts = postService.getPostsAroundUser(userId);
-            model.addAttribute("posts", nearbyPosts);
-        } else {
-            // 로그인하지 않은 경우
-            List<PostResponseDto> allPosts = postService.getPosts();
-            model.addAttribute("posts", allPosts);
-        }
+        //전체 게시글
+        List<PostResponseDto> allPosts = postService.getPosts();
+        model.addAttribute("allPosts", allPosts);
 
         return "mainpage";
+    }
+
+    // 위치 반경 내 게시글 조회
+    @GetMapping("/radiusposts")
+    public String viewRadiusPosts(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        //게시판 목록
+        List<BoardResponseDto> boardList = boardService.getBoard();
+        model.addAttribute("boardList", boardList);
+
+        //인기 게시글
+        List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
+        model.addAttribute("topPosts", topPosts);
+
+        if (userDetails != null) {
+            // 위치 반경 내 게시글 조회
+            Long userId = userDetails.getUser().getUserId();
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            model.addAttribute("authentication", authentication);
+
+            List<PostResponseDto> nearbyPosts = postService.getPostsAroundUser(userId);
+            model.addAttribute("radiusPosts", nearbyPosts);
+        }
+        return "radiusposts";
     }
 
     //제목으로 검색

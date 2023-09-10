@@ -52,7 +52,7 @@ public class PostService {
         Location userLocation = userLocationOpt.get();
 
         // 2. 반경 내의 게시글 조회
-        List<Post> allPosts = postRepository.findAll(); // 모든 게시글 조회
+        List<Post> allPosts = postRepository.findAllByOrderByCreatedAtDesc(); // 모든 게시글 조회(최신순)
 
         // 3. 반경 내의 게시글 필터링
         List<PostResponseDto> nearbyPosts = new ArrayList<>();

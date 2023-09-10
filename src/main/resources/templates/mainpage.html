@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--<html lang="en">-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+<!--    <link rel="stylesheet" href="styles.css">-->
     <title>게시판 및 인기검색어</title>
     <style>
         body {
@@ -109,6 +112,7 @@
         <div>
             <ul class="board-list">
                 <li><a href="/view/mainpage">전체게시판</a></li>
+                <li><a href="/view/radiusposts">지역게시판</a></li>
                 <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
                 <th:block th:each="board : ${boardList}">
                     <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
@@ -148,10 +152,29 @@
                 </li>
             </ol>
         </div>
-        <div class="posts">
+        <div sec:authorize="${not authentication.isAuthenticated()}" class="posts">
             <h2 class="h2">전체게시글</h2>
             <ul class="post-list">
-                <li th:each="post : ${posts}" class="post">
+                <li th:each="post : ${allPosts}" class="post">
+                    <div class="post-content">
+                        <div class="post-title-container">
+                            <a th:href="@{/view/posts/{postId}(postId=${post.id})}">
+                                <!-- 게시물 제목을 표시합니다 -->
+                                <span class="post-title" th:text="${post.title}"></span>
+                            </a>
+                        </div>
+                        <div class="post-info-container">
+                            <!-- 게시물 정보를 표시합니다 -->
+                            <span class="post-info" th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div sec:authorize="${authentication.isAuthenticated()}" class="posts">
+            <h2 class="h2">전체게시글</h2>
+            <ul class="post-list">
+                <li th:each="post : ${allPosts}" class="post">
                     <div class="post-content">
                         <div class="post-title-container">
                             <a th:href="@{/view/posts/{postId}(postId=${post.id})}">

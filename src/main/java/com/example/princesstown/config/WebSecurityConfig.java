@@ -6,6 +6,7 @@ import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.security.user.UserDetailsServiceImpl;
 import com.example.princesstown.service.user.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -71,19 +72,19 @@ public class WebSecurityConfig {
         // HTTP 요청에 대한 접근 제어 설정
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-//                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스에 대한 접근 허용
-//                        .requestMatchers("/auth/**").permitAll()
-//                        .requestMatchers("/api/**").permitAll()
-//                        .requestMatchers("/view/**").permitAll()
-//                        .requestMatchers("/send/**").permitAll()
-//                        .requestMatchers("/modify/**").permitAll()
-//                        .requestMatchers("/find/**").permitAll()
-//                        .requestMatchers("/verify/**").permitAll()
-//                        .requestMatchers("/img/**").permitAll()
-//                        .requestMatchers("/chat/**").permitAll()
-//                        .requestMatchers("/ws-stomp/**").permitAll()
-//                        .requestMatchers("/code/**").permitAll()
-                        .anyRequest().permitAll() // 그 외 요청은 인증 필요
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 리소스에 대한 접근 허용
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/view/**").permitAll()
+                        .requestMatchers("/send/**").permitAll()
+                        .requestMatchers("/modify/**").permitAll()
+                        .requestMatchers("/find/**").permitAll()
+                        .requestMatchers("/verify/**").permitAll()
+                        .requestMatchers("/img/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/ws-stomp/**").permitAll()
+                        .requestMatchers("/code/**").permitAll()
+                        .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 
 
