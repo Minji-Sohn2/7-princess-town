@@ -3,8 +3,8 @@
 }
 
 /* reset */
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
-article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
+/*html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}*/
+/*article, aside, details, figcaption, figure,footer, hgroup, menu, nav, section {display: block;}*/
 ol,ul{list-style:none;margin:0px;padding:0px;}
 blockquote,q{quotes:none;}
 blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
@@ -23,7 +23,7 @@ a{text-decoration:none;}
 .vertical-top{	vertical-align:top;}/* vertical align top */
 nav.vertical ul li{	display:block;}/* vertical menu */
 nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
-img{max-width:100%;}
+/*img{max-width:100%;}*/
 /*end reset*/
 
 .hidden-player {
@@ -57,38 +57,29 @@ body{
 }
 
 /*---start-header----*/
-.header{
-    background: url("https://images3.alphacoders.com/764/764967.png") repeat-x 0px 0px #FFF;
-    padding: 1.5em 0 1.2em;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 999;
-    height: 152px;
-}
-.logo{
-    float:left;
-}
-.logo img{
-    display:inline-block;
-}
-.nav-icon{
-    float: left;
-    margin: 0.6% 2% 0 8%;
-    width: 4.55%;
-}
-.nav-icon a span{
-    width:48px;
-    height:34px;
-    display:block;
-    background: no-repeat 0px 0px;
-}
-.top-searchbar {
-    float: left;
-    width: 46%;
-    position: relative;
-    margin-left: 2em;
-}
+/*.logo{*/
+/*    float:left;*/
+/*}*/
+/*.logo img{*/
+/*    display:inline-block;*/
+/*}*/
+/*.nav-icon{*/
+/*    float: left;*/
+/*    margin: 0.6% 2% 0 8%;*/
+/*    width: 4.55%;*/
+/*}*/
+/*.nav-icon a span{*/
+/*    width:48px;*/
+/*    height:34px;*/
+/*    display:block;*/
+/*    background: no-repeat 0px 0px;*/
+/*}*/
+/*.top-searchbar {*/
+/*    float: left;*/
+/*    width: 46%;*/
+/*    position: relative;*/
+/*    margin-left: 2em;*/
+/*}*/
 /*.box{*/
 /*    position:absolute;*/
 /*    top:-100px;*/
@@ -1713,3 +1704,28 @@ p.para {
 .commentbox {
     animation: fadeInDown 1s;
 }
+
+.profile-img {
+    max-width: 100%;
+}
+
+#img-wrap div img {
+    max-width: 100%;
+}
+
+.editemoji {
+    max-width: 100%;
+}
+
+.editCommentEmoji img {
+    max-width: 100%;
+}
+
+.replyCommentEmoji img {
+    max-width: 100%;
+}
+
+.editreplyCommentEmoji img {
+    max-width: 100%;
+}
+
