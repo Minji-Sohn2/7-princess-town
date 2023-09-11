@@ -61,6 +61,10 @@ public class PostService {
         // 3. 반경 내의 게시글 필터링
         List<PostResponseDto> nearbyPosts = new ArrayList<>();
         for (Post post : allPosts) {
+            if (post.getLocation() == null) {
+                continue;
+            }
+
             if (isWithinRadius(userLocation, post.getLocation())) {
                 // PostResponseDto를 생성하여 데이터를 복사
                 PostResponseDto postResponseDto = new PostResponseDto(post);
@@ -105,7 +109,7 @@ public class PostService {
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDto = new ArrayList<>();
 
-        for(Post post : posts){
+        for (Post post : posts) {
             postResponseDto.add(new PostResponseDto(post));
         }
 
@@ -125,7 +129,7 @@ public class PostService {
     }
 
     // 선택 게시판 게시글 전체 조회 API
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<Post> getAllPostsByBoardId(Long boardId) {
         return postRepository.findByBoardIdOrderByCreatedAtDesc(boardId);
     }
@@ -206,9 +210,9 @@ public class PostService {
 
     // 게시글 등록 API
     public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId, MultipartFile postImage) {
-        Board board =boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId).orElseThrow();
 
-        if(user == null){
+        if (user == null) {
             throw new IllegalArgumentException("허가되지 않은 사용자입니다.");
         }
 
@@ -272,7 +276,7 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
         );
-        if(post.getUser().getUserId().equals(user.getUserId())){ //  || user.getRole().equals(UserRoleEnum.ADMIN)
+        if (post.getUser().getUserId().equals(user.getUserId())) { //  || user.getRole().equals(UserRoleEnum.ADMIN)
             postRepository.delete(post);
         } else {
             return new ApiResponseDto(400, "작성자만 삭제가 가능합니다.");

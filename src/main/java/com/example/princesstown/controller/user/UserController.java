@@ -1,6 +1,5 @@
 package com.example.princesstown.controller.user;
 
-import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
@@ -44,9 +43,9 @@ public class UserController {
     public ResponseEntity<ApiResponseDto> verifyPhoneCode(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("inputCode") String inputCode) {
         ResponseEntity<ApiResponseDto> response = messageService.verifyCode(phoneNumber, inputCode);
         if (response.getStatusCode() != HttpStatus.OK) {
-           redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "false",1, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "false", 1, TimeUnit.HOURS);
         } else {
-            redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "true",1, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "true", 1, TimeUnit.HOURS);
         }
         return response;
     }
@@ -65,7 +64,7 @@ public class UserController {
     // 문자 인증 후 이메일로 회원탈퇴 인증코드 발송
     @PostMapping("/email/verify-codes")
     public ResponseEntity<ApiResponseDto> sendDeteactiveCode(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("email") String email) {
-        if ("true".equals(redisTemplate.opsForValue().get("VerificationStatus_" + phoneNumber)))  {
+        if ("true".equals(redisTemplate.opsForValue().get("VerificationStatus_" + phoneNumber))) {
             redisTemplate.delete("VerificationStatus_" + phoneNumber);
             return userService.sendDeteactiveCode(phoneNumber, email);
         } else {
@@ -78,7 +77,7 @@ public class UserController {
     public ResponseEntity<ApiResponseDto> deleteAccount(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("inputCode") String inputCode) {
         Long userId = userDetails.getUser().getUserId();
         String username = userDetails.getUser().getUsername();
-        if(inputCode.equals(redisTemplate.opsForValue().get(username + "_deteactiveCode"))) {
+        if (inputCode.equals(redisTemplate.opsForValue().get(username + "_deteactiveCode"))) {
             redisTemplate.delete(username + "_deteactiveCode");
             return userService.deleteAccount(userId);
         } else {

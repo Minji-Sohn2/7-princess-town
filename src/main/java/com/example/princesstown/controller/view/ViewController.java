@@ -6,7 +6,6 @@ import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.board.BoardService;
 import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +33,7 @@ public class ViewController {
         List<BoardResponseDto> boardList = boardService.getBoard();
         model.addAttribute("boardList", boardList);
 
-        //인기 게시글
+        //인기 검색어
         List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
         model.addAttribute("topPosts", topPosts);
 
@@ -52,7 +51,7 @@ public class ViewController {
         List<BoardResponseDto> boardList = boardService.getBoard();
         model.addAttribute("boardList", boardList);
 
-        //인기 게시글
+        //인기 검색어
         List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
         model.addAttribute("topPosts", topPosts);
 

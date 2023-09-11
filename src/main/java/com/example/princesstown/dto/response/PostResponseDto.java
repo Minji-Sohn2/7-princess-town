@@ -31,8 +31,12 @@ public class PostResponseDto {
         this.postImageUrl = post.getPostImageUrl();
         this.createdAt = post.getCreatedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
         this.modifiedAt = post.getModifiedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
-        this.latitude = post.getLocation().getLatitude();
-        this.longitude = post.getLocation().getLongitude();
-
+        if (post.getLocation() != null) {
+            this.latitude = post.getLocation().getLatitude();
+            this.longitude = post.getLocation().getLongitude();
+        } else {
+            this.latitude = null;
+            this.longitude = null;
+        }
     }
 }
