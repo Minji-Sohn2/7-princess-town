@@ -27,6 +27,12 @@ public class RedisConfig {
     private String redisPassword;
 
     // Redis 저장소와 연결
+//    @Bean
+//    public RedisConnectionFactory connectionFactory() {
+//        return new LettuceConnectionFactory(redisHost, redisPort);
+//    }
+
+    // Redis 저장소와 연결
     @Bean
     public RedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
