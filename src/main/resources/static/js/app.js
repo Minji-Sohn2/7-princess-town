@@ -540,6 +540,22 @@ $(document).ready(function () {
         })
     }
 
+    // 초기 상태에서 버튼 비활성화
+    $('#login-submit').prop('disabled', true);
+
+    // 아이디와 비밀번호 입력 필드의 input 이벤트 모니터링
+    $('input[name="login-usernameInput"], input[name="login-passwordInput"]').on('input', function () {
+        // 아이디와 비밀번호 필드 중 하나라도 비어있으면 로그인 버튼 비활성화
+        const $usernameInput = $('input[name="login-usernameInput"]');
+        const $passwordInput = $('input[name="login-passwordInput"]');
+
+        if ($usernameInput.val().trim() === '' || $passwordInput.val().trim() === '') {
+            $('#login-submit').prop('disabled', true);
+        } else {
+            $('#login-submit').prop('disabled', false);
+        }
+    })
+
     // 로그인 버튼 클릭 이벤트
     $('#loginModal button[type="submit"]').on('click', function (event) {
         event.preventDefault();
@@ -547,6 +563,15 @@ $(document).ready(function () {
         // 사용자가 입력한 아이디와 비밀번호 가져오기
         const username = $('input[name="login-usernameInput"]').val();
         const password = $('input[name="login-passwordInput"]').val();
+
+        // 아이디와 비밀번호 필드 중 하나라도 비어있으면 로그인 버튼 비활성화
+        if (!username || !password) {
+            $('#login-submit').prop('disabled', true);
+            alert("아이디와 비밀번호를 입력해주세요.");
+            return;
+        } else {
+            $('#login-submit').prop('disabled', false);
+        }
 
         $.ajax({
             url: "/api/users/login",
@@ -589,8 +614,7 @@ $(document).ready(function () {
                 // 로그인 상태 UI ni
                 $('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
-                // window.location.href = '/';
-                location.reload();
+                window.location.href = '/';
 
             },
             error: function (error) {
