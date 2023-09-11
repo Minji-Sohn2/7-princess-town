@@ -1708,3 +1708,24 @@ p.para {
 .profile-img {
     max-width: 100%;
 }
+
+#img-wrap div img {
+    max-width: 100%;
+}
+
+.editemoji {
+    max-width: 100%;
+}
+
+.editCommentEmoji img {
+    max-width: 100%;
+}
+
+.replyCommentEmoji img {
+    max-width: 100%;
+}
+
+.editreplyCommentEmoji img {
+    max-width: 100%;
+}
+
