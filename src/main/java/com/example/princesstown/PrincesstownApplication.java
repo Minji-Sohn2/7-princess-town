@@ -22,9 +22,4 @@ public class PrincesstownApplication {
     public static void main(String[] args) {
         SpringApplication.run(PrincesstownApplication.class, args);
     }
-
-    @PostConstruct
-    void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-    }
 }
