@@ -1,14 +1,12 @@
 package com.example.princesstown.controller.post;
 
 import com.example.princesstown.dto.comment.RestApiResponseDto;
-import com.example.princesstown.dto.request.PostByLocationRequestDto;
 import com.example.princesstown.dto.request.PostRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.awsS3.S3Uploader;
-import com.example.princesstown.service.location.LocationService;
 import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,20 +24,47 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class PostController {
+
     private final PostService postService;
     private final S3Uploader s3Uploader;
-    private final LocationService locationService;
+
+//    // 로그인한 사용자의 위치 반경 내 게시물 조회
+//    @GetMapping("/boards/posts")
+//    public ResponseEntity<?> getPostsAroundUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        if (userDetails != null) {
+//            Long userId = userDetails.getUser().getUserId();
+//            List<PostResponseDto> nearbyPosts = postService.getPostsAroundUser(userId);
+//
+//            if (!nearbyPosts.isEmpty()) {
+//                return ResponseEntity.ok(nearbyPosts);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("주변에 게시물이 없습니다.");
+//            }
+//        }
+//        // 로그인하지 않은 경우에는 전체 게시물 조회
+//        List<PostResponseDto> allPosts = postService.getPosts();
+//        return ResponseEntity.ok(allPosts);
+//    }
+
+    //위치반경 내 게시물 조회
+    @GetMapping("/radius/posts")
+    public ResponseEntity<List<PostResponseDto>> getPostsAroundUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getUser().getUserId();
+        List<PostResponseDto> nearbyPosts = postService.getPostsAroundUser(userId);
+
+         if (nearbyPosts.isEmpty()) {
+            // 주변의 게시글이 없을 경우 적절한 응답을 반환합니다.
+            return ResponseEntity.noContent().build();
+        }
+
+        // 주변의 게시글을 반환합니다.
+        return ResponseEntity.ok(nearbyPosts);
+    }
 
     //게시글 전체 조회 API
     @GetMapping("/boards/posts")
     public List<PostResponseDto> getPosts(){
         return postService.getPosts();
-    }
-
-    // 위치반경 내 게시글 조회
-    @GetMapping("/auth/location/posts/{id}")
-    public ResponseEntity<ApiResponseDto> getPostsByLocation(@PathVariable Long id, @RequestBody PostByLocationRequestDto requestDto) {
-        return locationService.getPostsInRadius(id, requestDto);
     }
 
     //선택 게시판 게시글 전체 조회
@@ -103,6 +128,7 @@ public class PostController {
                 return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패했습니다."));
             }
         }
+
 
         postService.createPost(postRequestDto, userDetails.getUser(), boardId, postImage);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "글 작성에 성공했습니다."));

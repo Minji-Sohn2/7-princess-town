@@ -25,15 +25,15 @@ public class Location {
     @Column
     private Double longitude; // 경도
 
-    @Column(name = "last_update")
-    private LocalDateTime lastUpdate; // 위치 업데이트 시간 기록
-
     @Column
     private Double radius;
+
+    @Column(name = "last_update")
+    private LocalDateTime lastUpdate; // 위치 업데이트 시간 기록
 
     @OneToMany(mappedBy = "location")
     private List<User> users = new ArrayList<>(); // Location과 User 간의 일대다 관계 설정
 
-//    @OneToMany(mappedBy = "location")
-//    private List<Post> locationPosts = new ArrayList<>(); // Location과 Post 간의 일대다 관계 설정
+    @OneToMany(mappedBy = "location")
+    private List<Post> locationPosts = new ArrayList<>(); // Location과 Post 간의 일대다 관계 설정
 }

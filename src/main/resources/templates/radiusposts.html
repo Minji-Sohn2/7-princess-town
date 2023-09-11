@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--<html lang="en">-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판 및 인기검색어</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .content {
+            display: flex;
+            width: 50%;
+        }
+
+        .sidebar {
+            padding: 20px;
+            background-color: #f2f2f2;
+            min-width: 200px;
+        }
+
+        .box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .board-list, .search-ranking {
+            list-style: none;
+            padding: 0;
+            margin: 0; /* remove default margin for ul/ol */
+        }
+
+        .board-list li, .search-ranking li {
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .board-list li:last-child, .search-ranking li:last-child {
+            margin-bottom: 0;
+        }
+
+        #searchType, #searchKeyword {
+            font-size: 12px;
+        }
+
+        .post-title {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .post-info {
+            font-size: 12px;
+            color: #777;
+            text-align: right;
+            margin-top: 3px;
+        }
+
+        .post {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px;
+            background-color: #fff;
+            margin: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .post-title-container {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .post-info-container {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="sidebar">
+        <div class="box">
+            <h2 class="h2">인기검색어</h2>
+            <ol class="search-ranking">
+                <!--<li>검색어 1</li>-->
+            </ol>
+        </div>
+        <div>
+            <ul class="board-list">
+                <li><a href="/view/mainpage">전체게시판</a></li>
+                <li><a href="/view/radiusposts">지역게시판</a></li>
+                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                <th:block th:each="board : ${boardList}">
+                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a></li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+    <div class="main-content">
+        <div>
+            <form class="search-form" style="display: inline-block; vertical-align: top;">
+                <select name="searchType" id="searchType">
+                    <option value="title">제목</option>
+                    <option value="contents">내용</option>
+                    <option value="titleAndContents">제목+내용</option>
+                </select>
+                <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
+                <button type="submit">검색</button>
+            </form>
+            <a href="http://localhost:8080/view/createpost" style="display: inline-block; margin-left: 10px;">
+                <button class="btn-create-post">글쓰기</button>
+            </a>
+        </div>
+        <!--        sec:authorize="${not authentication.isAuthenticated()}"-->
+        <!--        sec:authorize="${authentication.isAuthenticated()}"-->
+        <div class="posts">
+            <h2 class="h2">지역게시글</h2>
+            <!-- AJAX로 가져온 지역 게시글을 여기에 표시합니다. -->
+            <ul class="post-list" id="radiusPosts">
+                <!-- AJAX로 가져온 게시글이 동적으로 추가됩니다. -->
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        // 검색 폼 제출 시 처리
+        $(".search-form").submit(function(event) {
+            event.preventDefault(); // 기본 제출 동작 방지
+
+            var searchType = $("#searchType").val();
+            var searchKeyword = $("#searchKeyword").val();
+
+            if (searchType === "title") {
+                window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
+            } else if (searchType === "contents") {
+                window.location.href = "/view/searchContent?contents=" + encodeURIComponent(searchKeyword);
+            } else if (searchType === "titleAndContents") {
+                window.location.href = "/view/searchKeyword?keyword=" + encodeURIComponent(searchKeyword);
+            }
+        });
+    });
+
+    //인기 검색어
+    $(document).ready(function() {
+        // 인기검색어 데이터를 가져와서 HTML에 렌더링하는 함수
+        function renderPopularSearches(data) {
+            var searchRanking = $(".search-ranking");
+            searchRanking.empty(); // 기존 목록 비우기
+
+            $.each(data, function(index, popularSearch) {
+                var listItem = $("<li>").text(popularSearch.keyword);
+                listItem.on("click", function() {
+                    // 검색어 클릭 시 검색 결과 페이지로 이동
+                    var keyword = encodeURIComponent(popularSearch.keyword);
+                    var searchType = "titleAndContents"; // 예시로 제목+내용 검색 유형 사용
+                    window.location.href = "/view/searchKeyword?searchType=" + searchType + "&keyword=" + keyword;
+                });
+                searchRanking.append(listItem);
+            });
+        }
+
+        // 백엔드 API 호출하여 인기검색어 데이터 가져오기
+        $.ajax({
+            url: "/api/popular-searches",
+            method: "GET",
+            success: function(data) {
+                renderPopularSearches(data);
+            },
+            error: function() {
+                console.error("Error fetching popular searches data.");
+            }
+        });
+
+        var token = Cookies.get('Authorization');
+        console.log(token);
+
+        // 위치 반경 내 게시글 가져오기
+        function loadRadiusPosts() {
+            $.ajax({
+                url: "/api/radius/posts", // 지역 게시글을 가져오는 API 엔드포인트로 변경해야 합니다.
+                method: "GET",
+                headers: {
+                    'Authorization': token,
+                },
+                success: function(data) {
+                    var radiusPosts = $("#radiusPosts");
+                    radiusPosts.empty(); // 기존 목록 비우기
+
+                    $.each(data, function(index, post) {
+                        var listItem = $("<li>").addClass("post");
+                        var postContent = $("<div>").addClass("post-content");
+                        var titleContainer = $("<div>").addClass("post-title-container");
+                        var titleLink = $("<a>").attr("href", "/view/posts/" + post.id).text(post.title);
+                        var infoContainer = $("<div>").addClass("post-info-container").text(
+                            "작성자: " + post.nickname + " | 작성일: " + post.createdAt + " | 조회수: " + post.viewCount + " | 좋아요: " + post.likeCnt
+                        );
+
+                        titleContainer.append(titleLink);
+                        postContent.append(titleContainer, infoContainer);
+                        listItem.append(postContent);
+                        radiusPosts.append(listItem);
+
+                        titleLink.addClass("post-title"); // 글 제목 스타일 추가
+                        infoContainer.addClass("post-info"); // 글 정보 스타일 추가
+                    });
+                },
+                error: function() {
+                    console.error("Error fetching radius posts data.");
+                }
+            });
+        }
+
+        // 페이지 로드 시 위치 반경 내 게시글 가져오기
+        loadRadiusPosts();
+    });
+</script>
+</html>

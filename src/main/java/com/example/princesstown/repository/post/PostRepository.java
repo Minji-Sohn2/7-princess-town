@@ -43,6 +43,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     int incrementViewCount(@Param("postId") Long postId);
 
+    // 게시글의 위치 정보를 가져오는 메소드
+    List<Post> findByLocationIsNotNull();
+
     //     위치 범위 내의 게시물을 찾는 메서드
     List<Post> findByLocationIn(List<Location> locations);
 

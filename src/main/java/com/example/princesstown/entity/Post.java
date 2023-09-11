@@ -68,7 +68,6 @@ public class Post extends Timestamped{
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
         this.postImageUrl = postImageUrl;
-        // 게시글을 작성할 때, 해당 유저의 Location을 Post에 업데이트
         this.location = user.getLocation();
     }
 

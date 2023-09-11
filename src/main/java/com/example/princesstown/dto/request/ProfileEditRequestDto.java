@@ -16,4 +16,5 @@ public class ProfileEditRequestDto {
     private Double latitude;
     private Double longitude;
     private Double radius;
+
 }
