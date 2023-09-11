@@ -323,6 +323,7 @@ label[for="signup-profileImageInput"] .icon {
 
 .ui.action.input:not([class*="left action"]) > input {
     border-bottom-right-radius: 0.28571429rem!important;
+    border-top-right-radius: 0.28571429rem!important;
     border-right-color: rgba(34,36,38,.15)!important;
 }
 
