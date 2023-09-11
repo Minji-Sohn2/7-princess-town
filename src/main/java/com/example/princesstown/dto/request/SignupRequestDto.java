@@ -1,6 +1,5 @@
 package com.example.princesstown.dto.request;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -23,4 +22,7 @@ public class SignupRequestDto {
 
     private MultipartFile profileImage;
     private String phoneVerifyCode;
+    private Double latitude;
+    private Double longitude;
+    private Double radius;
 }

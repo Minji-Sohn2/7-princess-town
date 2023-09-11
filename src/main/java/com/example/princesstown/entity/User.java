@@ -55,6 +55,13 @@ public class User {
         this.nickname = signupRequestDto.getNickname();
         this.email = signupRequestDto.getEmail();
         this.phoneNumber = signupRequestDto.getPhoneNumber();
+
+        // SignupRequestDto에서 Location 정보를 가져와서 User의 Location에 설정
+        Location location = new Location();
+        location.setLatitude(signupRequestDto.getLatitude());
+        location.setLongitude(signupRequestDto.getLongitude());
+        location.setRadius(signupRequestDto.getRadius());
+        this.location = location;
     }
 
     public User(KakaoUserInfoDto kakaoUserInfoDto, String encodedPassword) {
