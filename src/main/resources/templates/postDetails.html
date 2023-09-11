@@ -158,7 +158,7 @@
             </p>
         </div>
         <br/>
-        <div class="post-actions">
+        <div class="post-actions" id="postActions" style="display: none;">
             <button class="action-button" id="likeButton">좋아요</button>
             <button class="action-button" id="unlikeButton">좋아요 취소</button>
             <button class="action-button" id="editButton">수정</button>
@@ -904,16 +904,11 @@
 
         var token = Cookies.get('Authorization');
         console.log(token);
+        var postActions = $('#postActions'); // 요소를 변수로 저장
 
-        var urlParts = window.location.pathname.split("/");
-
-        var postId = urlParts[urlParts.length - 1];
-
-        if (!token) {
-            $('#likeButton').hide();
-            $('#unlikeButton').hide();
-            $('#editButton').hide();
-            $('#deleteButton').hide();
+        if (token) {
+        // 사용자가 로그인한 경우
+            postActions.css('display', 'block'); // display 속성을 변경하여 요소를 보이게 함
         }
 
         function handleLike(postId) {
