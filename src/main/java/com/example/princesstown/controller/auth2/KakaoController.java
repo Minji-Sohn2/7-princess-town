@@ -31,6 +31,8 @@ public class KakaoController {
         User userData = (User) apiResponseBody.getData();
         String nickname = userData.getNickname();
         Long userId = userData.getUserId();
+        String phoneNumber =userData.getPhoneNumber();
+        String email = userData.getEmail();
         log.info("카카오서버에서 보내는 username : " + nickname);
         log.info("카카오서버에서 보내는 userId : " + userId);
 
@@ -43,7 +45,7 @@ public class KakaoController {
         log.info("카카오서버에서 보내는 token : " + token);
 
         String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
-        return "redirect:/view/mainpage?success=kakao&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
+        return "redirect:/view/mainpage?success=kakao&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token + "&phoneNumber=" + phoneNumber + "&email=" + email;
     }
 }
 
