@@ -30,6 +30,7 @@ $(document).ready(function() {
 			$('.item:contains("회원가입")').show();
 			$('.item:contains("프로필")').hide();
 			$('.item:contains("회원탈퇴")').hide();
+			$('.item:contains("채팅방")').hide();
 		} else {
 			var nickname = Cookies.get('nickname');
 			if (nickname) {
@@ -39,6 +40,7 @@ $(document).ready(function() {
 				$('.item:contains("로그인")').hide();
 				$('.item:contains("회원탈퇴")').show();
 				$('.item:contains("프로필")').show();
+				$('.item:contains("채팅방")').show();
 			}
 		}
 	}

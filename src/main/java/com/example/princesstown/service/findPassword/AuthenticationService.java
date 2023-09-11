@@ -8,7 +8,6 @@ import com.example.princesstown.repository.user.UserRepository;
 import com.example.princesstown.security.jwt.JwtUtil;
 import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.message.MessageService;
-import com.example.princesstown.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,8 +33,6 @@ public class AuthenticationService {
     private final MessageService messageService;
 
     private final StringRedisTemplate redisTemplate;
-
-    private final UserService userService;
 
     private final UserRepository userRepository;
 

@@ -31,6 +31,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Jua&family=Gugi&font-family: 'Gugi', cursive;display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="https://webfontworld.github.io/daegu/DalseoHealing.css">
+
+
 </head>
 <body>
 <div id="except-footer">
@@ -87,7 +89,7 @@
                     <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
                     <button type="submit">검색</button>
                 </form>
-                <a href="/view/createpost" style="display: inline-block; margin-left: 10px;">
+                <a href="http://localhost:8080/view/createpost" style="display: inline-block; margin-left: 10px;">
                     <button class="btn-create-post">글쓰기</button>
                 </a>
             </div>
@@ -159,7 +161,9 @@
         <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">
             <i class="user circle icon"></i> 프로필
         </a>
-        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">내 채팅방</a>
+        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">
+            <i class="comment icon"></i>내 채팅방
+        </a>
         <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
             <i class="sign-out icon"></i> 로그아웃
         </a>
