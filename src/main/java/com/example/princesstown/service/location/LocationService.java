@@ -1,8 +1,5 @@
 package com.example.princesstown.service.location;
 
-import com.example.princesstown.dto.request.PostByLocationRequestDto;
-import com.example.princesstown.dto.response.ApiResponseDto;
-import com.example.princesstown.dto.response.PostResponseDto;
 import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.entity.User;
@@ -11,8 +8,6 @@ import com.example.princesstown.repository.post.PostRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j(topic = "LocationService")
 @RequiredArgsConstructor
@@ -33,51 +27,47 @@ public class LocationService {
     private final UserRepository userRepository;
 
     //  주어진 위도와 경도를 기준으로 반경 내에 있는 게시물을 찾아 반환하는 메서드
-    public ResponseEntity<ApiResponseDto> getPostsInRadius(Long id, PostByLocationRequestDto requestDto) {
-        // 요청에서 위도와 경도, 반경 정보 가져오기
-        Double latitude = requestDto.getLatitude();
-        Double longitude = requestDto.getLongitude();
-        Double radius = requestDto.getRadius();
+//    public ResponseEntity<ApiResponseDto> getPostsInRadius(Long id, PostByLocationRequestDto requestDto) {
+//        // 요청에서 위도와 경도, 반경 정보 가져오기
+//        Double latitude = requestDto.getLatitude();
+//        Double longitude = requestDto.getLongitude();
+//        Double radius = // 해당 유저가 설정한 radius 필요
+//
+//        // 사용자의 위치 정보 조회
+//        Location userLocation = locationRepository.findByLocationIdAndLatitudeAndLongitude(id, latitude, longitude, radius); //여기서 반경 정보를 추가하고
+//
+//        // 지구 반지름(킬로미터)
+//        Double earthRadius = 6371.01;
+//
+//        // 반경에 따른 위도와 경도 차이 계산
+//        Double latDiff = Math.toDegrees(radius / earthRadius);
+//        Double lonDiff = Math.toDegrees(radius / (earthRadius * Math.cos(Math.toRadians(latitude))));
+//
+//        // 최소, 최대 위도와 경도 계산
+//        Double minLat = userLocation.getLatitude() - latDiff;
+//        Double maxLat = userLocation.getLatitude() + latDiff;
+//        Double minLon = userLocation.getLongitude() - lonDiff;
+//        Double maxLon = userLocation.getLongitude() + lonDiff;
+//
+//        // 주어진 범위 내의 게시물 조회
+//        List<Post> postsInRadius = postRepository.findByLocationLatitudeBetweenAndLocationLongitudeBetween(minLat, maxLat, minLon, maxLon);
+//
+//        // 게시물이 없는 경우
+//        if (postsInRadius.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "반경 내에 사용자가 존재하지 않습니다."));
+//        }
+//
+//        // 게시물 저장
+//        postRepository.saveAll(postsInRadius);
+//
+//        // 게시물 DTO 변환
+//        List<PostResponseDto> postInRadiusResponseDto = postsInRadius.stream()
+//                .map(PostResponseDto::new)
+//                .collect(Collectors.toList());
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(HttpStatus.OK.value(), "게시물 조회 성공", postInRadiusResponseDto));
+//    }
 
-        // 사용자의 위치 정보 조회
-        Location userLocation = locationRepository.findByLocationIdAndLatitudeAndLongitude(id, latitude, longitude);
-
-        // 지구 반지름(킬로미터)
-        Double earthRadius = 6371.01;
-
-        // 반경에 따른 위도와 경도 차이 계산
-        Double latDiff = Math.toDegrees(radius / earthRadius);
-        Double lonDiff = Math.toDegrees(radius / (earthRadius * Math.cos(Math.toRadians(latitude))));
-
-        // 최소, 최대 위도와 경도 계산
-        Double minLat = userLocation.getLatitude() - latDiff;
-        Double maxLat = userLocation.getLatitude() + latDiff;
-        Double minLon = userLocation.getLongitude() - lonDiff;
-        Double maxLon = userLocation.getLongitude() + lonDiff;
-
-        // 주어진 범위 내의 게시물 조회
-        List<Post> postsInRadius = postRepository.findByLocationLatitudeBetweenAndLocationLongitudeBetween(minLat, maxLat, minLon, maxLon);
-
-        // 게시물이 없는 경우
-        if (postsInRadius.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "반경 내에 사용자가 존재하지 않습니다."));
-        }
-
-        // 게시물에 사용자 위치 설정
-        for (Post post : postsInRadius) {
-            post.setLocation(userLocation);
-        }
-
-        // 게시물 저장
-        postRepository.saveAll(postsInRadius);
-
-        // 게시물 DTO 변환
-        List<PostResponseDto> postInRadiusResponseDto = postsInRadius.stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto(HttpStatus.OK.value(), "게시물 조회 성공", postInRadiusResponseDto));
-    }
 
 
     // 위치를 업데이트 하는 메서드

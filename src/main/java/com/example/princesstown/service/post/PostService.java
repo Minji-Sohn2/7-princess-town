@@ -11,8 +11,12 @@ import com.example.princesstown.repository.post.PostLikesRepository;
 import com.example.princesstown.repository.post.PostRepository;
 import com.example.princesstown.repository.post.SearchHistoryRepository;
 import com.example.princesstown.service.awsS3.S3Uploader;
+import com.example.princesstown.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +39,69 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikesRepository postLikesRepository;
     private final SearchHistoryRepository searchHistoryRepository;
-//    private final JwtUtil jwtUtil;
+    private final UserService userService;
+
+    private static final int POST_PAGE_SIZE = 20;
+
+    //위치반경내 게시물 조회
+    public List<PostResponseDto> getPostsAroundUser(Long userId) {
+        // 1. 사용자의 위치 정보 가져오기
+        Optional<Location> userLocationOpt = userService.getUserLocation(userId);
+
+        if (!userLocationOpt.isPresent()) {
+            // 사용자의 위치 정보가 없으면 빈 목록 반환
+            return Collections.emptyList();
+        }
+
+        Location userLocation = userLocationOpt.get();
+
+        // 2. 반경 내의 게시글 조회
+        List<Post> allPosts = postRepository.findAllByOrderByCreatedAtDesc(); // 모든 게시글 조회(최신순)
+
+        // 3. 반경 내의 게시글 필터링
+        List<PostResponseDto> nearbyPosts = new ArrayList<>();
+        for (Post post : allPosts) {
+            if (post.getLocation() == null) {
+                continue;
+            }
+
+            if (isWithinRadius(userLocation, post.getLocation())) {
+                // PostResponseDto를 생성하여 데이터를 복사
+                PostResponseDto postResponseDto = new PostResponseDto(post);
+                nearbyPosts.add(postResponseDto);
+            }
+        }
+
+        return nearbyPosts;
+    }
+
+    private boolean isWithinRadius(Location userLocation, Location postLocation) {
+        // 반경 내에 있는지 여부를 판단하는 로직을 구현
+        double userLatitude = userLocation.getLatitude();
+        double userLongitude = userLocation.getLongitude();
+        double postLatitude = postLocation.getLatitude();
+        double postLongitude = postLocation.getLongitude();
+
+        double distance = calculateDistance(userLatitude, userLongitude, postLatitude, postLongitude);
+
+        // 반경 내에 있는 게시글인지 여부 판단
+        double radius = userLocation.getRadius();
+        return distance <= radius;
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        // 좌표 간의 거리 계산 로직을 구현
+        // 실제 거리 계산에는 좌표를 이용하는 라이브러리를 사용하는 것이 좋습니다.
+        // 여기에서는 간단한 예시로 표시했습니다.
+        double earthRadius = 6371; // 지구 반지름 (킬로미터)
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return earthRadius * c;
+    }
 
     // 게시글 전체 조회 API
     @Transactional(readOnly = true)
@@ -42,15 +109,27 @@ public class PostService {
         List<Post> posts = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDto = new ArrayList<>();
 
-        for(Post post : posts){
+        for (Post post : posts) {
             postResponseDto.add(new PostResponseDto(post));
         }
 
         return postResponseDto;
     }
 
+    // 게시글 20개씩 페이지로 반환
+    @Transactional(readOnly = true)
+    public List<PostResponseDto> getPostsPage(int page) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page, POST_PAGE_SIZE, sort);
+
+        return postRepository.findAllByOrderByCreatedAtDesc(pageable)
+                .stream()
+                .map(PostResponseDto::new)
+                .toList();
+    }
+
     // 선택 게시판 게시글 전체 조회 API
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<Post> getAllPostsByBoardId(Long boardId) {
         return postRepository.findByBoardIdOrderByCreatedAtDesc(boardId);
     }
@@ -131,8 +210,9 @@ public class PostService {
 
     // 게시글 등록 API
     public PostResponseDto createPost(PostRequestDto postRequestDto, User user, Long boardId, MultipartFile postImage) {
-        Board board =boardRepository.findById(boardId).orElseThrow();
-        if(user == null){
+        Board board = boardRepository.findById(boardId).orElseThrow();
+
+        if (user == null) {
             throw new IllegalArgumentException("허가되지 않은 사용자입니다.");
         }
 
@@ -152,9 +232,6 @@ public class PostService {
         }
 
         Post post = new Post(postRequestDto, user, board, 0L, postImageUrl);
-
-//        // 게시글을 등록할 때, 해당 유저가 가지고 있는 Location을 Post에 Update해주는 로직
-//        post.setLocation(user.getLocation());
         postRepository.save(post);
 
         return new PostResponseDto(post);
@@ -199,7 +276,7 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
         );
-        if(post.getUser().getUserId().equals(user.getUserId())){ //  || user.getRole().equals(UserRoleEnum.ADMIN)
+        if (post.getUser().getUserId().equals(user.getUserId())) { //  || user.getRole().equals(UserRoleEnum.ADMIN)
             postRepository.delete(post);
         } else {
             return new ApiResponseDto(400, "작성자만 삭제가 가능합니다.");

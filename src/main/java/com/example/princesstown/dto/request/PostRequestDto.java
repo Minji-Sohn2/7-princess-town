@@ -9,6 +9,7 @@ public class PostRequestDto {
 
     @NotBlank(message = "필수 입력 값입니다.")
     private String title; // 게시글 제목
+
     @NotBlank(message = "필수 입력 값입니다.")
     private String contents; // 게시글 내용
 
@@ -17,5 +18,9 @@ public class PostRequestDto {
     private MultipartFile newPostImage;
 
     private String postImageUrl; // 이미지 URL
+
+    private Double latitude;
+
+    private Double longitude;
 
 }

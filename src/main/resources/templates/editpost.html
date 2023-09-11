@@ -14,6 +14,7 @@
 
     <!-- static 스타일 시트 -->
     <link rel="stylesheet" type="text/css" href="/css/header.css">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <link rel="stylesheet" type="text/css" href="/css/mainpage.css">
 
     <!--  구글 폰트  -->
@@ -85,14 +86,6 @@
             max-width: 200px;
         }
 
-        /*button {*/
-        /*    padding: 10px 20px;*/
-        /*    background-color: #007bff;*/
-        /*    color: #fff;*/
-        /*    border: none;*/
-        /*    cursor: pointer;*/
-        /*}*/
-
         /* 이미지 업로드 및 미리보기 스타일 */
         .image-upload-div, .image-preview-div {
             margin-bottom: 15px;
@@ -107,74 +100,77 @@
     </style>
 </head>
 <body>
-<!--  상단바  -->
-<div class="ui secondary pointing menu" id="header">
-    <div id="header-info">
-        <div class="header-logo" id="header-name">
-            <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
-            <a href="/view/mainpage" style="color: #a96b6b">
-                <h2>토마토</h2>
-            </a>
-        </div>
-        <div class="header-buttons">
+<div id="except-footer">
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div class="header-buttons">
 
-            <!--  사용자 버튼  -->
-            <button id="user-icon" class="ui icon button">
-                <i class="user icon"></i>
-                <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
-            </button>
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
+            </div>
         </div>
     </div>
-</div>
-<!--  상단바 끝  -->
+    <!--  상단바 끝  -->
 
-<div class="content-mainpage">
-    <div class="sidebar-mainpage">
-        <div class="box">
-            <h2 class="h2">인기검색어</h2>
-            <ol class="search-ranking">
-                <!--                <li>검색어 1</li>-->
-            </ol>
-        </div>
-        <div>
-            <ul class="board-list">
-                <li><a href="/view/mainpage">전체게시판</a></li>
-                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
-                <th:block th:each="board : ${boardList}">
-                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
-                    </li>
-                </th:block>
-            </ul>
-        </div>
-    </div>
-    <div class="main-content">
-        <h2 class="h2">게시판 선택</h2>
-        <form id="selectPostForm" enctype="multipart/form-data">
-            <div class="custom-container">
-                <select id="boardId" name="boardId" class="custom-select">
-                    <option value="" selected disabled>게시판을 선택하세요</option>
+    <div class="content-mainpage">
+        <div class="sidebar-mainpage">
+            <div class="box">
+                <h2 class="h2">인기검색어</h2>
+                <ol class="search-ranking">
+                    <!--                <li>검색어 1</li>-->
+                </ol>
+            </div>
+            <div>
+                <ul class="board-list">
+                    <li><a href="/view/mainpage">전체게시판</a></li>
+                    <li><a href="/view/radiusposts">지역게시판</a></li>
                     <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
                     <th:block th:each="board : ${boardList}">
-                        <option th:value="${board.id}" th:text="${board.title}"></option>
+                        <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                        </li>
                     </th:block>
-                </select><br>
-                <button type="button" id="selectBoardButton">게시판 선택 확인</button>
+                </ul>
             </div>
-        </form>
-        <h2 class="h2">게시글 작성</h2>
-        <form id="editPostForm" enctype="multipart/form-data">
-            <label for="postTitle">제목:</label>
-            <input type="text" id="postTitle" name="title" required><br>
-            <label for="postContents">내용:</label>
-            <textarea id="postContents" name="contents" rows="4" required></textarea><br>
-            <div class="image-upload-div">
-                <label for="newPostImage">이미지 업로드:</label>
-                <input type="file" id="newPostImage" name="newPostImage"><br>
-                <img id="imagePreview">
-            </div>
-            <button type="button" id="writePostButton">수정</button>
-            <button type="button" id="cancelButton">취소</button>
-        </form>
+        </div>
+        <div class="main-content">
+            <h2 class="h2">게시판 선택</h2>
+            <form id="selectPostForm" enctype="multipart/form-data">
+                <div class="custom-container">
+                    <select id="boardId" name="boardId" class="custom-select">
+                        <option value="" selected disabled>게시판을 선택하세요</option>
+                        <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                        <th:block th:each="board : ${boardList}">
+                            <option th:value="${board.id}" th:text="${board.title}"></option>
+                        </th:block>
+                    </select><br>
+                    <button type="button" id="selectBoardButton">게시판 선택 확인</button>
+                </div>
+            </form>
+            <h2 class="h2">게시글 작성</h2>
+            <form id="editPostForm" enctype="multipart/form-data">
+                <label for="postTitle">제목:</label>
+                <input type="text" id="postTitle" name="title" required><br>
+                <label for="postContents">내용:</label>
+                <textarea id="postContents" name="contents" rows="4" required></textarea><br>
+                <div class="image-upload-div">
+                    <label for="newPostImage">이미지 업로드:</label>
+                    <input type="file" id="newPostImage" name="newPostImage"><br>
+                    <img id="imagePreview">
+                </div>
+                <button type="button" id="writePostButton">수정</button>
+                <button type="button" id="cancelButton">취소</button>
+            </form>
+        </div>
     </div>
 </div>
 

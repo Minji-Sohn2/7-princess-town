@@ -17,6 +17,7 @@ public class ProfileResponseDto {
     private String profileImage;
     private Double latitude;
     private Double longitude;
+    private Double radius;
 
     public ProfileResponseDto(User user, Location location) {
         this.username = user.getUsername();
@@ -29,9 +30,11 @@ public class ProfileResponseDto {
         if (location != null) {
             this.latitude = location.getLatitude();
             this.longitude = location.getLongitude();
+            this.radius = location.getRadius();
         } else {
             this.latitude = null;
             this.longitude = null;
+            this.radius = null;
         }
     }
 }

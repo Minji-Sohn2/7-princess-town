@@ -35,38 +35,54 @@
 
 </head>
 <body>
-<!--  상단바  -->
-<div class="ui secondary pointing menu" id="header">
-    <div id="header-info">
-        <div class="header-logo" id="header-name">
-            <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
-            <a href="/view/mainpage" style="color: #a96b6b">
-                <h2>토마토</h2>
-            </a>
+<div id="except-footer">
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div class="header-buttons">
+
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
+            </div>
         </div>
-        <div class="header-buttons">
+    </div>
+    <!--  상단바 끝  -->
 
-            <!--  사용자 버튼  -->
-            <button id="user-icon" class="ui icon button">
-                <i class="user icon"></i>
-                <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
-            </button>
+    <div id="room-list-container">
+        <div class="room-list-header">
+            <h1>내 채팅방 리스트</h1>
+            <button id="createRoomButton">채팅방 만들기</button>
+        </div>
+
+        <!-- 내가 속한 채팅방 -->
+        <div id="roomCardsContainer">
+
         </div>
     </div>
+
 </div>
-<!--  상단바 끝  -->
 
-<div id="room-list-container">
-    <div class="room-list-header">
-        <h1>내 채팅방 리스트</h1>
-        <button id="createRoomButton">채팅방 만들기</button>
+<!-- footer 시작 -->
+<footer>
+    <div class="footer">
+        <p><img src="/img/tomato-logo-img/tomato_logo.png" style="width: 50px;">우리 동네 커뮤니티 토마토</p>
+        <br/>
+        <div>
+            <p>김휘수 | 모성민 | 손민지 | 주인수</p>
+            <p>© 2023 7PRINCESS TOMATO ALL RIGHTS RESERVED</p>
+        </div>
+        <br/>
     </div>
-
-    <!-- 내가 속한 채팅방 -->
-    <div id="roomCardsContainer">
-
-    </div>
-</div>
+</footer>
 
 <!-- 채팅방 만들기 모달 -->
 <div class="modal-overlay" id="createRoomModalOverlay"></div>
@@ -217,19 +233,6 @@
         </div>
     </div>
 </div>
-
-<!-- footer 시작 -->
-<footer>
-    <div class="footer">
-        <p><img src="/img/tomato-logo-img/tomato_logo.png" style="width: 50px;">우리 동네 커뮤니티 토마토</p>
-        <br/>
-        <div>
-            <p>김휘수 | 모성민 | 손민지 | 주인수</p>
-            <p>© 2023 7PRINCESS TOMATO ALL RIGHTS RESERVED</p>
-        </div>
-        <br/>
-    </div>
-</footer>
 
 <!-- Signup Form -->
 <div class="ui segment" id="modalContainer">

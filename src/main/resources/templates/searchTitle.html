@@ -14,6 +14,7 @@
 
     <!-- static 스타일 시트 -->
     <link rel="stylesheet" type="text/css" href="/css/header.css">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css">
     <link rel="stylesheet" type="text/css" href="/css/mainpage.css">
 
     <!--  구글 폰트  -->
@@ -27,86 +28,89 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
 </head>
 <body>
-<!--  상단바  -->
-<div class="ui secondary pointing menu" id="header">
-    <div id="header-info">
-        <div class="header-logo" id="header-name">
-            <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
-            <a href="/view/mainpage" style="color: #a96b6b">
-                <h2>토마토</h2>
-            </a>
-        </div>
-        <div class="header-buttons">
+<div id="except-footer">
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div class="header-buttons">
 
-            <!--  사용자 버튼  -->
-            <button id="user-icon" class="ui icon button">
-                <i class="user icon"></i>
-                <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
-            </button>
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
+            </div>
         </div>
     </div>
-</div>
-<!--  상단바 끝  -->
+    <!--  상단바 끝  -->
 
-<!-- 게시글 -->
-<div class="content-mainpage">
-    <div class="sidebar-mainpage">
-        <div class="box">
-            <h2 class="h2">인기검색어</h2>
-            <ol class="search-ranking">
-                <!--                <li>검색어 1</li>-->
-            </ol>
+    <!-- 게시글 -->
+    <div class="content-mainpage">
+        <div class="sidebar-mainpage">
+            <div class="box">
+                <h2 class="h2">인기검색어</h2>
+                <ol class="search-ranking">
+                    <!--                <li>검색어 1</li>-->
+                </ol>
+            </div>
+            <div>
+                <ul class="board-list">
+                    <li><a href="/view/mainpage">전체게시판</a></li>
+                    <li><a href="/view/radiusposts">지역게시판</a></li>
+                    <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
+                    <th:block th:each="board : ${boardList}">
+                        <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
         </div>
-        <div>
-            <ul class="board-list">
-                <li><a href="/view/mainpage">전체게시판</a></li>
-                <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
-                <th:block th:each="board : ${boardList}">
-                    <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
-                    </li>
-                </th:block>
-            </ul>
-        </div>
-    </div>
-    <div class="main-content">
-        <div>
-            <form class="search-form" style="display: inline-block; vertical-align: top;">
-                <select name="searchType" id="searchType">
-                    <option value="title">제목</option>
-                    <option value="contents">내용</option>
-                    <option value="titleAndContents">제목+내용</option>
-                </select>
-                <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
-                <button type="submit">검색</button>
-            </form>
-            <a href="http://localhost:8080/view/createpost" style="display: inline-block; margin-left: 10px;">
-                <button class="btn-create-post">글쓰기</button>
-            </a>
-        </div>
-        <div class="posts">
-            <h2 class="h2">검색 결과</h2>
-            <ul class="post-list">
-                <th:block th:if="${searchTitleResults.isEmpty()}">
-                    <p>검색결과가 없습니다.</p>
-                </th:block>
-                <th:block th:else>
-                    <li th:each="post : ${searchTitleResults}" class="post">
-                        <div class="post-content">
-                            <div class="post-title-container">
-                                <a th:href="@{/view/posts/{postId}(postId=${post.id})}">
-                                    <!-- 검색 결과 게시물 제목을 표시합니다 -->
-                                    <span class="post-title" th:text="${post.title}"></span>
-                                </a>
+        <div class="main-content">
+            <div>
+                <form class="search-form" style="display: inline-block; vertical-align: top;">
+                    <select name="searchType" id="searchType">
+                        <option value="title">제목</option>
+                        <option value="contents">내용</option>
+                        <option value="titleAndContents">제목+내용</option>
+                    </select>
+                    <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
+                    <button type="submit">검색</button>
+                </form>
+                <a href="http://localhost:8080/view/createpost" style="display: inline-block; margin-left: 10px;">
+                    <button class="btn-create-post">글쓰기</button>
+                </a>
+            </div>
+            <div class="posts">
+                <h2 class="h2">검색 결과</h2>
+                <ul class="post-list">
+                    <th:block th:if="${searchTitleResults.isEmpty()}">
+                        <p>검색결과가 없습니다.</p>
+                    </th:block>
+                    <th:block th:else>
+                        <li th:each="post : ${searchTitleResults}" class="post">
+                            <div class="post-content">
+                                <div class="post-title-container">
+                                    <a th:href="@{/view/posts/{postId}(postId=${post.id})}">
+                                        <!-- 검색 결과 게시물 제목을 표시합니다 -->
+                                        <span class="post-title" th:text="${post.title}"></span>
+                                    </a>
+                                </div>
+                                <div class="post-info-container">
+                                    <!-- 검색 결과 게시물 정보를 표시합니다 -->
+                                    <span class="post-info"
+                                          th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                                </div>
                             </div>
-                            <div class="post-info-container">
-                                <!-- 검색 결과 게시물 정보를 표시합니다 -->
-                                <span class="post-info"
-                                      th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
-                            </div>
-                        </div>
-                    </li>
-                </th:block>
-            </ul>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
