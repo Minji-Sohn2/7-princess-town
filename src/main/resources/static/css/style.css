@@ -322,9 +322,9 @@ label[for="signup-profileImageInput"] .icon {
 
 
 .ui.action.input:not([class*="left action"]) > input {
-    border-top-right-radius: 0.28571429rem!important;
     border-bottom-right-radius: 0.28571429rem!important;
-    border-right: 1px solid rgba(34, 36, 38, 0.15)!important;
+    border-top-right-radius: 0.28571429rem!important;
+    border-right-color: rgba(34,36,38,.15)!important;
 }
 
 .ui.action.input > .button:first-child,
@@ -337,7 +337,6 @@ label[for="signup-profileImageInput"] .icon {
     border-top-left-radius: 0.28571429rem!important;
     border-bottom-left-radius: 0.28571429rem!important;
 }
-
 
 
 

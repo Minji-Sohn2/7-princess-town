@@ -14,11 +14,17 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableTransactionManagement
 public class PrincesstownApplication {
+
     static {
         System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");  // 추가
     }
 
     public static void main(String[] args) {
         SpringApplication.run(PrincesstownApplication.class, args);
+    }
+
+    @PostConstruct
+    void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
     }
 }
