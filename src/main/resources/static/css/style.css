@@ -198,7 +198,7 @@ body {
     justify-content: center; /* 항목들을 가운데로 정렬 */
     align-items: center; /* 세로축에서 항목들을 가운데로 정렬 */
     width: 100%; /* 전체 너비를 차지하게 설정 */
-    font-size: 12.7px;
+    /*font-size: 12.7px;*/
 }
 
 
@@ -289,7 +289,6 @@ body {
     height: 45px;
 }
 
-
 label[for="signup-profileImageInput"] {
     display: inline-block; /* 인라인 블록 요소로 설정 */
     width: 100px;          /* 너비 설정 */
@@ -373,6 +372,15 @@ label[for="signup-profileImageInput"] .icon {
     min-height: 800px;  /* 최소 높이 설정 */
     width: 450px;
     overflow-y: auto;   /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
+}
+
+#setLocation {
+    width: 181px;
+    height: 45px;
+}
+
+#radiusSelect {
+    height: 45px;
 }
 
 label[for="profile-imageInput"] {
