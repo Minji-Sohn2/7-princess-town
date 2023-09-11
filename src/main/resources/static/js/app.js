@@ -437,6 +437,19 @@ $(document).ready(function () {
         });
     });
 
+    // 체크박스 상태 변경 이벤트 리스너 추가
+    $('#accept-terms').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        if (!isChecked) {
+            $('#signup-submit').prop('disabled', true); // 체크가 해제될 때 버튼 비활성화
+        } else {
+            $('#signup-submit').prop('disabled', false); // 체크되었을 때 버튼 활성화
+        }
+    });
+
+    // 초기 상태에서 버튼 비활성화
+    $('#signup-submit').prop('disabled', true);
+
     // 회원가입 버튼 클릭 이벤트
     $('#signupModal button[type="submit"]').on('click', function (event) {
         event.preventDefault();
