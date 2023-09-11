@@ -14,7 +14,6 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableTransactionManagement
 public class PrincesstownApplication {
-
     static {
         System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");  // 추가
     }
