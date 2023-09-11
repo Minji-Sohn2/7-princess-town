@@ -169,7 +169,9 @@ public class PostService {
         }
 
         Post post = new Post(postRequestDto, user, board, 0L, postImageUrl);
-        post.setLocation(user.getLocation());
+
+//        // 게시글을 등록할 때, 해당 유저가 가지고 있는 Location을 Post에 Update해주는 로직
+//        post.setLocation(user.getLocation());
         postRepository.save(post);
 
         return new PostResponseDto(post);

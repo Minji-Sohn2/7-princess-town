@@ -53,6 +53,7 @@ body {
 /* 입력창 옆에 버튼을 배치할 스타일 */
 .field .input-button-container button {
   margin-left: 10px;
+  height: 45px;
 }
 
 /* 입력창과 버튼을 같은 라인에 배치 */
@@ -98,6 +99,10 @@ body {
   padding: 15px;  /* 헤더 내부 패딩 설정 */
   font-weight: bold;  /* 헤더 텍스트 굵게 설정 */
 }
+
+
+
+
 
 
 
@@ -302,6 +307,27 @@ label[for="signup-profileImageInput"] .icon {
     cursor: pointer; /* 추가 */
 }
 
+#signup-sendVerificationCode, #signup-verificationCode {
+    margin-left: 10px;
+}
+
+
+.ui.action.input:not([class*="left action"]) > input {
+    border-top-right-radius: 0.28571429rem!important;
+    border-bottom-right-radius: 0.28571429rem!important;
+    border-right: 1px solid rgba(34, 36, 38, 0.15)!important;
+}
+
+.ui.action.input > .button:first-child,
+.ui.action.input:not([class*="left action"]) > .button {
+    border-top-left-radius: 0.28571429rem!important;
+    border-bottom-left-radius: 0.28571429rem!important;
+}
+
+.ui.action.input > .button {
+    border-top-left-radius: 0.28571429rem!important;
+    border-bottom-left-radius: 0.28571429rem!important;
+}
 
 
 
@@ -445,16 +471,9 @@ label[for="profile-imageInput"] .icon {
 
 
 
-
-
 #user-menu {
     display: none; /* 초기에 메뉴를 숨김 */
 }
-
-#user-menu.active {
-    display: block; /* 버튼을 클릭할 때 메뉴를 표시 */
-}
-
 
 /* 사용자 아이콘 버튼 스타일 */
 #user-icon {

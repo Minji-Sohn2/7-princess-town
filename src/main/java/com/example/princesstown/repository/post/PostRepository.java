@@ -32,6 +32,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     //제목과 내용으로 검색
     List<Post> findAllByTitleContainingIgnoreCaseOrContentsContainingIgnoreCaseOrderByCreatedAtDesc(String title, String contents);
 
+    List<Post>  findByUser_UserId(Long userId);
+
     //top10 인기검색어
     @Query("SELECT p FROM Post p WHERE p.likeCnt > 0 ORDER BY p.likeCnt DESC")
     List<Post> findTop10LikedPostsWithDuplicates();
@@ -50,5 +52,4 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     default List<Post> findByLocation(Location location) {
         return findByLocationIn(Collections.singletonList(location));
     }
-
 }
