@@ -18,6 +18,7 @@
     <!-- static 스타일 시트 -->
     <link rel="stylesheet" type="text/css" href="/css/header.css">
     <link rel="stylesheet" type="text/css" href="/css/footer.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/mainpage.css">
 
     <!--  구글 폰트  -->
@@ -300,12 +301,25 @@
             <div class="field">
                 <label>프로필 이미지</label>
                 <div class="input-file-container">
-                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput"
-                           style="display: none;">
+                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
                     <label for="signup-profileImageInput">
                         <i class="images icon"></i>
                     </label>
                     <span id="signup-selectedFileName"></span>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <div class="field">
+                    <label>반경 설정</label>
+                    <div class = "location-input-button-container">
+                        <select class="ui dropdown" id="signup-radiusSelect">
+                            <option value="1">1km</option>
+                            <option value="2">2km</option>
+                            <option value="3">3km</option>
+                            <option value="4">4km</option>
+                            <option value="5">5km</option>
+                        </select>
+                        <button class="ui button" id="signup-setLocation">위치 설정</button>
+                    </div>
                 </div>
             </div>
             <div style="margin-top: 30px;"></div>
@@ -317,7 +331,9 @@
                     </div>
                 </div>
                 <div style="margin-top: 30px;"></div>
-                <button class="ui button" type="submit">회원가입</button>
+                <!-- 회원가입 완료 여부를 저장하는 input 엘리먼트 -->
+                <input type="hidden" id="verificationCompleted" value="false">
+                <button class="ui button" type="submit" id="signup-submit">회원가입</button>
                 <div style="margin-top: 50px;"></div>
                 <a href="/" class="cd-form-bottom-message">Back to log-in</a>
             </div>
@@ -340,7 +356,7 @@
             </div>
             <div style="margin-top: 50px;"></div>
             <div class="login-buttons">
-                <button class="ui button" type="submit">로그인</button>
+                <button class="ui button" type="submit" id="login-submit">로그인</button>
                 <div class="social-login-text">소셜로그인</div>
                 <div class="custom-button-container">
                     <button class="custom-image-button" id="naverLogin">

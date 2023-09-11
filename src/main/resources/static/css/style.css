@@ -198,6 +198,7 @@ body {
     justify-content: center; /* 항목들을 가운데로 정렬 */
     align-items: center; /* 세로축에서 항목들을 가운데로 정렬 */
     width: 100%; /* 전체 너비를 차지하게 설정 */
+    font-size: 12.7px;
 }
 
 
@@ -279,6 +280,15 @@ body {
     width: 450px;
 }
 
+#signup-setLocation {
+    width: 181px;
+    height: 45px;
+}
+
+#signup-radiusSelect {
+    height: 45px;
+}
+
 
 label[for="signup-profileImageInput"] {
     display: inline-block; /* 인라인 블록 요소로 설정 */
@@ -328,6 +338,8 @@ label[for="signup-profileImageInput"] .icon {
     border-top-left-radius: 0.28571429rem!important;
     border-bottom-left-radius: 0.28571429rem!important;
 }
+
+
 
 
 

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,15 @@ public class User {
         this.nickname = signupRequestDto.getNickname();
         this.email = signupRequestDto.getEmail();
         this.phoneNumber = signupRequestDto.getPhoneNumber();
+        // 업데이트 시각 설정
+        LocalDateTime now = LocalDateTime.now();
+        // SignupRequestDto에서 Location 정보를 가져와서 User의 Location에 설정
+        Location location = new Location();
+        location.setLastUpdate(now);
+        location.setLatitude(signupRequestDto.getLatitude());
+        location.setLongitude(signupRequestDto.getLongitude());
+        location.setRadius(signupRequestDto.getRadius());
+        this.location = location;
     }
 
     public User(KakaoUserInfoDto kakaoUserInfoDto, String encodedPassword) {
