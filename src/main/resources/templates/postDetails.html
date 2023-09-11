@@ -906,7 +906,15 @@
         console.log(token);
 
         var urlParts = window.location.pathname.split("/");
+
         var postId = urlParts[urlParts.length - 1];
+
+        if (!token) {
+            $('#likeButton').hide();
+            $('#unlikeButton').hide();
+            $('#editButton').hide();
+            $('#deleteButton').hide();
+        }
 
         function handleLike(postId) {
             $.ajax({
