@@ -217,9 +217,13 @@ function getAllMyRooms() {
         .then(response => {
             console.log(response);
             const rooms = response.data.myChatRoomList;
-            rooms.forEach(room => {
-                createRoomCard(room);
-            });
+            if (rooms.length !== 0) {
+                rooms.forEach(room => {
+                    createRoomCard(room);
+                });
+            } else {
+                $('#noRoomCard').show();
+            }
         });
 }
 
