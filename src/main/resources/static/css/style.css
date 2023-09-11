@@ -279,6 +279,15 @@ body {
     width: 450px;
 }
 
+#signup-setLocation {
+    width: 181px;
+    height: 45px;
+}
+
+#signup-radiusSelect {
+    height: 45px;
+}
+
 
 label[for="signup-profileImageInput"] {
     display: inline-block; /* 인라인 블록 요소로 설정 */
@@ -328,6 +337,8 @@ label[for="signup-profileImageInput"] .icon {
     border-top-left-radius: 0.28571429rem!important;
     border-bottom-left-radius: 0.28571429rem!important;
 }
+
+
 
 
 
