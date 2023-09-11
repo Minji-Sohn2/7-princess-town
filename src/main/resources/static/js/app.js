@@ -637,6 +637,8 @@ $(document).ready(function() {
 		const nickname = urlParams.get("nickname");
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
+		const email = urlParams.get('email');
+		const phoneNumber = urlParams.get('phoneNumber');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
 
@@ -649,12 +651,27 @@ $(document).ready(function() {
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
+		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
+		}
+		if (!email) {
+			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
+		} else if (!phoneNumber) {
+			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
+		} else if (!currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
+		} else if (!email && !phoneNumber) {
+			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
+		} else if (!email && !currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
+		} else if (!phoneNumber && !currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
+		}
+
 		// 모달 숨기기
 		$loginModal.modal('hide');
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
-
-		alert("성공적으로 로그인 했습니다!");
 
 		// 현재 페이지의 URL에서 'success=kakao'를 제거
 		const newURL = window.location.href.split("?")[0];
@@ -684,6 +701,8 @@ $(document).ready(function() {
 		const nickname = urlParams.get("nickname");
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
+		const email = urlParams.get('email');
+		const phoneNumber = urlParams.get('phoneNumber');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
 		// 로그인 정보를 쿠키에 저장
@@ -695,12 +714,29 @@ $(document).ready(function() {
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
+		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
+		}
+		if (!email) {
+			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
+		} else if (!phoneNumber) {
+			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
+		} else if (!currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
+		} else if (!email && !phoneNumber) {
+			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
+		} else if (!email && !currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
+		} else if (!phoneNumber && !currentLatitude && !currentLongitude) {
+			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
+		}
+
 		// 모달 숨기기
 		$loginModal.modal('hide');
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
 
-		alert("성공적으로 로그인 했습니다!");
+		alert("성공적으로 로그인 했습니다! 프로필에서 이메일을 설정해주세요");
 
 		// 현재 페이지의 URL에서 'success=kakao'를 제거
 		const newURL = window.location.href.split("?")[0];

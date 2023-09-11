@@ -29,6 +29,8 @@ public class NaverController {
 
         ApiResponseDto apiResponseBody = responseDto.getBody();
         User userData = (User) apiResponseBody.getData();
+        String phoneNumber =userData.getPhoneNumber();
+        String email = userData.getEmail();
         String nickname = userData.getNickname();
         Long userId = userData.getUserId();
         log.info("네이버서버에서 보내는 nickname : " + nickname);
@@ -43,7 +45,7 @@ public class NaverController {
         log.info("네이버서버에서 보내는 token : " + token);
 
         String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
-        return "redirect:/view/mainpage?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token;
+        return "redirect:/view/mainpage?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token + "&phoneNumber=" + phoneNumber + "&email=" + email;
     }
 }
 
