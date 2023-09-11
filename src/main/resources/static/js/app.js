@@ -653,8 +653,7 @@ $(document).ready(function() {
 
 		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		}
-		if (!email) {
+		} else if (!email) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
 		} else if (!phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
@@ -666,6 +665,8 @@ $(document).ready(function() {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
 		} else if (!phoneNumber && !currentLatitude && !currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
+		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
+			alert("로그인 성공!")
 		}
 
 		// 모달 숨기기
@@ -716,8 +717,7 @@ $(document).ready(function() {
 
 		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		}
-		if (!email) {
+		} else if (!email) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
 		} else if (!phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
@@ -729,14 +729,14 @@ $(document).ready(function() {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
 		} else if (!phoneNumber && !currentLatitude && !currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
+		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
+			alert("로그인 성공!")
 		}
 
 		// 모달 숨기기
 		$loginModal.modal('hide');
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
-
-		alert("성공적으로 로그인 했습니다! 프로필에서 이메일을 설정해주세요");
 
 		// 현재 페이지의 URL에서 'success=kakao'를 제거
 		const newURL = window.location.href.split("?")[0];

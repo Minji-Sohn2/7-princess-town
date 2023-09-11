@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/img/tomato-logo-img/tomato_logo.png">
     <title>우리동네 커뮤니티 토마토</title>
-
     <!--    구글 폰트      -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +23,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/mainpage.css">
     <link rel="stylesheet" href="/css/style.css">
@@ -447,7 +447,7 @@
             <i class="user circle icon"></i> 프로필
         </a>
         <a class="item" id="myChatRoom-btn" href="/view/chatRooms">
-            <i class="comment icon"></i>내 채팅방
+            <i class="comment icon"></i> 내 채팅방
         </a>
         <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
             <i class="sign-out icon"></i> 로그아웃
@@ -906,9 +906,6 @@
         console.log(token);
         var postActions = $('#postActions'); // 요소를 변수로 저장
 
-        const nickname = Cookies.get('nickname');
-        console.log(nickname);
-
         if (token) {
         // 사용자가 로그인한 경우
             postActions.css('display', 'block'); // display 속성을 변경하여 요소를 보이게 함
@@ -1012,13 +1009,6 @@
         }
 
         $("#editButton").click(function () {
-            const postnickname = [[${post.nickname}]];
-
-            if(postnickname !== nickname) {
-                alert("게시글 작성자가 아닙니다.")
-                return false;
-            }
-
             handleEdit(postId);
         });
 
