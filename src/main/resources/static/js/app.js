@@ -351,16 +351,18 @@ $(document).ready(function() {
 					const newprofileImage = res.data.profileImage;
 					console.log("profileImage : " + profileImage)
 
-					// 쿠키 만료일 설정
-					var expirationDate = new Date();
-					expirationDate.setDate(expirationDate.getHours() + 3);
+					// 현재 시간을 가져옵니다.
+					const currentTime = new Date();
+
+					// 만료 시간을 3시간 뒤로 설정합니다.
+					const expirationTime = new Date(currentTime.getTime() + 3 * 60 * 60 * 1000);
 
 					if (newNickname) {
-						Cookies.set('nickname', newNickname, {expires: expirationDate});
+						Cookies.set('nickname', newNickname, {expires: expirationTime});
 					}
 
 					if (newprofileImage) {
-						Cookies.set('profileImage', newprofileImage, {expires: expirationDate});
+						Cookies.set('profileImage', newprofileImage, {expires: expirationTime});
 					}
 
 
@@ -617,22 +619,23 @@ $(document).ready(function() {
 				const profileImage = res.data.profileImage;
 				console.log("profileImage : " + profileImage)
 
-				// 쿠키 만료일 설정
-				const expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getHours() + 3);
+				// 현재 시간을 가져옵니다.
+				const currentTime = new Date();
 
-				// 토큰을 쿠키에 저장
-				Cookies.set('Authorization', token, {expires: expirationDate});
-				Cookies.set('nickname', nickname, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate});
+				// 만료 시간을 3시간 뒤로 설정합니다.
+				const expirationTime = new Date(currentTime.getTime() + 3 * 60 * 60 * 1000);
+
+				// 토큰을 쿠키에 저장하고, 만료 시간을 설정합니다.
+				Cookies.set('Authorization', token, { expires: expirationTime });
+				Cookies.set('nickname', nickname, { expires: expirationTime });
+				Cookies.set('userId', userId, { expires: expirationTime });
 
 				if (profileImage !== null) {
-					Cookies.set('profileImage', profileImage, {expires: expirationDate});
+					Cookies.set('profileImage', profileImage, {expires: expirationTime});
 				}
 
 				$loginModal.modal('hide');
 				$signupModal.modal('hide');
-
 
 				alert("성공적으로 로그인 했습니다!");
 
@@ -675,15 +678,17 @@ $(document).ready(function() {
 		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
-		// 쿠키 만료일 설정
-		const expirationDate = new Date();
-		expirationDate.setDate(expirationDate.getHours() + 3);
+		// 현재 시간을 가져옵니다.
+		const currentTime = new Date();
 
-		// 로그인 정보를 쿠키에 저장
-		Cookies.set("nickname", nickname, {expires: expirationDate});
-		Cookies.set("userId", userId, {expires: expirationDate});
-		Cookies.set("Authorization", token, {expires: expirationDate});
-		Cookies.set("profileImage", defaultProfileImagePath, {expires: expirationDate});
+		// 만료 시간을 3시간 뒤로 설정합니다.
+		const expirationTime = new Date(currentTime.getTime() + 3 * 60 * 60 * 1000);
+
+		// 토큰을 쿠키에 저장하고, 만료 시간을 설정합니다.
+		Cookies.set('Authorization', token, { expires: expirationTime });
+		Cookies.set('nickname', nickname, { expires: expirationTime });
+		Cookies.set('userId', userId, { expires: expirationTime });
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: expirationTime});
 
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
@@ -745,15 +750,17 @@ $(document).ready(function() {
 		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
-		// 쿠키 만료일 설정
-		const expirationDate = new Date();
-		expirationDate.setDate(expirationDate.getHours() + 3);
+		// 현재 시간을 가져옵니다.
+		const currentTime = new Date();
+
+		// 만료 시간을 3시간 뒤로 설정합니다.
+		const expirationTime = new Date(currentTime.getTime() + 3 * 60 * 60 * 1000);
 
 		// 로그인 정보를 쿠키에 저장
-		Cookies.set("nickname", nickname, {expires: expirationDate});
-		Cookies.set("userId", userId, {expires: expirationDate});
-		Cookies.set("Authorization", token, {expires: expirationDate});
-		Cookies.set("profileImage", defaultProfileImagePath, {expires: expirationDate});
+		Cookies.set("nickname", nickname, {expires: expirationTime});
+		Cookies.set("userId", userId, {expires: expirationTime});
+		Cookies.set("Authorization", token, {expires: expirationTime});
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: expirationTime});
 
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
@@ -1149,16 +1156,18 @@ $(document).ready(function() {
 				var nickname = res.data.nickname;
 				var profileImage = res.data.profileImage;
 
-				// 쿠키 만료일 설정
-				var expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getHours() + 3);
+				// 현재 시간을 가져옵니다.
+				const currentTime = new Date();
+
+				// 만료 시간을 3시간 뒤로 설정합니다.
+				const expirationTime = new Date(currentTime.getTime() + 3 * 60 * 60 * 1000);
 
 				// 토큰을 쿠키에 저장
-				Cookies.set('Authorization', token, {expires: expirationDate});
-				Cookies.set('nickname', nickname, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate});
+				Cookies.set('Authorization', token, {expires: expirationTime});
+				Cookies.set('nickname', nickname, {expires: expirationTime});
+				Cookies.set('userId', userId, {expires: expirationTime});
 				if (!profileImage) {
-					Cookies.set('profileImage', profileImage, {expires: expirationDate});
+					Cookies.set('profileImage', profileImage, {expires: expirationTime});
 				}
 
 				$loginModal.modal('hide');
