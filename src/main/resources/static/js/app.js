@@ -828,7 +828,6 @@ $(document).ready(function() {
 		});
 	});
 
-
 	// 회원탈퇴 인증번호 전송
 	$('#deactive-sendVerificationCode').on('click', function() {
 		let phoneNumber = $('#deactive-phoneNumberInput').val();
@@ -844,8 +843,6 @@ $(document).ready(function() {
 					alert(error.resText);
 				}
 			});
-		} else {
-			alert("필드를 입력해주세요")
 		}
 	});
 
@@ -865,8 +862,6 @@ $(document).ready(function() {
 					alert(error.resText);
 				}
 			});
-		} else {
-			alert("모든 필드를 입력해주세요")
 		}
 
 	});
@@ -888,8 +883,6 @@ $(document).ready(function() {
 					alert(error.resText);
 				}
 			});
-		} else {
-			alert("모든 필드를 입력해주세요")
 		}
 	});
 
