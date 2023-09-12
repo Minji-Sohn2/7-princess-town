@@ -690,19 +690,19 @@ $(document).ready(function() {
 
 		if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (!email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber && email && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (!phoneNumber && email && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
 		} else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (!email && !phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
 		} else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
 		} else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-		} else if (email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공!")
 		}
 
@@ -763,19 +763,19 @@ $(document).ready(function() {
 
 		if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (!email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber && email && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (!phoneNumber && email && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
 		} else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (!email && !phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
 		} else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
 		} else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-		} else if (email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+		} else if (email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공!")
 		}
 
