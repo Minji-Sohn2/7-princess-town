@@ -202,8 +202,18 @@
         </div>
         <br/>
         <div class="post-actions" id="postActions" style="display: none;">
-            <button class="action-button" id="likeButton">좋아요</button>
-            <button class="action-button" id="unlikeButton">좋아요 취소</button>
+            <div class="ui labeled button" id="unlikeButton" tabindex="0">
+                <div class="ui red button">
+                    <i class="heart icon"></i> Like
+                </div>
+                <a class="ui basic red left pointing label" th:text="${post.likeCnt}"></a>
+            </div>
+            <div class="ui labeled button" id="likeButton" tabindex="0">
+                <div class="ui button">
+                    <i class="heart icon"></i> Like
+                </div>
+                <a class="ui basic label" th:text="${post.likeCnt}"></a>
+            </div>
             <button class="action-button" id="editButton">수정</button>
             <button class="action-button" id="deleteButton">삭제</button>
         </div>
