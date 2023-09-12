@@ -894,7 +894,7 @@ function replyCreate(postId, commentId) {
             `
 
             $(`.replyLists[data-comment-id="${commentId}"]`).append(temp_html);
-            $(`.replyRead[data-comment-id="${commentId}"]`).text(`댓글 펼치기 (${$(`.replyLists[data-comment-id="${commentId}"] #replyList`).length}개)`);
+            $(`.replyRead[data-comment-id="${commentId}"]`).text(`답글 펼치기 (${$(`.replyLists[data-comment-id="${commentId}"] #replyList`).length}개)`);
             $(`.commentbox[data-comment-id="${commentId}"] #replyList`).show();
             $(`.commentbox[data-comment-id="${commentId}"] .replyRead`).hide();
             $(`.commentbox[data-comment-id="${commentId}"] .replyClose`).show();
@@ -1056,7 +1056,7 @@ function replyDelete(postId, commentId, replyId) {
                         text: `${data.message}`
                     });
                     $(`#replyList[data-reply-id="${replyId}"]`).remove()
-                    $(`.replyRead[data-comment-id="${commentId}"]`).text(`댓글 펼치기 (${$(`.replyLists[data-comment-id="${commentId}"] #replyList`).length}개)`)
+                    $(`.replyRead[data-comment-id="${commentId}"]`).text(`답글 펼치기 (${$(`.replyLists[data-comment-id="${commentId}"] #replyList`).length}개)`)
                     const replyList = $(`.replyLists[data-comment-id="${commentId}"] #replyList`).length
 
                     if (replyList === 0) {

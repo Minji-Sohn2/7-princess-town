@@ -57,9 +57,6 @@ public class ProfileService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 이메일입니다."));
             }
         }
-//        else if ((MyPhoneNumberUser != uniquePhoneNumberUser || uniqueEmailUser != null) && uniquePhoneNumberUser != null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호, 이메일입니다."));
-//        }
 
 
         // 유저 존재 유무 판단
