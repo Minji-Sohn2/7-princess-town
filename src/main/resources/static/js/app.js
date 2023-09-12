@@ -344,14 +344,6 @@ $(document).ready(function() {
 				xhr.setRequestHeader('Authorization', token);
 			},
 			success: function (res) {
-
-				if (res.message === "중복된 휴대전화 번호입니다.") {
-					alert("중복된 휴대전화 번호입니다.")
-				} else if (res.message === "중복된 이메일입니다.") {
-					alert("중복된 이메일입니다.")
-				} else if (res.message === "중복된 휴대전화, 이메일입니다.") {
-					alert("중복된 휴대전화 번호, 이메일입니다.")
-				} else {
 					// 사용자 이름 변경 후
 					var newNickname = $("input[name='profile-nicknameInput']").val();
 
@@ -384,10 +376,26 @@ $(document).ready(function() {
 					$('#saveProfile').hide();
 
 					window.location.href = '/';
-				}
 			},
-			error: function (error) {
-				alert(error.responseText);
+			error: function (res) {
+				console.log(res)
+				if (res.responseJSON.message === "중복된 전화번호입니다.") {
+					alert("중복된 전화번호입니다.")
+				} else if (res.responseJSON.message === "중복된 이메일입니다.") {
+					alert("중복된 이메일입니다.")
+				} else if (res.responseJSON.message === "중복된 닉네임입니다.") {
+					alert("중복된 닉네임입니다.")
+				} else if (res.responseJSON.message === "중복된 전화번호, 이메일, 닉네임입니다.") {
+					alert("중복된 전화번호, 이메일, 닉네임입니다.");
+				} else if (res.responseJSON.message === "중복된 전화번호, 이메일입니다.") {
+					alert("중복된 전화번호, 이메일입니다.");
+				} else if (res.responseJSON.message === "중복된 전화번호, 닉네임입니다.") {
+					alert("중복된 전화번호, 닉네임입니다.")
+				} else if (res.responseJSON.message === "중복된 이메일, 닉네임입니다.") {
+					alert("중복된 이메일, 닉네임입니다.")
+				} else {
+					alert("알 수 없는 오류가 발생하였습니다.")
+				}
 			}
 		});
 	});
