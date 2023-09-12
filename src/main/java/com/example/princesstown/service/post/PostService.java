@@ -289,9 +289,6 @@ public class PostService {
                     log.info("업로드 실패");
                     throw new IllegalArgumentException("이미지 업로드 중 오류가 발생했습니다.");
                 }
-            } else if (postRequestDto.getPostImage() == null && postRequestDto.getPostImageUrl() == null) {
-                // 이미지를 변경하지 않을 경우 이미지 관련 내용을 초기화
-                post.setImageUrl(null);
             }
 
         } else {
