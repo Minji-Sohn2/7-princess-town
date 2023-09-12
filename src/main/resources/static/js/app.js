@@ -522,10 +522,10 @@ $(document).ready(function() {
 			processData: false,
 			contentType: false,
 			success: function (res) {
+				console.log(res)
 					alert("성공적으로 회원가입이 되었습니다!");
 					$('.item:contains("회원가입")').hide();
 					window.location.href = '/';
-
 			},
 			error: function (res) {
 				console.log(res)
@@ -700,21 +700,21 @@ $(document).ready(function() {
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
-		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
+		if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber && email && currentLatitude && currentLongitude) {
+		} else if (!phoneNumber && email && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-		} else if (!currentLatitude && !currentLongitude && phoneNumber && email) {
+		} else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-		} else if (!email && !currentLatitude && !currentLongitude && phoneNumber) {
+		} else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-		} else if (!phoneNumber && !currentLatitude && !currentLongitude && email) {
+		} else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공!")
 		}
 
@@ -773,21 +773,21 @@ $(document).ready(function() {
 		console.log("latitude : " + currentLatitude )
 		console.log("longitude : " + currentLongitude)
 
-		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
+		if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber && email && currentLatitude && currentLongitude) {
+		} else if (!phoneNumber && email && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-		} else if (!currentLatitude && !currentLongitude && phoneNumber && email) {
+		} else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-		} else if (!email && !currentLatitude && !currentLongitude && phoneNumber) {
+		} else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-		} else if (!phoneNumber && !currentLatitude && !currentLongitude && email) {
+		} else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (email && phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공!")
 		}
 
