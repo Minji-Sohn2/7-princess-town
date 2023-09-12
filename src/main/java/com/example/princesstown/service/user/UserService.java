@@ -49,17 +49,32 @@ public class UserService {
         // user 테이블에 입력받은 username과 동일한 데이터가 있는지 확인
         Optional<User> checkUser = userRepository.findByUsername(username);
 
-        // 중복 회원 검증
+        // 아이디 중복 확인
         if (checkUser.isPresent()) {
             log.error(username + "와 중복된 사용자가 존재합니다.");
-            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 사용자가 존재합니다."));
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 아이디입니다."));
         }
 
-        // email 중복 확인
+        // 이메일 중복 확인
         String email = requestDto.getEmail();
         User checkEmail = userRepository.findByEmail(email);
         if (checkEmail != null) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 Email 입니다."));
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 이메일입니다."));
+        }
+
+        // 전화번호 중복 확인
+        String phoneNumber = requestDto.getPhoneNumber();
+        User checkPhoneNumber = userRepository.findByPhoneNumber(phoneNumber);
+        if(checkPhoneNumber != null) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호입니다."));
+        } else if (checkUser.isPresent() && checkEmail != null && checkPhoneNumber != null) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 아이디, 전화번호, 이메일입니다."));
+        } else if (checkUser.isPresent() && checkEmail != null) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 아이디, 이메일입니다."));
+        } else if (checkUser.isPresent() && checkPhoneNumber != null) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 아이디, 전화번호입니다."));
+        } else if (checkEmail != null && checkPhoneNumber != null) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호, 이메일입니다."));
         }
 
         // 비밀번호가 null 이거나 비어있는지 확인
@@ -70,13 +85,6 @@ public class UserService {
         // 비밀번호 형식 검증
         if (!Pattern.matches("^[a-zA-Z0-9!@#$%^&*()_+{}:\"<>?,.\\\\/]{8,15}$", notEncodingPassword)) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "비밀번호는 최소 8자 이상, 15자 이하이며 알파벳 대소문자, 숫자로 구성되어야 합니다."));
-        }
-
-        // 중복 전화번호 검증
-        String phoneNumber = requestDto.getPhoneNumber();
-        User checkPhoneNumber = userRepository.findByPhoneNumber(phoneNumber);
-        if(checkPhoneNumber != null) {
-            return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호 입니다."));
         }
 
             // 비밀번호 인코딩

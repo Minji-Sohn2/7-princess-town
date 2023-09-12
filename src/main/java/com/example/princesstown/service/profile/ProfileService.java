@@ -39,10 +39,23 @@ public class ProfileService {
         // 해당 유저를 DB에서 조회
         Optional<User> updateUser = userRepository.findById(userId);
 
+        User uniquePhoneNumberUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
+        if (uniquePhoneNumberUser != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호입니다."));
+        }
+
+        User uniqueEmailUser = userRepository.findByEmail(requestDto.getEmail());
+        if (uniqueEmailUser != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 이메일입니다."));
+        } else if (uniqueEmailUser != null && uniquePhoneNumberUser != null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호, 이메일입니다."));
+        }
+
+
         // 유저 존재 유무 판단
         if (!updateUser.isPresent()) {
             log.error("해당 유저를 조회하지 못했습니다");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "해당 유저를 조회하지 못했습니다"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "해당 유저를 조회하지 못했습니다."));
         }
 
         // 위치 업데이트 로직

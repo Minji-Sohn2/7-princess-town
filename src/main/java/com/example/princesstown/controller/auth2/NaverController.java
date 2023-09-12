@@ -29,23 +29,27 @@ public class NaverController {
 
         ApiResponseDto apiResponseBody = responseDto.getBody();
         User userData = (User) apiResponseBody.getData();
-        String phoneNumber =userData.getPhoneNumber();
+        String phoneNumber = userData.getPhoneNumber();
         String email = userData.getEmail();
         String nickname = userData.getNickname();
         Long userId = userData.getUserId();
+        Double latitude = userData.getLocation().getLatitude();
+        Double longitude = userData.getLocation().getLongitude();
         log.info("네이버서버에서 보내는 nickname : " + nickname);
         log.info("네이버서버에서 보내는 userId : " + userId);
+        log.info("네이버서버에서 보내는 latitude : " + latitude);
+        log.info("네이버서버에서 보내는 longitude : " + longitude);
 
         HttpHeaders apiRespnseHeader = responseDto.getHeaders();
         String token = apiRespnseHeader.getFirst("Authorization");
 
-        if(token == null) {
+        if (token == null) {
             throw new RuntimeException("Token not found in headers");
         }
         log.info("네이버서버에서 보내는 token : " + token);
 
         String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
-        return "redirect:/view/mainpage?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token + "&phoneNumber=" + phoneNumber + "&email=" + email;
+        return "redirect:/view/mainpage?success=naver&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token + "&phoneNumber=" + phoneNumber + "&email=" + email + "&latitude=" + latitude + "&longitude=" + longitude;
     }
 }
 

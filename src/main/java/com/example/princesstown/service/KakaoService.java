@@ -209,9 +209,4 @@ public class KakaoService {
 
         return ResponseEntity.status(200).headers(headers).body(new ApiResponseDto(HttpStatus.OK.value(), " 카카오로 로그인이 성공적으로 되었습니다!.", checkKakaoUser));
     }
-
-    // 로그인 데이터 반환
-//    public ResponseEntity<ApiResponseDto> kakaoResponse(User kakaoUser) {
-//        User user
-//    }
 }
