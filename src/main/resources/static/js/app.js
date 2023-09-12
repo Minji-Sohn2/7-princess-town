@@ -361,7 +361,7 @@ $(document).ready(function() {
 
 					// 쿠키 만료일 설정
 					var expirationDate = new Date();
-					expirationDate.setDate(expirationDate.getDate() + 1);
+					expirationDate.setDate(expirationDate.getHours() + 3);
 
 					if (newNickname) {
 						Cookies.set('nickname', newNickname, {expires: expirationDate});
@@ -509,28 +509,28 @@ $(document).ready(function() {
 			processData: false,
 			contentType: false,
 			success: function (res) {
-				if (res.message === "중복된 전화번호입니다.") {
-					alert("중복된 휴대전화 번호입니다.")
-				} else if (res.message === "중복된 이메일입니다.") {
-					alert("중복된 이메일입니다.")
-				} else if (res.message === "중복된 아이디입니다.") {
-					alert("중복된 아이디입니다.")
-				} else if (res.message === "중복된 아이디, 전화번호, 이메일입니다.") {
-					alert("중복된 아이디, 전화번호, 이메일입니다.")
-				} else if (res.message === "중복된 아이디, 이메일입니다.") {
-					alert("중복된 아이디, 이메일입니다.")
-				} else if (res.message === "중복된 아이디, 전화번호입니다.") {
-					alert("중복된 아이디, 전화번호입니다.")
-				} else if (res.message === "중복된 전화번호, 이메일입니다.") {
-					alert("중복된 전화번호, 이메일입니다.")
-				} else {
 					alert("성공적으로 회원가입이 되었습니다!");
 					$('.item:contains("회원가입")').hide();
 					window.location.href = '/';
-				}
+
 			},
-			error: function (error) {
-				alert("서버와 통신 중 오류가 발생했습니다.");
+			error: function (res) {
+				console.log(res)
+				if (res.responseJSON.message === "중복된 전화번호입니다.") {
+					alert("중복된 휴대전화 번호입니다.")
+				} else if (res.responseJSON.message === "중복된 이메일입니다.") {
+					alert("중복된 이메일입니다.")
+				} else if (res.responseJSON.message === "중복된 아이디입니다.") {
+					alert("중복된 아이디입니다.")
+				} else if (res.responseJSON.message === "중복된 아이디, 전화번호, 이메일입니다.") {
+					alert("중복된 아이디, 전화번호, 이메일입니다.")
+				} else if (res.responseJSON.message === "중복된 아이디, 이메일입니다.") {
+					alert("중복된 아이디, 이메일입니다.")
+				} else if (res.responseJSON.message === "중복된 아이디, 전화번호입니다.") {
+					alert("중복된 아이디, 전화번호입니다.")
+				} else if (res.responseJSON.message === "중복된 전화번호, 이메일입니다.") {
+					alert("중복된 전화번호, 이메일입니다.")
+				}
 			}
 		});
 	});
@@ -618,7 +618,7 @@ $(document).ready(function() {
 
 				// 쿠키 만료일 설정
 				const expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getDate() + 1);
+				expirationDate.setDate(expirationDate.getHours() + 3);
 
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
@@ -674,14 +674,15 @@ $(document).ready(function() {
 		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
-		console.log()
-
+		// 쿠키 만료일 설정
+		const expirationDate = new Date();
+		expirationDate.setDate(expirationDate.getHours() + 3);
 
 		// 로그인 정보를 쿠키에 저장
-		Cookies.set("nickname", nickname, {expires: 1});
-		Cookies.set("userId", userId, {expires: 1});
-		Cookies.set("Authorization", token, {expires: 1});
-		Cookies.set("profileImage", defaultProfileImagePath, {expires: 1});
+		Cookies.set("nickname", nickname, {expires: expirationDate});
+		Cookies.set("userId", userId, {expires: expirationDate});
+		Cookies.set("Authorization", token, {expires: expirationDate});
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: expirationDate});
 
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
@@ -743,11 +744,15 @@ $(document).ready(function() {
 		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
+		// 쿠키 만료일 설정
+		const expirationDate = new Date();
+		expirationDate.setDate(expirationDate.getHours() + 3);
+
 		// 로그인 정보를 쿠키에 저장
-		Cookies.set("nickname", nickname, {expires: 1});
-		Cookies.set("userId", userId, {expires: 1});
-		Cookies.set("Authorization", token, {expires: 1});
-		Cookies.set("profileImage", defaultProfileImagePath, {expires: 1});
+		Cookies.set("nickname", nickname, {expires: expirationDate});
+		Cookies.set("userId", userId, {expires: expirationDate});
+		Cookies.set("Authorization", token, {expires: expirationDate});
+		Cookies.set("profileImage", defaultProfileImagePath, {expires: expirationDate});
 
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
@@ -1152,7 +1157,7 @@ $(document).ready(function() {
 
 				// 쿠키 만료일 설정
 				var expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getDate() + 1);
+				expirationDate.setDate(expirationDate.getHours() + 3);
 
 				// 토큰을 쿠키에 저장
 				Cookies.set('Authorization', token, {expires: expirationDate});
