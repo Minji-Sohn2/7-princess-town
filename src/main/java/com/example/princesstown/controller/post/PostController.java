@@ -28,23 +28,23 @@ public class PostController {
     private final PostService postService;
     private final S3Uploader s3Uploader;
 
-//    // 로그인한 사용자의 위치 반경 내 게시물 조회
-//    @GetMapping("/boards/posts")
-//    public ResponseEntity<?> getPostsAroundUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        if (userDetails != null) {
-//            Long userId = userDetails.getUser().getUserId();
-//            List<PostResponseDto> nearbyPosts = postService.getPostsAroundUser(userId);
-//
-//            if (!nearbyPosts.isEmpty()) {
-//                return ResponseEntity.ok(nearbyPosts);
-//            } else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("주변에 게시물이 없습니다.");
-//            }
-//        }
-//        // 로그인하지 않은 경우에는 전체 게시물 조회
-//        List<PostResponseDto> allPosts = postService.getPosts();
-//        return ResponseEntity.ok(allPosts);
-//    }
+    // 선택 게시판 내 위치반경 내 게시글 조회 API
+    @GetMapping("/boards/{boardId}/radius/posts")
+    public ResponseEntity<List<PostResponseDto>> getPostsAroundUserByBoardId(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Long userId = userDetails.getUser().getUserId();
+        List<PostResponseDto> nearbyPostsInBoard = postService.getPostsAroundUserByBoardId(boardId, userId);
+
+        if (nearbyPostsInBoard.isEmpty()) {
+            // 주변의 게시글이 없을 경우 적절한 응답을 반환합니다.
+            return ResponseEntity.noContent().build();
+        }
+
+        // 주변의 게시글을 반환합니다.
+        return ResponseEntity.ok(nearbyPostsInBoard);
+    }
 
     //위치반경 내 게시물 조회
     @GetMapping("/radius/posts")

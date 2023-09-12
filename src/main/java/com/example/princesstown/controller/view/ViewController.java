@@ -44,6 +44,36 @@ public class ViewController {
         return "mainpage";
     }
 
+    // 게시판 내 위치반경 내 게시글 조회 뷰
+    @GetMapping("/boards/{boardId}/radiusposts")
+    public String viewRadiusPostsInBoard(
+            @PathVariable Long boardId,
+            Model model,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        // 게시판 목록
+        List<BoardResponseDto> boardList = boardService.getBoard();
+        model.addAttribute("boardList", boardList);
+
+        // 인기 검색어
+        List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
+        model.addAttribute("topPosts", topPosts);
+
+        if (userDetails != null) {
+            // 위치 반경 내 게시글 조회
+            Long userId = userDetails.getUser().getUserId();
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            model.addAttribute("authentication", authentication);
+
+            // 게시판 내 위치반경 내 게시글 조회
+            BoardResponseDto nearbyPostsBoard = boardService.getBoardWithNearbyPosts(boardId, userId);
+            model.addAttribute("selectedBoard", nearbyPostsBoard);
+        }
+
+        return "nearbyPostsInBoard"; // 프론트엔드에서 사용할 뷰 이름
+    }
+
     // 위치 반경 내 게시글 조회
     @GetMapping("/radiusposts")
     public String viewRadiusPosts(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {

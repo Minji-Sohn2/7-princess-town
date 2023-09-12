@@ -43,6 +43,38 @@ public class PostService {
 
     private static final int POST_PAGE_SIZE = 20;
 
+    //선택 게시판 내 위치반경 내 게시물 조회
+    public List<PostResponseDto> getPostsAroundUserByBoardId(Long boardId, Long userId) {
+        // 1. 사용자의 위치 정보 가져오기
+        Optional<Location> userLocationOpt = userService.getUserLocation(userId);
+
+        if (!userLocationOpt.isPresent()) {
+            // 사용자의 위치 정보가 없으면 빈 목록 반환
+            return Collections.emptyList();
+        }
+
+        Location userLocation = userLocationOpt.get();
+
+        // 2. 반경 내의 게시글 조회
+        List<Post> allPostsByBoard = postRepository.findByBoardIdOrderByCreatedAtDesc(boardId); // 모든 게시글 조회(최신순)
+
+        // 3. 반경 내의 게시글 필터링
+        List<PostResponseDto> nearbyPostsInBoard = new ArrayList<>();
+        for (Post post : allPostsByBoard) {
+            if (post.getLocation() == null) {
+                continue;
+            }
+
+            if (isWithinRadius(userLocation, post.getLocation())) {
+                // PostResponseDto를 생성하여 데이터를 복사
+                PostResponseDto postResponseDto = new PostResponseDto(post);
+                nearbyPostsInBoard.add(postResponseDto);
+            }
+        }
+
+        return nearbyPostsInBoard;
+    }
+
     //위치반경내 게시물 조회
     public List<PostResponseDto> getPostsAroundUser(Long userId) {
         // 1. 사용자의 위치 정보 가져오기
