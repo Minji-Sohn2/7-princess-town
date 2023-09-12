@@ -190,7 +190,7 @@ $(document).ready(function () {
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
                                     <br/>
                                     <br/>
-                                    <h4 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h4>
+                                    <h5 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h5>
                                     <br/>
                                     <img class="emoji" src="${comment.emoji}" alt="emoji" data-comment-id="${comment.id}">
                                     <br/>
@@ -239,7 +239,7 @@ $(document).ready(function () {
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
                                     <br/>
                                     <br/>
-                                    <h4 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h4>
+                                    <h5 class="style1 list userComment" data-comment-id="${comment.id}">${comment.content}</h5>
                                     <br/>
                                     <img class="emoji" src="${comment.emoji}" alt="emoji" data-comment-id="${comment.id}">
                                     <br/>
@@ -318,7 +318,7 @@ $(document).ready(function () {
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}(${maskingName(reply.username)})</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
                                                             <br/>
-                                                            <h4 class="style1 list replyContents" data-reply-id="${reply.id}">${reply.content}</h4>
+                                                            <h5 class="style1 list replyContents" data-reply-id="${reply.id}">${reply.content}</h5>
                                                             <br/>
                                                             <img class="emoji" src="${reply.emoji}" alt="emoji" data-reply-id="${reply.id}">
                                                             <div class="replyslikes" data-reply-id="${reply.id}">
@@ -354,7 +354,7 @@ $(document).ready(function () {
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}(${maskingName(reply.username)})</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
                                                             <br/>
-                                                            <h4 class="style1 list replyContents" data-reply-id="${reply.id}">${reply.content}</h4>
+                                                            <h5 class="style1 list replyContents" data-reply-id="${reply.id}">${reply.content}</h5>
                                                             <br/>
                                                             <img class="emoji" src="${reply.emoji}" alt="emoji" data-reply-id="${reply.id}">
                                                             <div class="replyslikes" data-reply-id="${reply.id}">
@@ -543,11 +543,11 @@ $(document).ready(function () {
             return false;
         }
 
-        if (content.length < 3 || content.length >= 250) {
+        if (content.length < 3 || content.length > 1000) {
             Swal.fire({
                 icon: 'warning',
                 title: '댓글 작성실패',
-                text: '댓글은 3자 이상 250자 이하로 작성가능합니다.',
+                text: '댓글은 3자 이상 1000자 이하로 작성가능합니다.',
             });
             $('#userComment').focus();
             return false;
@@ -644,11 +644,11 @@ $(document).ready(function () {
             return false;
         }
 
-        if (content.length < 3 || content.length >= 250) {
+        if (content.length < 3 || content.length > 1000) {
             Swal.fire({
                 icon: 'warning',
                 title: '댓글 수정실패',
-                text: '댓글은 3자 이상 250자 이하로 작성가능합니다.',
+                text: '댓글은 3자 이상 1000자 이하로 작성가능합니다.',
             });
             $(`.userCommentEdit[data-comment-id="${commentId}"]`).focus();
             return false;
@@ -841,11 +841,11 @@ function replyCreate(postId, commentId) {
         return false;
     }
 
-    if (createReplyValue.length < 3 || createReplyValue.length >= 250) {
+    if (createReplyValue.length < 3 || createReplyValue.length > 1000) {
         Swal.fire({
             icon: 'warning',
             title: '답글 작성실패',
-            text: '답글은 3자 이상 250자 이하로 작성가능합니다.',
+            text: '답글은 3자 이상 1000자 이하로 작성가능합니다.',
         });
         $(`.userReply[data-comment-id="${commentId}"]`).focus();
         return false;
@@ -904,7 +904,7 @@ function replyCreate(postId, commentId) {
                     <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${data.result.id}">${data.result.nickname}(${maskingName(data.result.username)})</a></h4>
                     <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${data.result.id}">${formattedDate}</p>
                     <br/>
-                    <h4 class="style1 list replyContents" data-reply-id="${data.result.id}">${data.result.content}</h4>
+                    <h5 class="style1 list replyContents" data-reply-id="${data.result.id}">${data.result.content}</h5>
                     <br/>
                     <img class="emoji" src="${data.result.emoji}" alt="emoji" data-reply-id="${data.result.id}">
                     <div class="replyslikes" data-reply-id="${data.result.id}">
@@ -976,11 +976,11 @@ function replyEdit(postId, commentId, replyId) {
         return false;
     }
 
-    if (replyContexts.length < 3 || replyContexts.length >= 250) {
+    if (replyContexts.length < 3 || replyContexts.length > 1000) {
         Swal.fire({
             icon: 'warning',
             title: '답글 수정실패',
-            text: '답글은 3자 이상 250자 이하로 작성가능합니다.',
+            text: '답글은 3자 이상 1000자 이하로 작성가능합니다.',
         });
         $(`.userReplyEdit[data-reply-id="${replyId}"]`).focus();
         return false;

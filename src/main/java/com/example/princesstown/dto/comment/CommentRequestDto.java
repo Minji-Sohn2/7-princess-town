@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommentRequestDto {
-    @Size(min = 3, max = 250)
+    @Size(min = 3, max = 1000)
     private String content;
 
     private String emoji;
