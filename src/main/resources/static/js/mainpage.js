@@ -45,6 +45,7 @@ $(document).ready(function () {
 
         // 현재 선택된 드롭다운 항목 가져오기
         var searchType = $("#searchTypeDropdown .menu .item.active").text();
+        var defaultType = $("#defaultitem").text();
         var searchKeyword = $("#searchKeyword").val();
         console.log(searchKeyword)
         console.log(searchType)
@@ -56,6 +57,8 @@ $(document).ready(function () {
             window.location.href = "/view/searchContent?contents=" + encodeURIComponent(searchKeyword);
         } else if (searchType === "제목+내용") {
             window.location.href = "/view/searchKeyword?keyword=" + encodeURIComponent(searchKeyword);
+        } else if (defaultType === "제목") {
+            window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
         }
     });
 });
