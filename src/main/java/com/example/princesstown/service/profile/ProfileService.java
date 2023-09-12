@@ -39,17 +39,27 @@ public class ProfileService {
         // 해당 유저를 DB에서 조회
         Optional<User> updateUser = userRepository.findById(userId);
 
+        User MyPhoneNumberUser = userRepository.findByUserIdAndPhoneNumber(userId, requestDto.getPhoneNumber());
+
         User uniquePhoneNumberUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
         if (uniquePhoneNumberUser != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호입니다."));
+            if (MyPhoneNumberUser != uniquePhoneNumberUser) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호입니다."));
+            }
         }
 
+        User MyEmailUser = userRepository.findByUserIdAndEmail(userId, requestDto.getEmail());
+
         User uniqueEmailUser = userRepository.findByEmail(requestDto.getEmail());
+
         if (uniqueEmailUser != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 이메일입니다."));
-        } else if (uniqueEmailUser != null && uniquePhoneNumberUser != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호, 이메일입니다."));
+            if (MyEmailUser != uniqueEmailUser) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 이메일입니다."));
+            }
         }
+//        else if ((MyPhoneNumberUser != uniquePhoneNumberUser || uniqueEmailUser != null) && uniquePhoneNumberUser != null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호, 이메일입니다."));
+//        }
 
 
         // 유저 존재 유무 판단

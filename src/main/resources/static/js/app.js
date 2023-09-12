@@ -387,6 +387,7 @@ $(document).ready(function() {
 				}
 			},
 			error: function (error) {
+				console.log(error.responseText)
 				alert(error.responseText);
 			}
 		});
