@@ -476,6 +476,11 @@ $(document).ready(function() {
 			return;
 		} else {}
 
+		if (username.length < 4) {
+			alert("아이디를 최소 4글자 이상으로 작성해주세요.");
+			return false;
+		}
+
 		// 인증이 완료되지 않았을 때 알림을 표시하고 회원가입을 중지
 		if ($('#verificationCompleted').val() !== 'true') {
 			alert("휴대폰 인증을 먼저 해주세요.");
