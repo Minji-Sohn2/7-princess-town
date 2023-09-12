@@ -31,10 +31,6 @@ public class ProfileResponseDto {
             this.latitude = location.getLatitude();
             this.longitude = location.getLongitude();
             this.radius = location.getRadius();
-        } else {
-            this.latitude = null;
-            this.longitude = null;
-            this.radius = null;
         }
     }
 }

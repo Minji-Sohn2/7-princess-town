@@ -33,8 +33,14 @@ public class KakaoController {
         Long userId = userData.getUserId();
         String phoneNumber =userData.getPhoneNumber();
         String email = userData.getEmail();
+        Double latitude = userData.getLocation().getLatitude();
+        Double longitude = userData.getLocation().getLongitude();
         log.info("카카오서버에서 보내는 username : " + nickname);
         log.info("카카오서버에서 보내는 userId : " + userId);
+        log.info("카카오서버에서 보내는 phoneNumber : " + phoneNumber);
+        log.info("카카오서버에서 보내는 email : " + email);
+        log.info("카카오서버에서 보내는 latitude : " + latitude);
+        log.info("카카오서버에서 보내는 longitude : " + longitude);
 
         HttpHeaders apiRespnseHeader = responseDto.getHeaders();
         String token = apiRespnseHeader.getFirst("Authorization");
@@ -45,12 +51,8 @@ public class KakaoController {
         log.info("카카오서버에서 보내는 token : " + token);
 
         String encodedNickname = URLEncoder.encode(nickname, "UTF-8");
-        return "redirect:/view/mainpage?success=kakao&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token + "&phoneNumber=" + phoneNumber + "&email=" + email;
+        return "redirect:/view/mainpage?success=kakao&nickname=" + encodedNickname + "&userId=" + userId + "&token=" + token + "&phoneNumber=" + phoneNumber + "&email=" + email + "&latitude=" + latitude + "&longitude=" + longitude;
     }
 }
 
-//    @GetMapping("/api/user/kakao/data-response")
-//    public ApiResponseDto kakaoResponse() {
-////        User kakaoUser = kakaoService.kakaoLogin()
-//    }
 
