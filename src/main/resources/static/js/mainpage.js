@@ -35,7 +35,7 @@ $(document).ready(function () {
     // 드롭다운 선택 항목이 변경될 때 이벤트 처리
     $("#searchTypeDropdown .item").on("click", function () {
         var selectedOption = $(this).text();
-        $(".menu").text(selectedOption);
+        $("#searchTypeDropdown .text").text(selectedOption);
     });
 
     // 검색 폼 제출 시 처리
