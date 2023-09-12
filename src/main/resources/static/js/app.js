@@ -607,7 +607,7 @@ $(document).ready(function() {
 				console.log("status : " + status)
 
 				// HTTP 헤더에서 토큰 가져오기
-				const token = xhr.getresHeader("Authorization");
+				const token = xhr.getResponseHeader("Authorization");
 				console.log("token : " + token)
 
 				// 서버 응답에서 userId, nickname 꺼내오기
@@ -1146,7 +1146,7 @@ $(document).ready(function() {
 				console.log("status : " + status)
 
 				// HTTP 헤더에서 토큰 가져오기
-				var token = xhr.getresHeader("Authorization");
+				var token = xhr.getResponseHeader("Authorization");
 				console.log("token : " + token)
 
 				// 서버 응답에서 userId 꺼내오기
