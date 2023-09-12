@@ -29,6 +29,10 @@ public class ProfileController {
         Long userId = userDetails.getUser().getUserId();
         ProfileResponseDto userResponse = userService.lookupUser(userId);
 
+        log.info("프로필 조회 userId : " + userDetails.getUser().getUserId());
+        log.info("프로필 조회 email : " + userResponse.getEmail());
+        log.info("프로필 조회 phoneNumber : " + userResponse.getPhoneNumber());
+
         return userResponse;
     }
 
