@@ -65,13 +65,26 @@
             </div>
             <div>
                 <ul class="board-list">
-                    <li><a href="/view/mainpage">전체게시판</a></li>
-                    <li><a href="/view/radiusposts">지역게시판</a></li>
-                    <!-- 백엔드에서 가져온 게시판 목록을 순회하면서 출력 -->
-                    <th:block th:each="board : ${boardList}">
-                        <li><a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
-                        </li>
-                    </th:block>
+                    <li><a href="/view/mainpage">전체게시판</a>
+                        <ul class="sub-board-list">
+                            <th:block th:each="board : ${boardList}">
+                                <li>
+                                    <a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                                    <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
+                                </li>
+                            </th:block>
+                        </ul>
+                    </li>
+                    <li><a href="/view/radiusposts">지역게시판</a>
+                        <ul class="sub-board-list">
+                            <th:block th:each="board : ${boardList}">
+                                <li>
+                                    <a th:href="@{/view/boards/{boardId}/radiusposts(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                                    <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
+                                </li>
+                            </th:block>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -588,6 +601,8 @@
                     radiusPosts.empty(); // 기존 목록 비우기
 
                     $.each(data, function (index, post) {
+                        console.log('게시글 정보:', post); // 디버그 정보 출력
+
                         var listItem = $("<li>").addClass("post");
                         var postContent = $("<div>").addClass("post-content");
                         var titleContainer = $("<div>").addClass("post-title-container");

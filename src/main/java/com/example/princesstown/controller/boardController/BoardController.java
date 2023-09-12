@@ -5,6 +5,7 @@ import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.dto.response.BoardResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.board.BoardService;
+import com.example.princesstown.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class BoardController {
     private final BoardService boardService;
+    private final PostService postService;
 
 
     // 게시판 전체 조회 API
@@ -34,6 +36,27 @@ public class BoardController {
     public BoardResponseDto getBoard(@PathVariable Long boardId) {
         return boardService.getBoard(boardId);
     }
+
+    // 위치반경 내 게시판 선택 조회 API
+    @GetMapping("/boards/{boardId}/radiusposts")
+    public ResponseEntity<BoardResponseDto> getBoardWithNearbyPosts(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        if (userDetails != null) {
+            // 현재 인증된 사용자의 정보를 가져오기
+            Long userId = userDetails.getUser().getUserId();
+
+            // 게시판 내 위치 반경 내 게시글 조회
+            BoardResponseDto boardResponseDto = boardService.getBoardWithNearbyPosts(boardId, userId);
+
+            return ResponseEntity.ok(boardResponseDto);
+        } else {
+            // 사용자가 인증되지 않은 경우 401 Unauthorized 반환
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
 
     // 게시판 생성 API
     @PostMapping("/boards")
