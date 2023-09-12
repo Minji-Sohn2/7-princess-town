@@ -530,7 +530,7 @@ $(document).ready(function() {
 				}
 			},
 			error: function (error) {
-				alert("회원가입 실패. 다시 확인해주세요.");
+				alert("서버와 통신 중 오류가 발생했습니다.");
 			}
 		});
 	});
@@ -652,7 +652,7 @@ $(document).ready(function() {
 	const NAVER_REDIRECT_URL = "https://myplacetomato.site/api/user/naver/callback";
 
 	// 네이버 요청 URL 만들기
-	const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${NAVER_CLIENT_ID}&redirect_uri=${NAVER_REDIRECT_URL}&res_type=code`;
+	const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${NAVER_CLIENT_ID}&redirect_uri=${NAVER_REDIRECT_URL}&response_type=code`;
 
 	// 네이버 로그인 버튼 클릭 이벤트
 	document.getElementById("naverLogin").addEventListener("click", function(e) {
@@ -709,7 +709,7 @@ $(document).ready(function() {
 		$signupModal.modal('hide');
 		$deactivationModal.modal('hide');
 
-		// 현재 페이지의 URL에서 'success=kakao'를 제거
+		// 현재 페이지의 URL에서 'success=naver'를 제거
 		const newURL = window.location.href.split("?")[0];
 		window.history.replaceState({}, document.title, newURL);
 
@@ -719,10 +719,10 @@ $(document).ready(function() {
 
 	// 카카오 정보 가져오기
 	const KAKAO_CLIENT_ID = "09f2acecd9cd8bf7b7d3f6951daf4548";
-	const KAKAO_REDIRECT_URL = "https://myplacetomato.site/api/user/kakao/callback";
+	const KAKAO_REDIRECT_URL = "http://localhost:8080/api/user/kakao/callback";
 
 	// 카카오 요청 URL 만들기
-	const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URL}&res_type=code`;
+	const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URL}&response_type=code`;
 
 	// 카카오 로그인 버튼 클릭 이벤트
 	document.getElementById("kakaoLogin").addEventListener("click", function (e) {
@@ -782,7 +782,7 @@ $(document).ready(function() {
 		const newURL = window.location.href.split("?")[0];
 		window.history.replaceState({}, document.title, newURL);
 
-		// window.location.href = "/"
+		window.location.href = "/"
 	}
 
 	// 로그아웃 확인 모달의 확인 버튼 클릭 시 로그아웃 이벤트 실행
