@@ -197,6 +197,18 @@ public class NaverService {
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
 
+        // Location 정보 설정
+        Location location = naverUser.getLocation();
+        if (location == null) {
+            // Location 정보가 없을 경우 기본 값 설정
+            Location defaultLocation = new Location();
+            defaultLocation.setLatitude(0.0);
+            defaultLocation.setLongitude(0.0);
+            naverUser.setLocation(defaultLocation);
+
+            userRepository.save(naverUser);
+        }
+
         // 토큰 생성
         String token = jwtUtil.createToken(naverUsername);
         log.info("token : " + token);
