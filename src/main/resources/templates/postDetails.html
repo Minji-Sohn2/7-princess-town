@@ -1010,6 +1010,14 @@
         }
 
         $("#editButton").click(function () {
+            const postnickname = [[${post.nickname}]];
+
+            const nickname = Cookies.get('nickname');
+
+            if(postnickname !== nickname) {
+                alert("글 작성자가 아니므로 수정이 불가능합니다.")
+                return false;
+            }
             handleEdit(postId);
         });
 
