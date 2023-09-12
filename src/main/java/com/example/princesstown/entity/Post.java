@@ -71,7 +71,8 @@ public class Post extends Timestamped{
         this.location = user.getLocation();
     }
 
-    public void update(PostRequestDto postRequestDto){
+    public void update(Board board, PostRequestDto postRequestDto){
+        this.board = board;
         this.title = postRequestDto.getTitle();
         this.contents = postRequestDto.getContents();
     }

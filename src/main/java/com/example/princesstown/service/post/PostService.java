@@ -240,13 +240,16 @@ public class PostService {
 
     // 게시글 수정 API
     @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, User user) {
+    public PostResponseDto updatePost(Long boardId, Long id, PostRequestDto postRequestDto, User user) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
         );
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                () -> new NullPointerException("선택하신 게시판은 존재하지 않습니다.")
+        );
 
         if (post.getUser().getUserId().equals(user.getUserId())) {
-            post.update(postRequestDto);
+            post.update(board, postRequestDto);
 
             MultipartFile newPostImage = postRequestDto.getNewPostImage();
             if (newPostImage != null && !newPostImage.isEmpty()) {
