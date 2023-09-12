@@ -69,6 +69,11 @@
             </div>
 
             <div class="header-buttons">
+                <div>
+                    <a class="item" id="myChatRoom-btn2" href="/view/chatRooms">
+                        <i class="comment icon"></i>
+                    </a>
+                </div>
                 <!--  사용자 버튼  -->
                 <button id="user-icon" class="ui icon button">
                     <i class="user icon"></i>
@@ -583,5 +588,12 @@
             }
             handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
         });
+
+        if (authorization == null) {
+            document.getElementById('myChatRoom-btn2').style.display = 'none';
+        } else {
+            document.getElementById('myChatRoom-btn2').style.display = 'block';
+        }
+
     });
 </script>

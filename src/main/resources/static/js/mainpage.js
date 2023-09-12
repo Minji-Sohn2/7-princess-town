@@ -1,4 +1,8 @@
 $(document).ready(function () {
+
+    // 현재 로그인 중인 인증정보 가져오기
+    const authorization = Cookies.get('Authorization');
+
     // 	메인페이지
     // 인기검색어 데이터를 가져와서 HTML에 렌더링하는 함수
     function renderPopularSearches(data) {
@@ -61,4 +65,11 @@ $(document).ready(function () {
             window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
         }
     });
+
+    if (authorization == null) {
+        document.getElementById('myChatRoom-btn2').style.display = 'none';
+    } else {
+        document.getElementById('myChatRoom-btn2').style.display = 'block';
+    }
+
 });
