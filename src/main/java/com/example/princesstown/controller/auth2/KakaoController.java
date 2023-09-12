@@ -36,12 +36,9 @@ public class KakaoController {
         String email = userData.getEmail();
 
         Location location = userData.getLocation();
-        Double latitude = 0.0; // 기본 값 설정
-        Double longitude = 0.0; // 기본 값 설정
-        if (location != null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        }
+        Double latitude = location.getLatitude();
+        Double longitude = location.getLongitude();
+
 
         log.info("카카오서버에서 보내는 username : " + nickname);
         log.info("카카오서버에서 보내는 userId : " + userId);
