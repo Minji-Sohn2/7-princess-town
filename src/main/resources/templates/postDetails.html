@@ -1073,6 +1073,21 @@
             window.location.href = "/view/editpost/" + postId; // 적절한 URL로 수정 페이지 경로를 지정하세요.
         }
 
+        function handleCreate() {
+            // 게시글 작성 페이지로 이동합니다.
+            window.location.href = "/view/createpost";
+        }
+
+        $("#createPostButton").click(function () {
+
+            // 작성자 인증 정보 비교
+            if (authorization == null) {
+                $('#loginModal').modal('show');
+                return false;
+            }
+            handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
+        });
+
         /**
          * 게시글 좋아요 조회후 좋아요를 누른 아이디일 경우 좋아요 버튼 없앰
          * 아니면 좋아요 취소 버튼을 없애줌
@@ -1098,6 +1113,8 @@
                 console.log("좋아요 조회 오류");
             }
         })
+
+        const authorization = Cookies.get('Authorization');
 
         if (authorization == null) {
             document.getElementById('myChatRoom-btn2').style.display = 'none';
