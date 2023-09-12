@@ -1,6 +1,7 @@
 package com.example.princesstown.controller.auth2;
 
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.service.KakaoService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,15 @@ public class KakaoController {
         Long userId = userData.getUserId();
         String phoneNumber =userData.getPhoneNumber();
         String email = userData.getEmail();
-        Double latitude = userData.getLocation().getLatitude();
-        Double longitude = userData.getLocation().getLongitude();
+
+        Location location = userData.getLocation();
+        Double latitude = 0.0; // 기본 값 설정
+        Double longitude = 0.0; // 기본 값 설정
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+
         log.info("카카오서버에서 보내는 username : " + nickname);
         log.info("카카오서버에서 보내는 userId : " + userId);
         log.info("카카오서버에서 보내는 phoneNumber : " + phoneNumber);
