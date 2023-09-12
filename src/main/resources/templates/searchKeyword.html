@@ -563,7 +563,7 @@
 
             // 작성자 인증 정보 비교
             if (authorization == null) {
-                alert("글 작성을 위해서는 로그인이 필요합니다");
+                $('#loginModal').modal('show');
                 return false;
             }
             handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
