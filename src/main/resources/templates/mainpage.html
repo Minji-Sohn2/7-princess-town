@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/img/tomato-logo-img/tomato_logo.png">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>우리동네 커뮤니티 토마토</title>
 
     <!-- Cookie -->
@@ -45,8 +46,29 @@
                     <h2>토마토</h2>
                 </a>
             </div>
+            <form class="search-form" style="display: flex; justify-content: center;">
+                <div class="ui compact menu" style="margin-right: 10px; border-radius: 10px;">
+                    <div class="ui simple dropdown item" id="searchTypeDropdown">
+                        <div class="text">옵션</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" data-value="title">제목</div>
+                            <div class="item" data-value="contents">내용</div>
+                            <div class="item" data-value="titleAndContents">제목+내용</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui right aligned category search" style="display: flex; justify-content: center;">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요" style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
+                        <button type="submit" id="searchButton" style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </div>
+                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 5px;"><i class="pencil alternate icon" ></i></button>
+            </form>
             <div class="header-buttons">
-
                 <!--  사용자 버튼  -->
                 <button id="user-icon" class="ui icon button">
                     <i class="user icon"></i>
@@ -92,18 +114,6 @@
             </div>
         </div>
         <div class="main-content">
-            <div>
-                <form class="search-form" style="display: inline-block; vertical-align: top;">
-                    <select name="searchType" id="searchType">
-                        <option value="title">제목</option>
-                        <option value="contents">내용</option>
-                        <option value="titleAndContents">제목+내용</option>
-                    </select>
-                    <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
-                    <button type="submit">검색</button>
-                </form>
-                    <button class="btn-create-post" id="createPostButton" style="display: inline-block; margin-left: 10px;">글쓰기</button>
-            </div>
             <div class="posts">
                 <h2 class="h2">인기게시글</h2>
                 <ol class="post-ranking">
@@ -144,7 +154,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <!-- footer 시작 -->
@@ -260,7 +269,6 @@
                             <option value="3">3km</option>
                             <option value="4">4km</option>
                             <option value="5">5km</option>
-                            <!--                            <option value="custom">직접 입력</option>-->
                         </select>
                         <button class="ui button" id="setLocation">위치 설정</button>
                     </div>
@@ -268,7 +276,7 @@
             </div>
             <div style="margin-top: 30px;"></div>
             <p></p>
-            <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
         </div>
     </div>
 </div>
@@ -350,7 +358,7 @@
                 <input type="hidden" id="verificationCompleted" value="false">
                 <button class="ui button" type="submit" id="signup-submit">회원가입</button>
                 <div style="margin-top: 50px;"></div>
-                <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+                <a href="/" class="cd-form-bottom-message">메인으로</a>
             </div>
         </form>
     </div>
@@ -388,7 +396,7 @@
         <div class="login-footer">
             <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
             <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
-            <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
         </div>
     </div>
 </div>
@@ -444,7 +452,7 @@
             <button class="ui button red" id="deactivationButton">회원탈퇴</button>
         </form>
         <div style="margin-top: 30px;"></div>
-        <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+        <a href="/" class="cd-form-bottom-message">메인으로</a>
     </div>
 </div>
 
@@ -527,7 +535,7 @@
                 <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
             </div>
         </form>
-        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+        <p class="cd-form-bottom-message"><a href="#0">메인으로</a></p>
     </div>
 </div>
 
@@ -558,7 +566,7 @@
                 </div>
             </div>
         </form>
-        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+        <p class="cd-form-bottom-message"><a href="#0">메인으로</a></p>
     </div>
 </div>
 
@@ -579,7 +587,7 @@
 
             // 작성자 인증 정보 비교
             if (authorization == null) {
-                alert("글 작성을 위해서는 로그인이 필요합니다");
+                $('#loginModal').modal('show');
                 return false;
             }
             handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출

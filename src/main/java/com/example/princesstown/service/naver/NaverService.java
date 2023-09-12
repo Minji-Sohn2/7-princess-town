@@ -2,6 +2,7 @@ package com.example.princesstown.service.naver;
 
 import com.example.princesstown.dto.getInfo.NaverUserInfoDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.naver.NaverRepository;
 import com.example.princesstown.repository.user.UserRepository;
@@ -162,6 +163,16 @@ public class NaverService {
             // 회원가입
             naverUser = new User(naverUserInfo, encodedPassword);
 
+                // Location 정보 설정
+                Location location = naverUser.getLocation();
+                if (location == null) {
+                    // Location 정보가 없을 경우 기본 값 설정
+                    Location defaultLocation = new Location();
+                    defaultLocation.setLatitude(0.0);
+                    defaultLocation.setLongitude(0.0);
+                    naverUser.setLocation(defaultLocation);
+                }
+
             // DB에 저장
             userRepository.save(naverUser);
         }
@@ -184,6 +195,18 @@ public class NaverService {
             log.info(naverPassword);
             log.error("로그인 정보가 일치하지 않습니다.");
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
+        }
+
+        // Location 정보 설정
+        Location location = naverUser.getLocation();
+        if (location == null) {
+            // Location 정보가 없을 경우 기본 값 설정
+            Location defaultLocation = new Location();
+            defaultLocation.setLatitude(0.0);
+            defaultLocation.setLongitude(0.0);
+            naverUser.setLocation(defaultLocation);
+
+            userRepository.save(naverUser);
         }
 
         // 토큰 생성

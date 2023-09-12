@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <link rel="shortcut icon" href="/img/tomato-logo-img/tomato_logo.png">
     <title>우리동네 커뮤니티 토마토</title>
 
@@ -11,6 +12,10 @@
 
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--  SemanticUI  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
 
     <!-- static 스타일 시트 -->
     <link rel="stylesheet" type="text/css" href="/css/header.css">
@@ -22,11 +27,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gugi&font-family: 'Gugi', cursive;display=swap"
-          rel="stylesheet">
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://webfontworld.github.io/daegu/DalseoHealing.css">
 
-    <!--  SemanticUI  -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
 </head>
 <body>
 <div id="except-footer">
@@ -132,7 +135,9 @@
         <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">
             <i class="user circle icon"></i> 프로필
         </a>
-        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">내 채팅방</a>
+        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">
+            <i class="comment icon"></i>내 채팅방
+        </a>
         <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
             <i class="sign-out icon"></i> 로그아웃
         </a>
@@ -218,7 +223,6 @@
                             <option value="3">3km</option>
                             <option value="4">4km</option>
                             <option value="5">5km</option>
-                            <!--                            <option value="custom">직접 입력</option>-->
                         </select>
                         <button class="ui button" id="setLocation">위치 설정</button>
                     </div>
@@ -226,7 +230,7 @@
             </div>
             <div style="margin-top: 30px;"></div>
             <p></p>
-            <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
         </div>
     </div>
 </div>
@@ -308,7 +312,7 @@
                 <input type="hidden" id="verificationCompleted" value="false">
                 <button class="ui button" type="submit" id="signup-submit">회원가입</button>
                 <div style="margin-top: 50px;"></div>
-                <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+                <a href="/" class="cd-form-bottom-message">메인으로</a>
             </div>
         </form>
     </div>
@@ -346,7 +350,7 @@
         <div class="login-footer">
             <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
             <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
-            <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
         </div>
     </div>
 </div>
@@ -402,7 +406,7 @@
             <button class="ui button red" id="deactivationButton">회원탈퇴</button>
         </form>
         <div style="margin-top: 30px;"></div>
-        <a href="/" class="cd-form-bottom-message">Back to log-in</a>
+        <a href="/" class="cd-form-bottom-message">메인으로</a>
     </div>
 </div>
 
@@ -485,7 +489,7 @@
                 <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
             </div>
         </form>
-        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+        <p class="cd-form-bottom-message"><a href="#0">메인으로</a></p>
     </div>
 </div>
 
@@ -516,7 +520,7 @@
                 </div>
             </div>
         </form>
-        <p class="cd-form-bottom-message"><a href="#0">Back to log-in</a></p>
+        <p class="cd-form-bottom-message"><a href="#0">메인으로</a></p>
     </div>
 </div>
 
@@ -599,7 +603,7 @@
 
         // 작성자 인증 정보 비교
         if (authorization == null) {
-        alert("글 작성을 위해서는 로그인이 필요합니다");
+            $('#loginModal').modal('show');
         return false;
     }
         handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출

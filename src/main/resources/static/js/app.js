@@ -344,14 +344,6 @@ $(document).ready(function() {
 				xhr.setRequestHeader('Authorization', token);
 			},
 			success: function (res) {
-
-				if (res.message === "중복된 휴대전화 번호입니다.") {
-					alert("중복된 휴대전화 번호입니다.")
-				} else if (res.message === "중복된 이메일입니다.") {
-					alert("중복된 이메일입니다.")
-				} else if (res.message === "중복된 휴대전화, 이메일입니다.") {
-					alert("중복된 휴대전화 번호, 이메일입니다.")
-				} else {
 					// 사용자 이름 변경 후
 					var newNickname = $("input[name='profile-nicknameInput']").val();
 
@@ -384,10 +376,26 @@ $(document).ready(function() {
 					$('#saveProfile').hide();
 
 					window.location.href = '/';
-				}
 			},
-			error: function (error) {
-				alert(error.responseText);
+			error: function (res) {
+				console.log(res)
+				if (res.responseJSON.message === "중복된 전화번호입니다.") {
+					alert("중복된 전화번호입니다.")
+				} else if (res.responseJSON.message === "중복된 이메일입니다.") {
+					alert("중복된 이메일입니다.")
+				} else if (res.responseJSON.message === "중복된 닉네임입니다.") {
+					alert("중복된 닉네임입니다.")
+				} else if (res.responseJSON.message === "중복된 전화번호, 이메일, 닉네임입니다.") {
+					alert("중복된 전화번호, 이메일, 닉네임입니다.");
+				} else if (res.responseJSON.message === "중복된 전화번호, 이메일입니다.") {
+					alert("중복된 전화번호, 이메일입니다.");
+				} else if (res.responseJSON.message === "중복된 전화번호, 닉네임입니다.") {
+					alert("중복된 전화번호, 닉네임입니다.")
+				} else if (res.responseJSON.message === "중복된 이메일, 닉네임입니다.") {
+					alert("중복된 이메일, 닉네임입니다.")
+				} else {
+					alert("알 수 없는 오류가 발생하였습니다.")
+				}
 			}
 		});
 	});
@@ -475,6 +483,14 @@ $(document).ready(function() {
 			return;
 		} else {}
 
+		if (username.length < 4) {
+			alert("아이디를 최소 4글자 이상으로 작성해주세요.");
+			return false;
+		} else if (username.length > 20) {
+			alert("아이디를 최소 20자 이하로 작성해주세요.");
+			return false;
+		}
+
 		// 인증이 완료되지 않았을 때 알림을 표시하고 회원가입을 중지
 		if ($('#verificationCompleted').val() !== 'true') {
 			alert("휴대폰 인증을 먼저 해주세요.");
@@ -512,25 +528,10 @@ $(document).ready(function() {
 					alert("성공적으로 회원가입이 되었습니다!");
 					$('.item:contains("회원가입")').hide();
 					window.location.href = '/';
-
 			},
 			error: function (res) {
 				console.log(res)
-				if (res.responseJSON.message === "중복된 전화번호입니다.") {
-					alert("중복된 휴대전화 번호입니다.")
-				} else if (res.responseJSON.message === "중복된 이메일입니다.") {
-					alert("중복된 이메일입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디입니다.") {
-					alert("중복된 아이디입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디, 전화번호, 이메일입니다.") {
-					alert("중복된 아이디, 전화번호, 이메일입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디, 이메일입니다.") {
-					alert("중복된 아이디, 이메일입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디, 전화번호입니다.") {
-					alert("중복된 아이디, 전화번호입니다.")
-				} else if (res.responseJSON.message === "중복된 전화번호, 이메일입니다.") {
-					alert("중복된 전화번호, 이메일입니다.")
-				}
+				alert(res.responseText.message)
 			}
 		});
 	});
@@ -687,21 +688,21 @@ $(document).ready(function() {
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
-		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
+		if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber && email && currentLatitude && currentLongitude) {
+		} else if (!phoneNumber && email && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-		} else if (!currentLatitude && !currentLongitude && phoneNumber && email) {
+		} else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && !phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-		} else if (!email && !currentLatitude && !currentLongitude && phoneNumber) {
+		} else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-		} else if (!phoneNumber && !currentLatitude && !currentLongitude && email) {
+		} else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공!")
 		}
 
@@ -760,21 +761,21 @@ $(document).ready(function() {
 		console.log("latitude : " + currentLatitude )
 		console.log("longitude : " + currentLongitude)
 
-		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
+		if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber && email && currentLatitude && currentLongitude) {
+		} else if (!phoneNumber && email && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-		} else if (!currentLatitude && !currentLongitude && phoneNumber && email) {
+		} else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber && currentLatitude && currentLongitude) {
+		} else if (!email && !phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-		} else if (!email && !currentLatitude && !currentLongitude && phoneNumber) {
+		} else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-		} else if (!phoneNumber && !currentLatitude && !currentLongitude && email) {
+		} else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
+		} else if (email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
 			alert("로그인 성공!")
 		}
 
@@ -827,7 +828,6 @@ $(document).ready(function() {
 		});
 	});
 
-
 	// 회원탈퇴 인증번호 전송
 	$('#deactive-sendVerificationCode').on('click', function() {
 		let phoneNumber = $('#deactive-phoneNumberInput').val();
@@ -843,8 +843,6 @@ $(document).ready(function() {
 					alert(error.resText);
 				}
 			});
-		} else {
-			alert("필드를 입력해주세요")
 		}
 	});
 
@@ -864,8 +862,6 @@ $(document).ready(function() {
 					alert(error.resText);
 				}
 			});
-		} else {
-			alert("모든 필드를 입력해주세요")
 		}
 
 	});
@@ -887,8 +883,6 @@ $(document).ready(function() {
 					alert(error.resText);
 				}
 			});
-		} else {
-			alert("모든 필드를 입력해주세요")
 		}
 	});
 

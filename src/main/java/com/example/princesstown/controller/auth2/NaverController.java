@@ -1,6 +1,7 @@
 package com.example.princesstown.controller.auth2;
 
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.service.naver.NaverService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,12 @@ public class NaverController {
         String email = userData.getEmail();
         String nickname = userData.getNickname();
         Long userId = userData.getUserId();
-        Double latitude = userData.getLocation().getLatitude();
-        Double longitude = userData.getLocation().getLongitude();
+
+        Location location = userData.getLocation();
+        Double latitude = location.getLatitude();
+        Double longitude = location.getLongitude();
+
+
         log.info("네이버서버에서 보내는 nickname : " + nickname);
         log.info("네이버서버에서 보내는 userId : " + userId);
         log.info("네이버서버에서 보내는 latitude : " + latitude);

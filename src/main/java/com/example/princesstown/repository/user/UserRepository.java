@@ -12,14 +12,18 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     Optional<User> findByUsername(String username);
 
-    Optional<User> findBynickname(String nickname);
+    User findBynickname(String nickname);
 
+    User findByUserIdAndEmail(Long userId, String email);
     User findByEmail(String email);
 
+    User findByUserIdAndPhoneNumber(Long UserId, String phoneNumber);
     User findByPhoneNumber(String phoneNumber);
 
     Optional<User> findByPhoneNumberAndEmail(String phoneNumber, String email);
 
     // 사용자의 위치 정보를 가져오는 메소드
     Optional<Location> findLocationByUserId(Long userId);
+
+    User findByUserIdAndNickname(Long userId, String nickname);
 }

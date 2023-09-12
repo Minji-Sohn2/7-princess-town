@@ -2,6 +2,7 @@ package com.example.princesstown.service;
 
 import com.example.princesstown.dto.getInfo.KakaoUserInfoDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.entity.Location;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.kakao.KakaoRepository;
 import com.example.princesstown.repository.user.UserRepository;
@@ -172,9 +173,15 @@ public class KakaoService {
             kakaoUser = new User(kakaoUserInfo, encodedPassword);
             log.info("kakao user : " + kakaoUser);
 
-//            // 기본 이미지 설정
-//            String imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
-//            kakaoUser.setProfileImage(imageUrl);
+            // Location 정보 설정
+            Location location = kakaoUser.getLocation();
+            if (location == null) {
+                // Location 정보가 없을 경우 기본 값 설정
+                Location defaultLocation = new Location();
+                defaultLocation.setLatitude(0.0);
+                defaultLocation.setLongitude(0.0);
+                kakaoUser.setLocation(defaultLocation);
+            }
 
             // DB에 저장
             userRepository.save(kakaoUser);
@@ -198,6 +205,18 @@ public class KakaoService {
             log.info(kakaoPassword);
             log.error("로그인 정보가 일치하지 않습니다.");
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
+        }
+
+        // Location 정보 설정
+        Location location = kakaoUser.getLocation();
+        if (location == null) {
+            // Location 정보가 없을 경우 기본 값 설정
+            Location defaultLocation = new Location();
+            defaultLocation.setLatitude(0.0);
+            defaultLocation.setLongitude(0.0);
+            kakaoUser.setLocation(defaultLocation);
+
+            userRepository.save(kakaoUser);
         }
 
         // 토큰 생성

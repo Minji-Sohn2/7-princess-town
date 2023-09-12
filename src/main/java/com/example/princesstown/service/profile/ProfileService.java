@@ -10,7 +10,6 @@ import com.example.princesstown.service.awsS3.S3Uploader;
 import com.example.princesstown.service.location.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,7 +29,6 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final S3Uploader s3Uploader;
     private final PasswordEncoder passwordEncoder;
-    private final ApplicationContext applicationContext;
     private final LocationService locationService;
 
     // 프로필 수정
@@ -39,16 +37,36 @@ public class ProfileService {
         // 해당 유저를 DB에서 조회
         Optional<User> updateUser = userRepository.findById(userId);
 
-        User uniquePhoneNumberUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
-        if (uniquePhoneNumberUser != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호입니다."));
-        }
+        // 로그인한 유저가 해당 phoneNumber, email, nickname를 가지고 있는지 조회
+        User MyPhoneNumberUser = userRepository.findByUserIdAndPhoneNumber(userId, requestDto.getPhoneNumber());
+        User MyEmailUser = userRepository.findByUserIdAndEmail(userId, requestDto.getEmail());
+        User MynicknameUser = userRepository.findByUserIdAndNickname(userId, requestDto.getNickname());
 
+        // 해당 phoneNumber, email, nickname을 가지고 있는 유저가 있는지 조회
+        User uniquePhoneNumberUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
         User uniqueEmailUser = userRepository.findByEmail(requestDto.getEmail());
-        if (uniqueEmailUser != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 이메일입니다."));
-        } else if (uniqueEmailUser != null && uniquePhoneNumberUser != null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponseDto(HttpStatus.NOT_FOUND.value(), "중복된 전화번호, 이메일입니다."));
+        User uniqueNicknameUser = userRepository.findBynickname(requestDto.getNickname());
+
+        // 중복상태
+        boolean phoneNumberDuplicate = uniquePhoneNumberUser != null && (MyPhoneNumberUser == null || MyPhoneNumberUser != uniquePhoneNumberUser);
+        boolean emailDuplicate = uniqueEmailUser != null && (MyEmailUser == null || MyEmailUser != uniqueEmailUser);
+        boolean nicknameDuplicate = uniqueNicknameUser != null && (MynicknameUser == null || MynicknameUser != uniqueNicknameUser);
+
+        // 중복상태 확인 로직
+        if (phoneNumberDuplicate && emailDuplicate && nicknameDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호, 이메일, 닉네임입니다."));
+        } else if (phoneNumberDuplicate && emailDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호, 이메일입니다."));
+        } else if (phoneNumberDuplicate && nicknameDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호, 닉네임입니다."));
+        } else if (emailDuplicate && nicknameDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 이메일, 닉네임입니다."));
+        } else if (phoneNumberDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호입니다."));
+        } else if (emailDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 이메일입니다."));
+        } else if (nicknameDuplicate) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 닉네임입니다."));
         }
 
 
