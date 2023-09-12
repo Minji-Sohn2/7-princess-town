@@ -42,28 +42,32 @@
                     <h2>토마토</h2>
                 </a>
             </div>
-            <form class="search-form" style="display: flex; justify-content: center;">
-                <div class="ui compact menu" style="margin-right: 10px; border-radius: 10px;">
-                    <div class="ui simple dropdown item" id="searchTypeDropdown">
-                        <div id="defaultitem" class="text">제목</div>
-                        <i class="dropdown icon"></i>
-                        <div class="menu transition hidden">
-                            <div class="item" data-value="title">제목</div>
-                            <div class="item" data-value="contents">내용</div>
-                            <div class="item" data-value="titleAndContents">제목+내용</div>
+            <div style="display: flex">
+                <form class="search-form" style="display: flex; justify-content: center;">
+                    <div class="ui selection menu" style="margin-right: 10px; border-radius: 10px;">
+                        <div class="ui simple dropdown item" id="searchTypeDropdown">
+                            <div id="defaultitem" class="text">제목</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div class="item" data-value="title" style="border: none;">제목</div>
+                                <div class="item" data-value="contents" style="border: none;">내용</div>
+                                <div class="item" data-value="titleAndContents" style="border: none;">제목+내용</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="ui right aligned category search" style="display: flex; justify-content: center;">
-                    <div class="ui icon input">
-                        <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요" style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
-                        <button type="submit" id="searchButton" style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
-                            <i class="search icon"></i>
-                        </button>
+                    <div class="ui right aligned category search" style="display: flex; justify-content: center;">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요" style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
+                            <button type="submit" id="searchButton" style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                                <i class="search icon"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                    <!--                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>-->
+                </form>
                 <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>
-            </form>
+            </div>
+
             <div class="header-buttons">
                 <div>
                     <a class="item" id="myChatRoom-btn2" href="/view/chatRooms">
@@ -606,25 +610,30 @@
         // });
     });
 
-        $(document).ready(function () {
+    $(document).ready(function () {
         function handleCreate() {
             // 게시글 작성 페이지로 이동합니다.
             window.location.href = "/view/createpost";
         }
 
         $("#createPostButton").click(function () {
-        // 현재 로그인 중인 인증정보 가져오기
-        const authorization = Cookies.get('Authorization');
+            // 현재 로그인 중인 인증정보 가져오기
+            const authorization = Cookies.get('Authorization');
 
-        // 작성자 인증 정보 비교
+            // 작성자 인증 정보 비교
+            if (authorization == null) {
+                $('#loginModal').modal('show');
+                return false;
+            }
+            handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
+        });
+
         if (authorization == null) {
-            $('#loginModal').modal('show');
-        return false;
-    }
-        handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
-    });
-    });
-
+            document.getElementById('myChatRoom-btn2').style.display = 'none';
+        } else {
+            document.getElementById('myChatRoom-btn2').style.display = 'block';
+        }
+    })
 </script>
 </html>
 
