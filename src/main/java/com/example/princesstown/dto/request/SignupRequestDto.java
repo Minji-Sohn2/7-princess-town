@@ -11,7 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class SignupRequestDto {
-    @Min(4)
+
+    @Size(min = 4, max = 20)
     private String username;
     private String password;
     private String nickname;

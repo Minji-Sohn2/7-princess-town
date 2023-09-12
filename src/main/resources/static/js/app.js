@@ -486,6 +486,9 @@ $(document).ready(function() {
 		if (username.length < 4) {
 			alert("아이디를 최소 4글자 이상으로 작성해주세요.");
 			return false;
+		} else if (username.length > 20) {
+			alert("아이디를 최소 20자 이하로 작성해주세요.");
+			return false;
 		}
 
 		// 인증이 완료되지 않았을 때 알림을 표시하고 회원가입을 중지
@@ -524,26 +527,11 @@ $(document).ready(function() {
 			success: function (res) {
 					alert("성공적으로 회원가입이 되었습니다!");
 					$('.item:contains("회원가입")').hide();
-					window.location.href = '/';
-
+					// window.location.href = '/';
 			},
 			error: function (res) {
 				console.log(res)
-				if (res.responseJSON.message === "중복된 전화번호입니다.") {
-					alert("중복된 휴대전화 번호입니다.")
-				} else if (res.responseJSON.message === "중복된 이메일입니다.") {
-					alert("중복된 이메일입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디입니다.") {
-					alert("중복된 아이디입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디, 전화번호, 이메일입니다.") {
-					alert("중복된 아이디, 전화번호, 이메일입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디, 이메일입니다.") {
-					alert("중복된 아이디, 이메일입니다.")
-				} else if (res.responseJSON.message === "중복된 아이디, 전화번호입니다.") {
-					alert("중복된 아이디, 전화번호입니다.")
-				} else if (res.responseJSON.message === "중복된 전화번호, 이메일입니다.") {
-					alert("중복된 전화번호, 이메일입니다.")
-				}
+				alert(res.responseText.message)
 			}
 		});
 	});
