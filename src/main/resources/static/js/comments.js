@@ -136,7 +136,7 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
             beforeSend: function () {
-                $('#eventLoading').show();
+                // $('#eventLoading').show();
                 $('body').on('scroll touchmove mousewheel', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
