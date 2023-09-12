@@ -77,7 +77,6 @@ public class User {
         this.password = encodedPassword;
         this.nickname = naverUserInfoDto.getNickname();
         this.username = naverUserInfoDto.getUsername();
-        this.phoneNumber = naverUserInfoDto.getPhoneNumber();
     }
 
     public User(String storedUsername, String encodedTempPassword) {

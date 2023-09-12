@@ -136,15 +136,14 @@ public class NaverService {
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         String id = jsonNode.get("response").get("id").asText(); // 네이버 식별자 id
         String nickname = jsonNode.get("response").get("nickname").asText(); // 네이버 별명
-        String phoneNumber = jsonNode.get("response").get("mobile").asText(); // 전화번호
 
-        log.info("네이버 사용자 정보: " +  id + ", " + nickname + ", " + phoneNumber);
+        log.info("네이버 사용자 정보: " +  id + ", " + nickname);
 
-        return new NaverUserInfoDto(id, nickname, phoneNumber);
+        return new NaverUserInfoDto(id, nickname);
     }
 
     // 필요시에 회원가입하는 메서드
-    private User registerNaverUserIfNeeded(NaverUserInfoDto naverUserInfo) throws IOException {
+    private User registerNaverUserIfNeeded(NaverUserInfoDto naverUserInfo) {
         String naverUsername = naverUserInfo.getUsername() + "_NaverUser_";
         User naverUser = naverRepository.findByUsernameStartingWith(naverUsername);
         log.info("user : " + naverUser);
@@ -162,10 +161,6 @@ public class NaverService {
 
             // 회원가입
             naverUser = new User(naverUserInfo, encodedPassword);
-
-//            // 기본 이미지 설정
-//            String imageUrl = s3Uploader.uploadDefaultImage(applicationContext);
-//            naverUser.setProfileImage(imageUrl);
 
             // DB에 저장
             userRepository.save(naverUser);
