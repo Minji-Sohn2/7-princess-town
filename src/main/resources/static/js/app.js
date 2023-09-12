@@ -618,13 +618,13 @@ $(document).ready(function() {
 				console.log("profileImage : " + profileImage)
 
 				// 쿠키 만료일 설정
-				const expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getHours() + 3);
+				// const expirationDate = new Date();
+				// expirationDate.setDate(expirationDate.getHours() + 3);
 
 				// 토큰을 쿠키에 저장
-				Cookies.set('Authorization', token, {expires: expirationDate});
-				Cookies.set('nickname', nickname, {expires: expirationDate});
-				Cookies.set('userId', userId, {expires: expirationDate});
+				Cookies.set('Authorization', token);
+				Cookies.set('nickname', nickname);
+				Cookies.set('userId', userId);
 
 				if (profileImage !== null) {
 					Cookies.set('profileImage', profileImage, {expires: expirationDate});

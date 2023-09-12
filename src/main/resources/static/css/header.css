@@ -1,4 +1,4 @@
-/* 기본 설정 */
+ /* 기본 설정 */
 body {
     background-color: #fafafa; /* 좀 더 밝은 배경색으로 설정 */
     font-family: 'Noto Sans KR', sans-serif;
@@ -53,3 +53,16 @@ body {
     float: right;
     padding-bottom: 10px;
 }
+
+ /* 프로필 아이콘에 오른쪽 여백 추가 */
+ #user-icon {
+     /*margin-left: 50px; !* 아이콘 사이의 간격을 조절할 수 있습니다. *!*/
+
+ }
+
+ #myChatRoom-btn2 {
+     margin-right: 50px; /* 아이콘 사이의 간격을 조절할 수 있습니다. */
+     /*font-size: 20px; !* 아이콘 크기를 조절할 수 있습니다. *!*/
+     /*margin-bottom: 10px;*/
+ }
+
