@@ -543,6 +543,16 @@ $(document).ready(function () {
             return false;
         }
 
+        if (content.length < 3 || content.length >= 250) {
+            Swal.fire({
+                icon: 'warning',
+                title: '댓글 작성실패',
+                text: '댓글은 3자 이상 250자 이하로 작성가능합니다.',
+            });
+            $('#userComment').focus();
+            return false;
+        }
+
         $.ajax({
             type: 'POST',
             url: `/api/posts/${postId}/comments`,
@@ -629,6 +639,16 @@ $(document).ready(function () {
                 icon: 'warning',
                 title: '댓글 수정실패',
                 text: '이모티콘 없이 댓글을 공백으로 작성할 수 없습니다.',
+            });
+            $(`.userCommentEdit[data-comment-id="${commentId}"]`).focus();
+            return false;
+        }
+
+        if (content.length < 3 || content.length >= 250) {
+            Swal.fire({
+                icon: 'warning',
+                title: '댓글 수정실패',
+                text: '댓글은 3자 이상 250자 이하로 작성가능합니다.',
             });
             $(`.userCommentEdit[data-comment-id="${commentId}"]`).focus();
             return false;
@@ -820,6 +840,17 @@ function replyCreate(postId, commentId) {
         $(`.userReply[data-comment-id="${commentId}"]`).focus();
         return false;
     }
+
+    if (createReplyValue.length < 3 || createReplyValue.length >= 250) {
+        Swal.fire({
+            icon: 'warning',
+            title: '답글 작성실패',
+            text: '답글은 3자 이상 250자 이하로 작성가능합니다.',
+        });
+        $(`.userReply[data-comment-id="${commentId}"]`).focus();
+        return false;
+    }
+
     $.ajax({
         type: 'POST',
         url: `/api/posts/${postId}/comments/${commentId}/reply`,
@@ -940,6 +971,16 @@ function replyEdit(postId, commentId, replyId) {
             icon: 'warning',
             title: '답글 수정실패',
             text: '이모티콘 없이 답글을 공백으로 작성할 수 없습니다.',
+        });
+        $(`.userReplyEdit[data-reply-id="${replyId}"]`).focus();
+        return false;
+    }
+
+    if (replyContexts.length < 3 || replyContexts.length >= 250) {
+        Swal.fire({
+            icon: 'warning',
+            title: '답글 수정실패',
+            text: '답글은 3자 이상 250자 이하로 작성가능합니다.',
         });
         $(`.userReplyEdit[data-reply-id="${replyId}"]`).focus();
         return false;
