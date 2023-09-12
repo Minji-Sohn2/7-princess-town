@@ -35,7 +35,7 @@ $(document).ready(function () {
     // 드롭다운 선택 항목이 변경될 때 이벤트 처리
     $("#searchTypeDropdown .item").on("click", function () {
         var selectedOption = $(this).text();
-        $("#searchTypeDropdown .text").text(selectedOption);
+        $(".menu").text(selectedOption);
     });
 
     // 검색 폼 제출 시 처리
@@ -50,11 +50,11 @@ $(document).ready(function () {
         console.log(searchType)
 
         // 선택된 드롭다운 항목을 기반으로 리다이렉션 처리
-        if (searchType === "title") {
+        if (searchType === "제목") {
             window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
-        } else if (searchType === "contents") {
+        } else if (searchType === "내용") {
             window.location.href = "/view/searchContent?contents=" + encodeURIComponent(searchKeyword);
-        } else if (searchType === "titleAndContents") {
+        } else if (searchType === "제목+내용") {
             window.location.href = "/view/searchKeyword?keyword=" + encodeURIComponent(searchKeyword);
         }
     });
