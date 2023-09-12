@@ -267,18 +267,20 @@ $(document).ready(function() {
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader("Authorization", token);
 			},
-			success: function (response) {
+			success: function (res) {
 				// 응답 데이터를 이용하여 프로필 정보 필드에 채움
-				$("input[name='profile-usernameInput']").val(response.username);
-				$("input[name='profile-nicknameInput']").val(response.nickname);
-				$("input[name='profile-emailInput']").val(response.email);
-				$("input[name='profile-phoneNumberInput']").val(response.phoneNumber);
-				$("input[name='profile-passwordInput']").val(response.password);
+				$("input[name='profile-usernameInput']").val(res.username);
+				$("input[name='profile-nicknameInput']").val(res.nickname);
+				$("input[name='profile-emailInput']").val(res.email);
+				$("input[name='profile-phoneNumberInput']").val(res.phoneNumber);
+				$("input[name='profile-passwordInput']").val(res.password);
+
+				console.log(res.email)
+				console.log(res.phoneNumber)
 
 				// 위치 정보 필드 처리
-				currentLatitude = response.latitude;
-				currentLongitude = response.longitude;
-				// 기타 위치 정보 처리
+				currentLatitude = res.latitude;
+				currentLongitude = res.longitude;
 			},
 			error: function (error) {
 				alert("프로필 조회 실패. 다시 시도해주세요.");
@@ -307,7 +309,9 @@ $(document).ready(function() {
 	// 프로필 정보 저장 버튼 클릭 이벤트
 	$('#saveProfile').click(function () {
 		var newPassword = $("input[name='profile-passwordInput']").val();
+		var phoneNumber = $("input[name='profile-phoneNumberInput']").val()
 		var profileImage = $("input[name='profile-imageInput']")[0];
+		var email = $("input[name='profile-emailInput']").val()
 		var formData = new FormData();
 
 		if (profileImage && profileImage.files.length > 0) {
@@ -319,10 +323,13 @@ $(document).ready(function() {
 
 		formData.append('radius', $('#radiusSelect').val());// 결정된 반경 값 추가
 		formData.append('nickname', $("input[name='profile-nicknameInput']").val());
-		formData.append('email', $("input[name='profile-emailInput']").val());
-		formData.append('phoneNumber', $("input[name='profile-phoneNumberInput']").val());
+		formData.append('email', email);
+		formData.append('phoneNumber', phoneNumber);
 		formData.append('latitude', currentLatitude); // 위도 추가
 		formData.append('longitude', currentLongitude); // 경도 추가
+
+		console.log("latitude : " + currentLatitude)
+		console.log("longitude : " + currentLongitude)
 
 		$.ajax({
 			url: `/api/users/profile`,
@@ -336,43 +343,51 @@ $(document).ready(function() {
 				// 토큰을 Authorization 헤더에 설정
 				xhr.setRequestHeader('Authorization', token);
 			},
-			success: function (response) {
+			success: function (res) {
 
-				// 사용자 이름 변경 후
-				var newNickname = $("input[name='profile-nicknameInput']").val();
+				if (res.message === "중복된 휴대전화 번호입니다.") {
+					alert("중복된 휴대전화 번호입니다.")
+				} else if (res.message === "중복된 이메일입니다.") {
+					alert("중복된 이메일입니다.")
+				} else if (res.message === "중복된 휴대전화, 이메일입니다.") {
+					alert("중복된 휴대전화 번호, 이메일입니다.")
+				} else {
+					// 사용자 이름 변경 후
+					var newNickname = $("input[name='profile-nicknameInput']").val();
 
-				// 이미지URL 가져오기
-				const newprofileImage = response.data.profileImage;
-				console.log("profileImage : " + profileImage)
+					// 이미지URL 가져오기
+					const newprofileImage = res.data.profileImage;
+					console.log("profileImage : " + profileImage)
 
-				// 쿠키 만료일 설정
-				var expirationDate = new Date();
-				expirationDate.setDate(expirationDate.getDate() + 1);
+					// 쿠키 만료일 설정
+					var expirationDate = new Date();
+					expirationDate.setDate(expirationDate.getDate() + 1);
 
-				if (newNickname) {
-					Cookies.set('nickname', newNickname, {expires: expirationDate});
+					if (newNickname) {
+						Cookies.set('nickname', newNickname, {expires: expirationDate});
+					}
+
+					if (newprofileImage) {
+						Cookies.set('profileImage', newprofileImage, {expires: expirationDate});
+					}
+
+
+					// 수정 가능한 필드들의 readonly 속성 추가
+					$('#profileModal input').prop('readonly', true);
+					$('#customRadiusInput').prop('readonly', true);
+					$('#radiusSelect').prop('disabled', true);
+					$('#setLocation').prop('disabled', true);
+
+					// 수정 완료 버튼 숨김, 수정 버튼 표시
+					alert("프로필 정보가 성공적으로 업데이트되었습니다.");
+					$('#editProfile').show();
+					$('#saveProfile').hide();
+
+					window.location.href = '/';
 				}
-
-				if (newprofileImage) {
-					Cookies.set('profileImage', newprofileImage, {expires: expirationDate});
-				}
-
-
-				// 수정 가능한 필드들의 readonly 속성 추가
-				$('#profileModal input').prop('readonly', true);
-				$('#customRadiusInput').prop('readonly', true);
-				$('#radiusSelect').prop('disabled', true);
-				$('#setLocation').prop('disabled', true);
-
-				// 수정 완료 버튼 숨김, 수정 버튼 표시
-				alert("프로필 정보가 성공적으로 업데이트되었습니다.");
-				$('#editProfile').show();
-				$('#saveProfile').hide();
-
-				window.location.href = '/';
 			},
 			error: function (error) {
-				alert("프로필 업데이트가 실패했습니다.");
+				alert(error.responseText);
 			}
 		});
 	});
@@ -390,7 +405,7 @@ $(document).ready(function() {
 			$.ajax({
 				url: "/api/users/sms/codes?phoneNumber=" + phoneNumber,
 				type: "POST",
-				success: function (response) {
+				success: function (res) {
 					alert("인증번호가 전송되었습니다.");
 				},
 				error: function (error) {
@@ -415,8 +430,8 @@ $(document).ready(function() {
 			url: "/api/users/sms/verify-codes",
 			type: "POST",
 			data: {phoneNumber: phoneNumber, inputCode: inputCode},
-			success: function (response) {
-				if (response.status === 200) {
+			success: function (res) {
+				if (res.status === 200) {
 					alert("인증 성공");
 					// 인증 성공 시 인증 완료 여부를 저장
 					$('#verificationCompleted').val('true');
@@ -458,7 +473,7 @@ $(document).ready(function() {
 		if (!username || !password || !nickname || !email || !phoneNumber || !inputCode) {
 			alert("모든 필드를 입력해주세요.");
 			return;
-		}
+		} else {}
 
 		// 인증이 완료되지 않았을 때 알림을 표시하고 회원가입을 중지
 		if ($('#verificationCompleted').val() !== 'true') {
@@ -493,10 +508,26 @@ $(document).ready(function() {
 			data: formData,
 			processData: false,
 			contentType: false,
-			success: function (response) {
-				alert("성공적으로 회원가입이 되었습니다!");
-				$('.item:contains("회원가입")').hide();
-				window.location.href = '/';
+			success: function (res) {
+				if (res.message === "중복된 전화번호입니다.") {
+					alert("중복된 휴대전화 번호입니다.")
+				} else if (res.message === "중복된 이메일입니다.") {
+					alert("중복된 이메일입니다.")
+				} else if (res.message === "중복된 아이디입니다.") {
+					alert("중복된 아이디입니다.")
+				} else if (res.message === "중복된 아이디, 전화번호, 이메일입니다.") {
+					alert("중복된 아이디, 전화번호, 이메일입니다.")
+				} else if (res.message === "중복된 아이디, 이메일입니다.") {
+					alert("중복된 아이디, 이메일입니다.")
+				} else if (res.message === "중복된 아이디, 전화번호입니다.") {
+					alert("중복된 아이디, 전화번호입니다.")
+				} else if (res.message === "중복된 전화번호, 이메일입니다.") {
+					alert("중복된 전화번호, 이메일입니다.")
+				} else {
+					alert("성공적으로 회원가입이 되었습니다!");
+					$('.item:contains("회원가입")').hide();
+					window.location.href = '/';
+				}
 			},
 			error: function (error) {
 				alert("회원가입 실패. 다시 확인해주세요.");
@@ -576,7 +607,7 @@ $(document).ready(function() {
 				console.log("status : " + status)
 
 				// HTTP 헤더에서 토큰 가져오기
-				const token = xhr.getResponseHeader("Authorization");
+				const token = xhr.getresHeader("Authorization");
 				console.log("token : " + token)
 
 				// 서버 응답에서 userId, nickname 꺼내오기
@@ -621,7 +652,7 @@ $(document).ready(function() {
 	const NAVER_REDIRECT_URL = "https://myplacetomato.site/api/user/naver/callback";
 
 	// 네이버 요청 URL 만들기
-	const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${NAVER_CLIENT_ID}&redirect_uri=${NAVER_REDIRECT_URL}&response_type=code`;
+	const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?client_id=${NAVER_CLIENT_ID}&redirect_uri=${NAVER_REDIRECT_URL}&res_type=code`;
 
 	// 네이버 로그인 버튼 클릭 이벤트
 	document.getElementById("naverLogin").addEventListener("click", function(e) {
@@ -639,7 +670,11 @@ $(document).ready(function() {
 		const token = urlParams.get("token");
 		const email = urlParams.get('email');
 		const phoneNumber = urlParams.get('phoneNumber');
+		const currentLatitude = urlParams.get('latitude');
+		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+
+		console.log()
 
 
 		// 로그인 정보를 쿠키에 저장
@@ -653,17 +688,17 @@ $(document).ready(function() {
 
 		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email) {
+		} else if (!email && phoneNumber && currentLatitude && currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber) {
+		} else if (!phoneNumber && email && currentLatitude && currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-		} else if (!currentLatitude && !currentLongitude) {
+		} else if (!currentLatitude && !currentLongitude && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber) {
+		} else if (!email && !phoneNumber && currentLatitude && currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-		} else if (!email && !currentLatitude && !currentLongitude) {
+		} else if (!email && !currentLatitude && !currentLongitude && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-		} else if (!phoneNumber && !currentLatitude && !currentLongitude) {
+		} else if (!phoneNumber && !currentLatitude && !currentLongitude && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
 		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
 			alert("로그인 성공!")
@@ -684,10 +719,10 @@ $(document).ready(function() {
 
 	// 카카오 정보 가져오기
 	const KAKAO_CLIENT_ID = "09f2acecd9cd8bf7b7d3f6951daf4548";
-	const KAKAO_REDIRECT_URL = "https://myplacetomato.site/api/user/kakao/callback";
+	const KAKAO_REDIRECT_URL = "http://localhost:8080/api/user/kakao/callback";
 
 	// 카카오 요청 URL 만들기
-	const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URL}&response_type=code`;
+	const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URL}&res_type=code`;
 
 	// 카카오 로그인 버튼 클릭 이벤트
 	document.getElementById("kakaoLogin").addEventListener("click", function (e) {
@@ -704,6 +739,8 @@ $(document).ready(function() {
 		const token = urlParams.get("token");
 		const email = urlParams.get('email');
 		const phoneNumber = urlParams.get('phoneNumber');
+		const currentLatitude = urlParams.get('latitude');
+		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
 
 		// 로그인 정보를 쿠키에 저장
@@ -715,19 +752,22 @@ $(document).ready(function() {
 		// 로그인 상태 UI 업데이트
 		$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
+		console.log("latitude : " + currentLatitude )
+		console.log("longitude : " + currentLongitude)
+
 		if (!email && !phoneNumber && !currentLatitude && !currentLongitude) {
 			alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-		} else if (!email) {
+		} else if (!email && phoneNumber && currentLatitude && currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-		} else if (!phoneNumber) {
+		} else if (!phoneNumber && email && currentLatitude && currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-		} else if (!currentLatitude && !currentLongitude) {
+		} else if (!currentLatitude && !currentLongitude && phoneNumber && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-		} else if (!email && !phoneNumber) {
+		} else if (!email && !phoneNumber && currentLatitude && currentLongitude) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-		} else if (!email && !currentLatitude && !currentLongitude) {
+		} else if (!email && !currentLatitude && !currentLongitude && phoneNumber) {
 			alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-		} else if (!phoneNumber && !currentLatitude && !currentLongitude) {
+		} else if (!phoneNumber && !currentLatitude && !currentLongitude && email) {
 			alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
 		} else if (email && phoneNumber && currentLatitude && currentLongitude) {
 			alert("로그인 성공!")
@@ -742,7 +782,7 @@ $(document).ready(function() {
 		const newURL = window.location.href.split("?")[0];
 		window.history.replaceState({}, document.title, newURL);
 
-		window.location.href = "/"
+		// window.location.href = "/"
 	}
 
 	// 로그아웃 확인 모달의 확인 버튼 클릭 시 로그아웃 이벤트 실행
@@ -763,16 +803,16 @@ $(document).ready(function() {
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader("Authorization", token);
 			},
-			success: function (response) {
-				if (response.status === 200) {
-					alert(response.message);
+			success: function (res) {
+				if (res.status === 200) {
+					alert(res.message);
 					Cookies.remove('Authorization');
 					Cookies.remove('nickname');
 					Cookies.remove('userId');
 					Cookies.remove('profileImage');
 					window.location.href = "/";
 				} else {
-					alert("로그아웃 실패: " + response.message);
+					alert("로그아웃 실패: " + res.message);
 				}
 			},
 			error: function (error) {
@@ -791,11 +831,11 @@ $(document).ready(function() {
 				url: "/api/users/sms/codes",
 				type: "POST",
 				data: { phoneNumber: phoneNumber },
-				success: function(response) {
+				success: function(res) {
 					alert("인증번호가 전송되었습니다.");
 				},
 				error: function(error) {
-					alert(error.responseText);
+					alert(error.resText);
 				}
 			});
 		} else {
@@ -812,11 +852,11 @@ $(document).ready(function() {
 				url: "/api/users/sms/verify-codes",
 				type: "POST",
 				data: { phoneNumber: phoneNumber, inputCode: inputCode },
-				success: function(response) {
+				success: function(res) {
 					alert("인증 성공!");
 				},
 				error: function(error) {
-					alert(error.responseText);
+					alert(error.resText);
 				}
 			});
 		} else {
@@ -835,11 +875,11 @@ $(document).ready(function() {
 				url: "/api/users/email/verify-codes",
 				type: "POST",
 				data: {phoneNumber: phoneNumber, email: email},
-				success: function (response) {
+				success: function (res) {
 					alert("이메일로 회원탈퇴 인증코드가 전송되었습니다.");
 				},
 				error: function (error) {
-					alert(error.responseText);
+					alert(error.resText);
 				}
 			});
 		} else {
@@ -889,7 +929,7 @@ $(document).ready(function() {
 			url: "/api/users/account/deactivate",
 			type: 'DELETE',
 			data: {inputCode: inputCode},
-			success: function (response) {
+			success: function (res) {
 				// 쿠키삭제
 				Cookies.remove('Authorization');
 				Cookies.remove('nickname');
@@ -916,7 +956,7 @@ $(document).ready(function() {
 			data: {
 				phoneNumber: phoneNumber
 			},
-			success: function(response) {
+			success: function(res) {
 				alert('인증번호가 전송되었습니다.');
 			},
 			error: function(error) {
@@ -937,7 +977,7 @@ $(document).ready(function() {
 				phoneNumber: phoneNumber,
 				inputCode: inputCode
 			},
-			success: function(response) {
+			success: function(res) {
 				alert('인증번호가 확인되었습니다.');
 			},
 			error: function(error) {
@@ -958,7 +998,7 @@ $(document).ready(function() {
 				phoneNumber: phoneNumber,
 				email: email
 			},
-			success: function(response) {
+			success: function(res) {
 				alert('아이디가 ' + email + '로 전송되었습니다.');
 			},
 			error: function(error) {
@@ -1022,7 +1062,7 @@ $(document).ready(function() {
 			url: "/api/account-recovery/sms/codes",
 			type: "POST",
 			data: {phoneNumber: phoneNumber},
-			success: function (response) {
+			success: function (res) {
 				alert("인증번호가 전송되었습니다.");
 			},
 			error: function (error) {
@@ -1046,8 +1086,8 @@ $(document).ready(function() {
 			url: "/api/account-recovery/sms/verify-codes",
 			type: "POST",
 			data: {phoneNumber: phoneNumber, inputCode: inputCode},
-			success: function (response) {
-				if (response.status === 200) {
+			success: function (res) {
+				if (res.status === 200) {
 					alert("인증 성공");
 				} else {
 					alert("존재하지 않는 인증코드입니다. 다시 입력해주세요");
@@ -1067,7 +1107,7 @@ $(document).ready(function() {
 			url: "/api/account-recovery/temp-passwords",
 			type: "POST",
 			data: {phoneNumber: phoneNumber, email: email},
-			success: function (response) {
+			success: function (res) {
 				alert("임시 비밀번호가 전송되었습니다.");
 			},
 			error: function (error) {
@@ -1101,7 +1141,7 @@ $(document).ready(function() {
 				console.log("status : " + status)
 
 				// HTTP 헤더에서 토큰 가져오기
-				var token = xhr.getResponseHeader("Authorization");
+				var token = xhr.getresHeader("Authorization");
 				console.log("token : " + token)
 
 				// 서버 응답에서 userId 꺼내오기
