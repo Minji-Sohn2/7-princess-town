@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class ReplyRequestDto {
 
-    @Size(min = 3, max = 1000)
+    @Size(max = 1000)
     private String content;
 
     private String emoji;

@@ -543,14 +543,26 @@ $(document).ready(function () {
             return false;
         }
 
-        if (content.length < 3 || content.length > 1000) {
-            Swal.fire({
-                icon: 'warning',
-                title: '댓글 작성실패',
-                text: '댓글은 3자 이상 1000자 이하로 작성가능합니다.',
-            });
-            $('#userComment').focus();
-            return false;
+        if (img !== undefined) {
+            if (content.length > 1000) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '댓글 작성실패',
+                    text: '댓글은 1000자 이하로 작성가능합니다.',
+                });
+                $('#userComment').focus();
+                return false;
+            }
+        } else {
+            if (content.length < 3 || content.length > 1000) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '댓글 작성실패',
+                    text: '댓글은 3자 이상 1000자 이하로 작성가능합니다.',
+                });
+                $('#userComment').focus();
+                return false;
+            }
         }
 
         $.ajax({
@@ -644,15 +656,28 @@ $(document).ready(function () {
             return false;
         }
 
-        if (content.length < 3 || content.length > 1000) {
-            Swal.fire({
-                icon: 'warning',
-                title: '댓글 수정실패',
-                text: '댓글은 3자 이상 1000자 이하로 작성가능합니다.',
-            });
-            $(`.userCommentEdit[data-comment-id="${commentId}"]`).focus();
-            return false;
+        if (img !== undefined) {
+            if (content.length > 1000) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '댓글 수정실패',
+                    text: '댓글은 1000자 이하로 작성가능합니다.',
+                });
+                $(`.userCommentEdit[data-comment-id="${commentId}"]`).focus();
+                return false;
+            }
+        } else {
+            if (content.length < 3 || content.length > 1000) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '댓글 수정실패',
+                    text: '댓글은 3자 이상 1000자 이하로 작성가능합니다.',
+                });
+                $(`.userCommentEdit[data-comment-id="${commentId}"]`).focus();
+                return false;
+            }
         }
+
 
         Swal.fire({
             title: '댓글을 수정하시겠습니까?',
@@ -841,15 +866,28 @@ function replyCreate(postId, commentId) {
         return false;
     }
 
-    if (createReplyValue.length < 3 || createReplyValue.length > 1000) {
-        Swal.fire({
-            icon: 'warning',
-            title: '답글 작성실패',
-            text: '답글은 3자 이상 1000자 이하로 작성가능합니다.',
-        });
-        $(`.userReply[data-comment-id="${commentId}"]`).focus();
-        return false;
+    if (img !== undefined) {
+        if (createReplyValue.length > 1000) {
+            Swal.fire({
+                icon: 'warning',
+                title: '답글 작성실패',
+                text: '답글은 1000자 이하로 작성가능합니다.',
+            });
+            $(`.userReply[data-comment-id="${commentId}"]`).focus();
+            return false;
+        }
+    } else {
+        if (createReplyValue.length < 3 || createReplyValue.length > 1000) {
+            Swal.fire({
+                icon: 'warning',
+                title: '답글 작성실패',
+                text: '답글은 3자 이상 1000자 이하로 작성가능합니다.',
+            });
+            $(`.userReply[data-comment-id="${commentId}"]`).focus();
+            return false;
+        }
     }
+
 
     $.ajax({
         type: 'POST',
@@ -976,15 +1014,28 @@ function replyEdit(postId, commentId, replyId) {
         return false;
     }
 
-    if (replyContexts.length < 3 || replyContexts.length > 1000) {
-        Swal.fire({
-            icon: 'warning',
-            title: '답글 수정실패',
-            text: '답글은 3자 이상 1000자 이하로 작성가능합니다.',
-        });
-        $(`.userReplyEdit[data-reply-id="${replyId}"]`).focus();
-        return false;
+    if (img !== undefined) {
+        if (replyContexts.length > 1000) {
+            Swal.fire({
+                icon: 'warning',
+                title: '답글 수정실패',
+                text: '답글은 1000자 이하로 작성가능합니다.',
+            });
+            $(`.userReplyEdit[data-reply-id="${replyId}"]`).focus();
+            return false;
+        }
+    } else {
+        if (replyContexts.length < 3 || replyContexts.length > 1000) {
+            Swal.fire({
+                icon: 'warning',
+                title: '답글 수정실패',
+                text: '답글은 3자 이상 1000자 이하로 작성가능합니다.',
+            });
+            $(`.userReplyEdit[data-reply-id="${replyId}"]`).focus();
+            return false;
+        }
     }
+
 
     Swal.fire({
         title: '답글을 수정하시겠습니까?',
