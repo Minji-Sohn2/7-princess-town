@@ -21,7 +21,7 @@ public class BoardResponseDto {
         this.postList = board.getPostList().
                 stream().
                 sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())). // 최신순 정렬
-                        map(PostResponseDto::new).
+                map(PostResponseDto::new).
                 collect(Collectors.toList());
     }
 
