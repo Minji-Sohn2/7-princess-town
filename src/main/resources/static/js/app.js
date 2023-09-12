@@ -719,7 +719,7 @@ $(document).ready(function() {
 
 	// 카카오 정보 가져오기
 	const KAKAO_CLIENT_ID = "09f2acecd9cd8bf7b7d3f6951daf4548";
-	const KAKAO_REDIRECT_URL = "http://localhost:8080/api/user/kakao/callback";
+	const KAKAO_REDIRECT_URL = "https://myplacetomato.site/api/user/kakao/callback";
 
 	// 카카오 요청 URL 만들기
 	const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URL}&response_type=code`;
