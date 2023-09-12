@@ -47,11 +47,11 @@
                 </a>
             </div>
             <form class="search-form" style="display: flex; justify-content: center;">
-                <div class="ui compact menu" style="margin-right: 10px; border-radius: 10px;">
+                <div class="ui selection menu" style="margin-right: 10px; border-radius: 10px;">
                     <div class="ui simple dropdown item" id="searchTypeDropdown">
-                        <div class="text">옵션</div>
+                        <div id="defaultitem" class="text">제목</div>
                         <i class="dropdown icon"></i>
-                        <div class="menu">
+                        <div class="menu transition hidden">
                             <div class="item" data-value="title">제목</div>
                             <div class="item" data-value="contents">내용</div>
                             <div class="item" data-value="titleAndContents">제목+내용</div>
@@ -66,7 +66,7 @@
                         </button>
                     </div>
                 </div>
-                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 5px;"><i class="pencil alternate icon" ></i></button>
+                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>
             </form>
             <div class="header-buttons">
                 <!--  사용자 버튼  -->

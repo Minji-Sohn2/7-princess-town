@@ -44,6 +44,28 @@
                     <h2>토마토</h2>
                 </a>
             </div>
+            <form class="search-form" style="display: flex; justify-content: center;">
+                <div class="ui compact menu" style="margin-right: 10px; border-radius: 10px;">
+                    <div class="ui simple dropdown item" id="searchTypeDropdown">
+                        <div id="defaultitem" class="text">제목</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu transition hidden">
+                            <div class="item" data-value="title">제목</div>
+                            <div class="item" data-value="contents">내용</div>
+                            <div class="item" data-value="titleAndContents">제목+내용</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui right aligned category search" style="display: flex; justify-content: center;">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요" style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
+                        <button type="submit" id="searchButton" style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </div>
+                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>
+            </form>
             <div class="header-buttons">
 
                 <!--  사용자 버튼  -->
@@ -90,18 +112,6 @@
             </div>
         </div>
         <div class="main-content">
-            <div>
-                <form class="search-form" style="display: inline-block; vertical-align: top;">
-                    <select name="searchType" id="searchType">
-                        <option value="title">제목</option>
-                        <option value="contents">내용</option>
-                        <option value="titleAndContents">제목+내용</option>
-                    </select>
-                    <input type="text" name="searchKeyword" id="searchKeyword" placeholder="검색어를 입력하세요">
-                    <button type="submit">검색</button>
-                </form>
-                <button class="btn-create-post" id="createPostButton" style="display: inline-block; margin-left: 10px;">글쓰기</button>
-            </div>
             <!--        sec:authorize="${not authentication.isAuthenticated()}"-->
             <!--        sec:authorize="${authentication.isAuthenticated()}"-->
             <div class="posts">
