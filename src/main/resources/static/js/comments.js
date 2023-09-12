@@ -97,7 +97,6 @@ $.ajax({
 
 // 화면이 띄워질경우 실행되는 메소드
 $(document).ready(function () {
-    $('#eventLoading').show();
 
     // 페이징
     const commentsContainer = $('.clear');
