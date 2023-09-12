@@ -29,13 +29,27 @@ $(document).ready(function () {
         }
     });
 
+    // 드롭다운 초기화
+    $('.ui.dropdown').dropdown();
+
+    // 드롭다운 선택 항목이 변경될 때 이벤트 처리
+    $("#searchTypeDropdown .item").on("click", function () {
+        var selectedOption = $(this).text();
+        $("#searchTypeDropdown .text").text(selectedOption);
+    });
+
     // 검색 폼 제출 시 처리
     $(".search-form").submit(function (event) {
+        console.log("start")
         event.preventDefault(); // 기본 제출 동작 방지
 
-        var searchType = $("#searchType").val();
+        // 현재 선택된 드롭다운 항목 가져오기
+        var searchType = $("#searchTypeDropdown .menu .item.active").text();
         var searchKeyword = $("#searchKeyword").val();
+        console.log(searchKeyword)
+        console.log(searchType)
 
+        // 선택된 드롭다운 항목을 기반으로 리다이렉션 처리
         if (searchType === "title") {
             window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);
         } else if (searchType === "contents") {
