@@ -207,6 +207,18 @@ public class KakaoService {
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
 
+        // Location 정보 설정
+        Location location = kakaoUser.getLocation();
+        if (location == null) {
+            // Location 정보가 없을 경우 기본 값 설정
+            Location defaultLocation = new Location();
+            defaultLocation.setLatitude(0.0);
+            defaultLocation.setLongitude(0.0);
+            kakaoUser.setLocation(defaultLocation);
+
+            userRepository.save(kakaoUser);
+        }
+
         // 토큰 생성
         String token = jwtUtil.createToken(kakaoUsername);
         log.info("token : " + token);
