@@ -18,7 +18,11 @@ public class BoardResponseDto {
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
-        this.postList = board.getPostList().stream().map(PostResponseDto::new).collect(Collectors.toList());
+        this.postList = board.getPostList().
+                stream().
+                sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt())). // 최신순 정렬
+                map(PostResponseDto::new).
+                collect(Collectors.toList());
     }
 
     public void setNearbyPosts(List<PostResponseDto> nearbyPosts) {
