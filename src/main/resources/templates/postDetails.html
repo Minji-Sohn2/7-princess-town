@@ -65,15 +65,6 @@
             justify-content: flex-end;
         }
 
-        .action-button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
         /* footer */
         .footer {
             color: grey;
@@ -215,9 +206,9 @@
                 <a class="ui basic label" th:text="${post.likeCnt}"></a>
             </div>
             <!--            수정버튼-->
-            <i class="edit outline icon" id="editButton" style="font-size: 26px; margin-left: 20px; vertical-align: -4px;"></i>
+            <i class="edit outline icon" id="editButton" style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
             <!--            삭제버튼-->
-            <i class="trash alternate outline icon" id="deleteButton" style="font-size: 26px; margin-left: 20px; vertical-align: -4px;"></i>
+            <i class="trash alternate outline icon" id="deleteButton" style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
         </div>
     </div>
 </div>
