@@ -967,7 +967,7 @@ $(document).ready(function() {
 
 		$.ajax({
 			type: 'POST',
-			url: '/api/account-recovery/sms/codes',
+			url: '/api/sms/codes',
 			data: {
 				phoneNumber: phoneNumber
 			},
@@ -975,6 +975,7 @@ $(document).ready(function() {
 				alert('인증번호가 전송되었습니다.');
 			},
 			error: function(error) {
+				console.log(error);
 				alert('오류가 발생했습니다.');
 			}
 		});
