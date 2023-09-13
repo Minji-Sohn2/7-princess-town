@@ -16,6 +16,10 @@ body {
   background-color: #fff;  /* 메뉴의 배경색을 흰색으로 설정 */
 }
 
+#passwordReset-tempLoginButton {
+    margin-top: 15px;
+}
+
 .ui.button:hover {
   background-color: #ddd;  /* 버튼의 배경색을 호버 시 약간 어둡게 설정 */
 }
