@@ -580,7 +580,7 @@
                         var listItem = $("<li>").addClass("post");
                         var postContent = $("<div>").addClass("post-content");
                         var titleContainer = $("<div>").addClass("post-title-container");
-                        var titleLink = $("<a>").attr("href", "/view/posts/" + post.id).text(post.title);
+                        var titleLink = $("<a>").attr("href", "/view/radiusposts/" + post.id).text(post.title);
                         var infoContainer = $("<div>").addClass("post-info-container").text(
                             "작성자: " + post.nickname + " | 작성일: " + post.createdAt + " | 조회수: " + post.viewCount + " | 좋아요: " + post.likeCnt
                         );

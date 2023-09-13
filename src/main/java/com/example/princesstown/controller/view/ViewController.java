@@ -154,6 +154,19 @@ public class ViewController {
         return "postDetails"; // 이 부분은 HTML 템플릿의 이름과 일치해야 합니다.
     }
 
+    @GetMapping("/radiusposts/{postId}")
+    public String viewradiusPost(@PathVariable Long postId, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        //게시판 목록
+        List<BoardResponseDto> boardList = boardService.getBoard();
+        model.addAttribute("boardList", boardList);
+        //상세 게시글
+        PostResponseDto post = postService.getPost(postId);
+        postService.incrementViewCount(postId); // 이 부분 추가
+        model.addAttribute("post", post);
+
+        return "radiuspostDetails"; // 이 부분은 HTML 템플릿의 이름과 일치해야 합니다.
+    }
+
     // 게시판 선택 조회 API
     @GetMapping("/boards/{boardId}")
     public String viewBoard(@PathVariable Long boardId, Model model) {
