@@ -176,6 +176,8 @@
     <!--  게시글 상세 시작  -->
     <div class="main-content">
         <div class="post-header">
+            <span>전체게시판/</span>
+            <a th:href="@{/view/boards/{boardId}(boardId=${post.boardId})}" th:text="${post.boards}" style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"></a>
             <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
             <div class="post-info">
                 <span th:text="'작성자: ' + ${post.nickname}"></span>

@@ -183,7 +183,7 @@ $(document).ready(function () {
                                 <div class="grid_text">
                                     <hr style="border-top: 1px solid #6c757d;">
                                     <div class="grid_img">
-                                        <img class="profile-img" src="${comment.img}" alt="My Image" style="border-radius: 50%;" data-comment-id="${comment.id}">
+                                        <img class="profile-img" src="${comment.img}" alt="My Image" style="border-radius: 50%; width: 50px; height: 50px;" data-comment-id="${comment.id}">
                                     </div>
                                     <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}(${maskingName(comment.username)})</a></h4>
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
@@ -232,7 +232,7 @@ $(document).ready(function () {
                                 <div class="grid_text">
                                     <hr style="border-top: 1px solid #6c757d;">
                                     <div class="grid_img">
-                                        <img class="profile-img" src="${comment.img}" alt="My Image" style="border-radius: 50%;" data-comment-id="${comment.id}">
+                                        <img class="profile-img" src="${comment.img}" alt="My Image" style="border-radius: 50%; border-radius: 50%; width: 50px; height: 50px;" data-comment-id="${comment.id}">
                                     </div>
                                     <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;">${comment.nickname}(${maskingName(comment.username)})</a></h4>
                                     <p class="para top" style="font-family: 'Jua', sans-serif;" >${formattedDate}</p>
@@ -312,7 +312,7 @@ $(document).ready(function () {
                                                         <div class="grid_text">
                                                             <hr style="border-top: 1px solid #6c757d;">
                                                             <div class="grid_img">
-                                                                <img class="profile-img" src="${reply.img}" alt="My Image" style="border-radius: 50%;" data-reply-id="${reply.id}">
+                                                                <img class="profile-img" src="${reply.img}" alt="My Image" style="border-radius: 50%; border-radius: 50%; width: 50px; height: 50px;" data-reply-id="${reply.id}">
                                                             </div>
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}(${maskingName(reply.username)})</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
@@ -348,7 +348,7 @@ $(document).ready(function () {
                                                         <div class="grid_text">
                                                             <hr style="border-top: 1px solid #6c757d;">
                                                             <div class="grid_img">
-                                                                <img class="profile-img" src="${reply.img}" alt="My Image" style="border-radius: 50%;" data-reply-id="${reply.id}">
+                                                                <img class="profile-img" src="${reply.img}" alt="My Image" style="border-radius: 50%; border-radius: 50%; width: 50px; height: 50px;" data-reply-id="${reply.id}">
                                                             </div>
                                                             <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${reply.nickname}(${maskingName(reply.username)})</a></h4>
                                                             <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${reply.id}">${formattedDate}</p>
@@ -936,7 +936,7 @@ function replyCreate(postId, commentId) {
                 <div class="grid_text">
                     <hr style="border-top: 1px solid #6c757d;">
                     <div class="grid_img">
-                        <img class="profile-img" src="${data.result.img}" alt="My Image" style="border-radius: 50%;" data-reply-id="${data.result.id}">
+                        <img class="profile-img" src="${data.result.img}" alt="My Image" style="border-radius: 50%; border-radius: 50%; width: 50px; height: 50px;" data-reply-id="${data.result.id}">
                     </div>
                     <h4 class="style1 list" style="font-family: 'Jua', sans-serif;"><a href="#" style="font-family: 'Jua', sans-serif;" data-reply-id="${data.result.id}">${data.result.nickname}(${maskingName(data.result.username)})</a></h4>
                     <p class="para top" style="font-family: 'Jua', sans-serif;" data-reply-id="${data.result.id}">${formattedDate}</p>
