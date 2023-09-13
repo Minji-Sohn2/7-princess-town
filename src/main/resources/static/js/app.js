@@ -1150,9 +1150,8 @@ $(document).ready(function() {
 		console.log("tempPassword : " + tempPassword)
 
 		$.ajax({
-			url: "/api/account-recovery/temp-login",
+			url: `/api/account-recovery/temp-login?username=${username}&temppassword=${tempPassword}`,
 			type: "POST",
-			data: {username: username, tempPassword: tempPassword},
 			success: function (res, status, xhr) {
 				console.log("status : " + status)
 
@@ -1186,12 +1185,12 @@ $(document).ready(function() {
 				// 로그인 상태 UI 업데이트
 				$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
-				alert("성공적으로 로그인 했습니다!");
+				alert("성공적으로 로그인 했습니다! 즉시 비밀번호를 변경해주세요!");
 
 				window.location.href = '/';
 			},
 			error: function (error) {
-				alert("로그인 실패. 다시 시도해주세요.");
+				console.log(error)
 			}
 		});
 	});

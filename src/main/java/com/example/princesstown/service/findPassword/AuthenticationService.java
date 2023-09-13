@@ -2,6 +2,7 @@ package com.example.princesstown.service.findPassword;
 
 import com.example.princesstown.dto.request.LoginRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
+import com.example.princesstown.dto.response.LoginResponseDto;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.user.NotOptinalUserRepository;
 import com.example.princesstown.repository.user.UserRepository;
@@ -128,7 +129,7 @@ public class AuthenticationService {
         // Redis에 저장된 tempPassword와 username가져오기
         String storedTempPassword = redisTemplate.opsForValue().get(username + "_tempPassword");
         String storedUsername = redisTemplate.opsForValue().get(username + "_ID");
-        log.info("storedTempPassword : " + storedUsername);
+        log.info("storedTempPassword : " + storedTempPassword);
         log.info("storedUsername : " + storedUsername);
 
         //  Redis에 저장된 임시 비밀번호, 아이디가 만료되지 않았을 때
@@ -138,6 +139,7 @@ public class AuthenticationService {
             Optional<User> user = userRepository.findByUsername(storedUsername);
             if (user.isPresent()) {
                 User tempLoginUser = user.get();
+                log.info("user : " + tempLoginUser.getUsername());
 
                 // 비밀번호 인코딩 후 업데이트
                 tempLoginUser.setPassword(passwordEncoder.encode(storedTempPassword));
@@ -163,17 +165,21 @@ public class AuthenticationService {
                 String token = jwtUtil.createToken(storedUsername);
                 log.info("token : " + token);
 
-                // 헤더에 토큰 추가
+//                 헤더에 토큰 추가
                 HttpHeaders headers = new HttpHeaders();
                 headers.add(JwtUtil.AUTHORIZATION_HEADER, token);
                 log.info("header info : " + headers);
 
-                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", tempLoginUser));
+                LoginResponseDto loginResponseDto = new LoginResponseDto(tempLoginUser.getUserId(), tempLoginUser.getNickname(),tempLoginUser.getProfileImage());
+
+                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", loginResponseDto));
 
             } else {
+                log.info("첫번째 else");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패"));
             }
         } else {
+            log.info("두번쨰 else");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패. 임시 비밀번호나 아이디가 유효하지 않습니다."));
         }
     }
@@ -182,11 +188,14 @@ public class AuthenticationService {
     public ResponseEntity<ApiResponseDto> tempLogin(LoginRequestDto requestDto) {
         log.info("start");
         String username = requestDto.getUsername();
+        log.info("username: " + username);
         String password = requestDto.getPassword();
+        log.info("password: " + password);
 
         // 위에서 받아온 username과 일치하는 User 가져오기
         Optional<User> checkUser = userRepository.findByUsername(username);
 
+        log.info("checkUser: " + checkUser);
         // DB에 없는 사용자인 경우 혹은 인코딩되지 않은 임시 비밀번호를 인코딩하여 DB 저장된 인코딩된 임시 비밀번호랑 같지 않을 때
         if (checkUser.isEmpty() || !passwordEncoder.matches(password, checkUser.get().getPassword())) {
 
@@ -195,7 +204,7 @@ public class AuthenticationService {
             log.error("로그인 정보가 일치하지 않습니다.");
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
-
+        log.info("통과");
         return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), " 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.")); // 응답 수정
     }
 }
