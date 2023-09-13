@@ -2,6 +2,7 @@ package com.example.princesstown.controller.view;
 
 import com.example.princesstown.dto.response.BoardResponseDto;
 import com.example.princesstown.dto.response.PostResponseDto;
+import com.example.princesstown.repository.board.BoardRepository;
 import com.example.princesstown.security.user.UserDetailsImpl;
 import com.example.princesstown.service.board.BoardService;
 import com.example.princesstown.service.post.PostService;
@@ -25,6 +26,7 @@ public class ViewController {
 
     private final BoardService boardService;
     private final PostService postService;
+    private final BoardRepository boardRepository;
 
     //메인페이지
     @GetMapping("/mainpage")
@@ -58,6 +60,10 @@ public class ViewController {
         // 인기 검색어
         List<PostResponseDto> topPosts = postService.getTop10LikedPostsWithDuplicates();
         model.addAttribute("topPosts", topPosts);
+
+        BoardResponseDto boardTitle = boardService.getBoardTitle(boardId);
+        String getTitle = boardTitle.getTitle();
+        model.addAttribute("title", getTitle);
 
         if (userDetails != null) {
             // 위치 반경 내 게시글 조회
@@ -177,6 +183,10 @@ public class ViewController {
 
         BoardResponseDto selectedBoard = boardService.getBoard(boardId);
         model.addAttribute("selectedBoard", selectedBoard);
+
+        BoardResponseDto boardTitle = boardService.getBoardTitle(boardId);
+        String getTitle = boardTitle.getTitle();
+        model.addAttribute("title", getTitle);
 
         return "detailboard"; // 프론트엔드에서 사용할 뷰 이름
     }
