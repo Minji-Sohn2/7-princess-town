@@ -951,6 +951,15 @@ $(document).ready(function() {
 		});
 	});
 
+	$('#cancelDeactivation').on('click', function() {
+		$deactivationModal.modal('show');
+
+		$loginModal.modal('hide');
+		$signupModal.modal('hide');
+		$logoutModal.modal('hide');
+		$profileModal.modal('hide');
+	})
+
 	// 아이디 찾기
 	// 인증번호 보내기 버튼 클릭 이벤트
 	$('#usernameFind-sendVerificationCode').on('click', function() {
