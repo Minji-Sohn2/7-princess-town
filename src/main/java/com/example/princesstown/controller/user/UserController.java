@@ -3,6 +3,7 @@ package com.example.princesstown.controller.user;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.findPassword.AuthenticationService;
 import com.example.princesstown.service.message.MessageService;
 import com.example.princesstown.service.user.UserService;
@@ -25,11 +26,10 @@ import java.util.concurrent.TimeUnit;
 public class UserController {
 
     private final UserService userService;
-
     private final MessageService messageService;
-
     private final StringRedisTemplate redisTemplate;
     private final AuthenticationService authenticationService;
+    private final MailService mailService;
 
 
     //문자 인증번호 발송
@@ -50,6 +50,14 @@ public class UserController {
         return response;
     }
 
+//    //이메일로 회원가입 인증코드 발송
+//    @PostMapping("/email/signup/verify-codes")
+//    public ResponseEntity<ApiResponseDto> sendSignupCode(@RequestParam("email") String email) {
+//        mailService.sendSignupNeedEmailVerifyCode(email);
+//        return
+//    }
+
+
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@ModelAttribute @Valid SignupRequestDto requestDto) {
@@ -62,7 +70,7 @@ public class UserController {
     }
 
     // 문자 인증 후 이메일로 회원탈퇴 인증코드 발송
-    @PostMapping("/email/verify-codes")
+    @PostMapping("/email/deactivate/verify-codes")
     public ResponseEntity<ApiResponseDto> sendDeteactiveCode(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("email") String email) {
         if ("true".equals(redisTemplate.opsForValue().get("VerificationStatus_" + phoneNumber))) {
             redisTemplate.delete("VerificationStatus_" + phoneNumber);
