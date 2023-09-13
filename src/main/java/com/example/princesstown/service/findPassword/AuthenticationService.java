@@ -165,7 +165,7 @@ public class AuthenticationService {
                 String token = jwtUtil.createToken(storedUsername);
                 log.info("token : " + token);
 
-//                 헤더에 토큰 추가
+                //헤더에 토큰 추가
                 HttpHeaders headers = new HttpHeaders();
                 headers.add(JwtUtil.AUTHORIZATION_HEADER, token);
                 log.info("header info : " + headers);
