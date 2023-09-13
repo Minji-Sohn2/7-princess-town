@@ -202,11 +202,21 @@
         </div>
         <br/>
         <div class="post-actions" id="postActions" style="display: none;">
-            <button class="action-button" id="likeButton">좋아요</button>
-            <button class="action-button" id="unlikeButton">좋아요 취소</button>
-<!--            수정버튼-->
+            <div class="ui labeled button" id="unlikeButton" tabindex="0">
+                <div class="ui red button">
+                    <i class="heart icon"></i> Like
+                </div>
+                <a class="ui basic red left pointing label" th:text="${post.likeCnt}"></a>
+            </div>
+            <div class="ui labeled button" id="likeButton" tabindex="0">
+                <div class="ui button">
+                    <i class="heart icon"></i> Like
+                </div>
+                <a class="ui basic label" th:text="${post.likeCnt}"></a>
+            </div>
+            <!--            수정버튼-->
             <i class="edit outline icon" id="editButton" style="font-size: 28px;"></i>
-<!--            삭제버튼-->
+            <!--            삭제버튼-->
             <i class="trash alternate outline icon" id="deleteButton" style="font-size: 28px;"></i>
         </div>
     </div>
@@ -1075,6 +1085,21 @@
             window.location.href = "/view/editpost/" + postId; // 적절한 URL로 수정 페이지 경로를 지정하세요.
         }
 
+        function handleCreate() {
+            // 게시글 작성 페이지로 이동합니다.
+            window.location.href = "/view/createpost";
+        }
+
+        $("#createPostButton").click(function () {
+
+            // 작성자 인증 정보 비교
+            if (authorization == null) {
+                $('#loginModal').modal('show');
+                return false;
+            }
+            handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
+        });
+
         /**
          * 게시글 좋아요 조회후 좋아요를 누른 아이디일 경우 좋아요 버튼 없앰
          * 아니면 좋아요 취소 버튼을 없애줌
@@ -1100,6 +1125,8 @@
                 console.log("좋아요 조회 오류");
             }
         })
+
+        const authorization = Cookies.get('Authorization');
 
         if (authorization == null) {
             document.getElementById('myChatRoom-btn2').style.display = 'none';
