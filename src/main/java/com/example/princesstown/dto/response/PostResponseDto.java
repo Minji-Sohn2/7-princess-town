@@ -19,6 +19,8 @@ public class PostResponseDto {
     private String modifiedAt; // 게시글 수정시간
     private Double latitude;
     private Double longitude;
+    private String boards;
+    private Long boardId;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -29,6 +31,8 @@ public class PostResponseDto {
         this.likeCnt = post.getLikeCnt();
         this.viewCount = post.getViewCount();
         this.postImageUrl = post.getPostImageUrl();
+        this.boards = post.getBoard().getTitle();
+        this.boardId = post.getBoard().getId();
         this.createdAt = post.getCreatedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
         this.modifiedAt = post.getModifiedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
         if (post.getLocation() != null) {

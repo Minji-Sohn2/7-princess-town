@@ -230,7 +230,7 @@ public class PostService {
 
         int count = 0;
         for (Post post : top10Posts) {
-            if (count >= 10) {
+            if (count >= 5) {
                 break;
             }
             postResponseDto.add(new PostResponseDto(post));

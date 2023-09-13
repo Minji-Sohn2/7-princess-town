@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -119,7 +119,8 @@
         </div>
         <div class="main-content">
             <div class="posts">
-                <h2 class="h2">게시글</h2>
+                <h2 class="h2" style="display:inline">지역게시판/</h2>
+                <h2 class="h2" style="display:inline" th:text="${title}"></h2>
                 <ul class="post-list" id ="nearByPostsInBoard">
                     <!-- AJAX로 가져온 게시글이 동적으로 추가됩니다. -->
                 </ul>
@@ -580,7 +581,7 @@
                         var listItem = $("<li>").addClass("post");
                         var postContent = $("<div>").addClass("post-content");
                         var titleContainer = $("<div>").addClass("post-title-container");
-                        var titleLink = $("<a>").attr("href", "/view/posts/" + post.id).text(post.title);
+                        var titleLink = $("<a>").attr("href", "/view/radiusposts/" + post.id).text(post.title);
                         var infoContainer = $("<div>").addClass("post-info-container").text(
                             "작성자: " + post.nickname + " | 작성일: " + post.createdAt + " | 조회수: " + post.viewCount + " | 좋아요: " + post.likeCnt
                         );

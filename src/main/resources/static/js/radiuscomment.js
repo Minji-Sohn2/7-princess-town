@@ -1,7 +1,7 @@
 // URL에서 postid를 뽑아냄
 function getPostIdFromUrl() {
     const urlParts = window.location.pathname.split('/');
-    const postIdIndex = urlParts.indexOf('posts') + 1;
+    const postIdIndex = urlParts.indexOf('radiusposts') + 1;
     return urlParts[postIdIndex];
 }
 
