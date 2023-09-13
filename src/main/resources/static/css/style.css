@@ -253,9 +253,19 @@ body {
 
 
 
+#usernameFindModal, #passwordResetModal {
+    width: 500px;
+}
 
-
-
+.ui.segment {
+    position: relative;
+    background: #fff;
+    margin : 1rem 0;
+    padding: 1em 1em;
+    border:none;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
 
 
 
