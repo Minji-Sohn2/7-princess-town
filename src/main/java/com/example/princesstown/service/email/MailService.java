@@ -6,8 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,6 +31,32 @@ public class MailService {
             }
         }).start();
     }
+
+//    public void sendSignupNeedEmailVerifyCode(String email) {
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(email);
+//        message.setSubject("회원가입");
+//
+//        Random ran = new Random();
+//        StringBuilder signupCode = new StringBuilder();
+//        for (int i = 0; i < 6; i++) {
+//            String random = Integer.toString(ran.nextInt(10));
+//            signupCode.append(random);
+//        }
+//
+//            String text = "회원가입을 위한 인증번호는 " + signupCode + "입니다";
+//
+//            message.setText(text);
+//            new Thread(() -> {
+//                log.info("Sending email...");
+//                try {
+//                    mailSender.send(message);
+//                    log.info("Email sent successfully."); // 로그 추가
+//                } catch (Exception e) {
+//                    log.error("Failed to send email: {}", e.getMessage(), e); // 에러 로그 추가
+//                }
+//            }).start();
+//        }
 
     public void sendTemporaryPassword(String email, String tempPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
