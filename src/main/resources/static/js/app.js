@@ -943,7 +943,7 @@ $(document).ready(function() {
 				Cookies.remove('profileImage');
 
 				alert("회원탈퇴가 완료되었습니다.");
-				window.location.reload();
+				window.location.href='/';
 			},
 			error: function (error) {
 				alert("인증이 되지 않았거나 알 수 없는 이유로 회원탈퇴가 실패되었습니다. 다시 시도해주세요");
