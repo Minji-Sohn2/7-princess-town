@@ -45,7 +45,7 @@
             </div>
             <div class="header-buttons">
                 <div>
-                    <a class="item" id="myChatRoom-btn2" href="/view/chatRooms">
+                    <a class="item" id="myChatRoom-btn2" href="/view/chatRooms" style="display: block">
                         <i class="comment icon"></i>
                     </a>
                 </div>
@@ -63,14 +63,22 @@
 
         <!--  채팅방 이름/ 버튼  -->
         <div class="chat-header">
-            <div class="col-md-6">
-                <h2>{{roomName}} <span class="badge badge-info badge-pill"></span></h2>
-                <button class="btn btn-light btn-sm" id="changeRoomName">이름 수정</button>
+            <div class="col-md-6" style="display: flex">
+                <h2>{{roomName}} </h2>
+                <div id="changeRoomName">
+                    <i class="edit outline icon"></i>
+                </div>
             </div>
-            <div class="col-md-6 text-right">
-                <button class="btn btn-light btn-sm" id="getThisChatRoomMembersBtn">참여자</button>
-                <button class="btn btn-info btn-sm" id="inviteModalBtn">초대</button>
-                <button class="btn btn-danger btn-sm" @click="leaveChatRoom">채팅방 나가기</button>
+            <div id="chatRoomServiceBtns">
+                <div id="getThisChatRoomMembersBtn">
+                    <i class="users icon"></i>
+                </div>
+                <div id="inviteModalBtn">
+                    <i class="plus icon"></i>
+                </div>
+                <div @click="leaveChatRoom">
+                    <i class="sign-out alternate icon"></i>
+                </div>
             </div>
         </div>
 
@@ -97,7 +105,7 @@
         </ul>
 
         <!--  입력칸  -->
-        <div class="input-group fixed-bottom" id="input-container">
+        <div class="input-group" id="input-container">
             <div class="input-group-prepend">
                 <label class="input-group-text">내용</label>
             </div>

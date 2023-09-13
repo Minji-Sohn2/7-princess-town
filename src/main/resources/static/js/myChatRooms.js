@@ -198,9 +198,14 @@ function createRoomCard(room) {
 
     roomInfo.appendChild(roomName);
 
-    const enterRoomButton = document.createElement('button');
+    const enterRoomButton = document.createElement('div');
     enterRoomButton.className = 'enterRoomButton';
-    enterRoomButton.textContent = 'enter';
+
+    const enterIcon = document.createElement('i');
+    enterIcon.className = 'arrow alternate circle right outline icon';
+
+    enterRoomButton.appendChild(enterIcon);
+
     enterRoomButton.addEventListener('click', function () {
         enterRoom(room.chatRoomId, room.chatRoomName);
     });

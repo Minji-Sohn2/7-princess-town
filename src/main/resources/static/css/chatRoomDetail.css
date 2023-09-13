@@ -1,6 +1,11 @@
 [v-cloak] {
     display: none;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 #room-info {
     display: flex;
@@ -14,9 +19,15 @@
 
 /* 상단바 아래 컨테이너 */
 .container {
+    display: flex;
+    flex-direction: column;
+    height: 59em;   /* 채팅방 컨테이너 사이즈 고정 */
+    border-radius: 5px;
+
     max-width: 600px;
-    margin: 60px auto 0;
+    margin: 10px auto 10px;
     padding: 20px;
+    background: #e79393;
 }
 
 .chat-header {
@@ -25,10 +36,30 @@
     align-items: center;
     padding: 20px;
 }
+#changeRoomName {
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+#chatRoomServiceBtns {
+    display: flex;
+    font-size: 20px;
+}
+
+#chatRoomServiceBtns div {
+    cursor: pointer;
+    margin-left: 5px;
+}
 
 /* 채팅 내용 컨테이너 */
 #message-upper-container {
-    margin-bottom: 60px;
+    margin-bottom: 10px;
+}
+
+.list-group {
+    flex: 1;
+    overflow-y: auto; /* 채팅방 내부 스크롤 생기도록 */
 }
 
 /*  메세지 1개  */
@@ -61,13 +92,15 @@
 
 /* 입력칸 */
 #input-container {
-    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 10px;
-    background-color: #fff;
-    border-top: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-group-append button {
+    background: #bababc;
 }
 
 /* 모달 */
