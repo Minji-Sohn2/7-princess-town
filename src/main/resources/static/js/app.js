@@ -56,7 +56,7 @@ $(document).ready(function() {
 			$('#user-icon .user.icon').show();
 		}
 
-		if (token && !profileImage) {
+		if (token && !profileImage || profileImage === null) {
 			$('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
 			$('#user-icon .user.icon').hide();
 		}
@@ -1155,7 +1155,7 @@ $(document).ready(function() {
 				Cookies.set('Authorization', token, {expires: expirationTime});
 				Cookies.set('nickname', nickname, {expires: expirationTime});
 				Cookies.set('userId', userId, {expires: expirationTime});
-				if (!profileImage) {
+				if (profileImage) {
 					Cookies.set('profileImage', profileImage, {expires: expirationTime});
 				}
 
