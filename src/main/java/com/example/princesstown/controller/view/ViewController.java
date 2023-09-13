@@ -154,6 +154,7 @@ public class ViewController {
         return "postDetails"; // 이 부분은 HTML 템플릿의 이름과 일치해야 합니다.
     }
 
+    //지역게시판 상세 게시글 조회
     @GetMapping("/radiusposts/{postId}")
     public String viewradiusPost(@PathVariable Long postId, Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         //게시판 목록
