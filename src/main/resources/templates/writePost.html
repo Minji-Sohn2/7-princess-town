@@ -197,7 +197,6 @@
                             <option th:value="${board.id}" th:text="${board.title}"></option>
                         </th:block>
                     </select><br>
-                    <button type="button" id="selectBoardButton">게시판 선택 확인</button>
                 </div>
             </form>
             <h2 class="h2">게시글 작성</h2>
@@ -205,7 +204,7 @@
                 <label for="postTitle">제목:</label>
                 <input type="text" id="postTitle" name="title" required><br>
                 <label for="postContents">내용:</label>
-                <textarea id="postContents" name="contents" rows="4" required></textarea><br>
+                <textarea id="postContents" name="contents" rows="18" required></textarea><br>
                 <div class="image-upload-div">
                     <label for="postImage">이미지 업로드:</label>
                     <input type="file" id="postImage" name="postImage"><br>
