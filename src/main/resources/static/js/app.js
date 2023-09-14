@@ -1130,7 +1130,7 @@ $(document).ready(function() {
 		console.log("tempPassword : " + tempPassword)
 
 		$.ajax({
-			url: `/api/account-recovery/temp-login?username=${username}&tempPassword=${tempPassword}`,
+			url: `/api/account-recovery/temp-login?` + $.param({username: username, temppassword: tempPassword}),
 			type: "POST",
 			success: function (res, status, xhr) {
 				console.log("status : " + status)
