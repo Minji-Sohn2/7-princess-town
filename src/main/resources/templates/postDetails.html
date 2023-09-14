@@ -112,15 +112,19 @@
                 </div>
                 <div class="ui right aligned category search" style="display: flex; justify-content: center;">
                     <div class="ui icon input">
-                        <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요" style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
-                        <button type="submit" id="searchButton" style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                        <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요"
+                               style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
+                        <button type="submit" id="searchButton"
+                                style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
                             <i class="search icon"></i>
                         </button>
                     </div>
                 </div>
                 <!--                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>-->
             </form>
-            <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>
+            <button class="btn-create-post" id="createPostButton"
+                    style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;">
+                <i class="pencil alternate icon"></i></button>
         </div>
 
         <div class="header-buttons">
@@ -154,7 +158,8 @@
                     <ul class="sub-board-list">
                         <th:block th:each="board : ${boardList}">
                             <li>
-                                <a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                                <a th:href="@{/view/boards/{boardId}(boardId=${board.id})}"
+                                   th:text="${board.title}">게시판</a>
                                 <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
                             </li>
                         </th:block>
@@ -164,7 +169,8 @@
                     <ul class="sub-board-list">
                         <th:block th:each="board : ${boardList}">
                             <li>
-                                <a th:href="@{/view/boards/{boardId}/radiusposts(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                                <a th:href="@{/view/boards/{boardId}/radiusposts(boardId=${board.id})}"
+                                   th:text="${board.title}">게시판</a>
                                 <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
                             </li>
                         </th:block>
@@ -177,7 +183,8 @@
     <div class="main-content">
         <div class="post-header">
             <span>전체게시판/</span>
-            <a th:href="@{/view/boards/{boardId}(boardId=${post.boardId})}" th:text="${post.boards}" style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"></a>
+            <a th:href="@{/view/boards/{boardId}(boardId=${post.boardId})}" th:text="${post.boards}"
+               style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"></a>
             <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
             <div class="post-info">
                 <span th:text="'작성자: ' + ${post.nickname}"></span>
@@ -208,9 +215,11 @@
                 <a class="ui basic label" th:text="${post.likeCnt}"></a>
             </div>
             <!--            수정버튼-->
-            <i class="edit outline icon" id="editButton" style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
+            <i class="edit outline icon" id="editButton"
+               style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
             <!--            삭제버튼-->
-            <i class="trash alternate outline icon" id="deleteButton" style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
+            <i class="trash alternate outline icon" id="deleteButton"
+               style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
         </div>
     </div>
 </div>
@@ -574,7 +583,7 @@
                         <span id="selectedFileName"></span>
                     </div>
                 </div>
-                <div style="margin-top: 50px;"></div>
+                <div style="margin-top: 30px;"></div>
                 <div class="field">
                     <label>반경 설정</label>
                     <div class="location-input-button-container">
@@ -599,6 +608,8 @@
 <!-- Signup Form -->
 <div class="ui segment" id="modalContainer">
     <div class="ui segment modal" id="signupModal">
+        <div class="header" style="margin: -11px;">회원가입</div>
+        <div style="margin-bottom: 15px;"></div>
         <form class="ui form">
             <div class="field">
                 <label>아이디</label>
@@ -639,7 +650,8 @@
             <div class="field">
                 <label>프로필 이미지</label>
                 <div class="input-file-container">
-                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
+                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput"
+                           style="display: none;">
                     <label for="signup-profileImageInput">
                         <i class="images icon"></i>
                     </label>
@@ -648,7 +660,7 @@
                 <div style="margin-top: 30px;"></div>
                 <div class="field">
                     <label>반경 설정</label>
-                    <div class = "location-input-button-container">
+                    <div class="location-input-button-container">
                         <select class="ui dropdown" id="signup-radiusSelect">
                             <option value="1">1km</option>
                             <option value="2">2km</option>
@@ -719,6 +731,8 @@
 
 <!-- Deactivation Form -->
 <div class="ui segment modal" id="deactivationModal">
+    <div class="header" style="margin: -11px;">회원탈퇴</div>
+    <div style="margin-bottom: 15px;"></div>
     <div class="ui segment">
         <form class="ui form">
             <!-- 전화번호 입력 및 인증번호 전송 -->
@@ -752,6 +766,7 @@
                 <label>이메일로 받은 회원탈퇴 코드</label>
                 <div class="input-button-container">
                     <input type="text" id="deactive-deactivationCodeInput" placeholder="회원탈퇴 코드를 입력해주세요">
+                    <button class="ui button red" id="deactivationButton">탈퇴</button>
                 </div>
                 <div style="margin-top: 50px;"></div>
             </div>
@@ -763,10 +778,7 @@
             <!--        </div>-->
             <!--      </div>-->
             <div style="margin-top: 30px;"></div>
-            <!-- 회원탈퇴 버튼 -->
-            <button class="ui button red" id="deactivationButton">회원탈퇴</button>
         </form>
-        <div style="margin-top: 30px;"></div>
         <a href="/" class="cd-form-bottom-message">메인으로</a>
     </div>
 </div>
@@ -876,7 +888,8 @@
                 <label>아이디 전송</label>
                 <div class="input-button-container">
                     <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
-                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send</button>
+                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send
+                    </button>
                 </div>
             </div>
         </form>
@@ -955,7 +968,7 @@
         var postActions = $('#postActions'); // 요소를 변수로 저장
 
         if (token) {
-        // 사용자가 로그인한 경우
+            // 사용자가 로그인한 경우
             postActions.css('display', 'block'); // display 속성을 변경하여 요소를 보이게 함
         }
 
@@ -1064,7 +1077,7 @@
 
             const nickname = Cookies.get('nickname');
 
-            if(postnickname !== nickname) {
+            if (postnickname !== nickname) {
                 alert("글 작성자가 아니므로 수정이 불가능합니다.")
                 return false;
             }
