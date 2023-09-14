@@ -67,7 +67,16 @@ public class BoardService {
         );
 
         return new BoardResponseDto(board);
+    }
 
+    // 카테고리 이름 가져오는 로직
+    @Transactional(readOnly = true)
+    public BoardResponseDto getBoardTitle(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("현재 카테고리가 존재하지 않습니다.")
+        );
+
+        return new BoardResponseDto(board);
     }
 
     // 위치반경 내 게시판 선택 조회 API
@@ -107,7 +116,7 @@ public class BoardService {
         Board board = boardRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("선택하신 게시물은 존재하지 않습니다.")
         );
-        if(board.getUser().getUserId().equals(user.getUserId())){ //  || user.getRole().equals(UserRoleEnum.ADMIN)
+        if (board.getUser().getUserId().equals(user.getUserId())) { //  || user.getRole().equals(UserRoleEnum.ADMIN)
             boardRepository.delete(board);
         } else {
             return new ApiResponseDto(400, "작성자만 삭제가 가능합니다.");

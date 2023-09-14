@@ -943,13 +943,22 @@ $(document).ready(function() {
 				Cookies.remove('profileImage');
 
 				alert("회원탈퇴가 완료되었습니다.");
-				window.location.reload();
+				window.location.href='/';
 			},
 			error: function (error) {
 				alert("인증이 되지 않았거나 알 수 없는 이유로 회원탈퇴가 실패되었습니다. 다시 시도해주세요");
 			}
 		});
 	});
+
+	$('#cancelDeactivation').on('click', function() {
+		$deactivationModal.modal('show');
+
+		$loginModal.modal('hide');
+		$signupModal.modal('hide');
+		$logoutModal.modal('hide');
+		$profileModal.modal('hide');
+	})
 
 	// 아이디 찾기
 	// 인증번호 보내기 버튼 클릭 이벤트
@@ -958,7 +967,7 @@ $(document).ready(function() {
 
 		$.ajax({
 			type: 'POST',
-			url: '/api/account-recovery/sms/codes',
+			url: '/api/sms/codes',
 			data: {
 				phoneNumber: phoneNumber
 			},
@@ -966,6 +975,7 @@ $(document).ready(function() {
 				alert('인증번호가 전송되었습니다.');
 			},
 			error: function(error) {
+				console.log(error);
 				alert('오류가 발생했습니다.');
 			}
 		});
@@ -1140,9 +1150,8 @@ $(document).ready(function() {
 		console.log("tempPassword : " + tempPassword)
 
 		$.ajax({
-			url: "/api/account-recovery/temp-login",
+			url: `/api/account-recovery/temp-login?` + $.param({username: username, temppassword: tempPassword}),
 			type: "POST",
-			data: {username: username, tempPassword: tempPassword},
 			success: function (res, status, xhr) {
 				console.log("status : " + status)
 
@@ -1176,12 +1185,12 @@ $(document).ready(function() {
 				// 로그인 상태 UI 업데이트
 				$('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
-				alert("성공적으로 로그인 했습니다!");
+				alert("성공적으로 로그인 했습니다! 즉시 비밀번호를 변경해주세요!");
 
 				window.location.href = '/';
 			},
 			error: function (error) {
-				alert("로그인 실패. 다시 시도해주세요.");
+				alert(error.responseJSON.message)
 			}
 		});
 	});

@@ -544,7 +544,7 @@
                 <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
             </div>
         </form>
-        <p class="cd-form-bottom-message"><a href="#0">메인으로</a></p>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
     </div>
 </div>
 
@@ -558,7 +558,6 @@
                     <input type="text" id="usernameFind-phoneNumberInput" placeholder="전화번호를 입력해주세요">
                     <button class="ui button" type="button" id="usernameFind-sendVerificationCode">인증번호 전송</button>
                 </div>
-                <div style="margin-top: 50px;"></div>
             </div>
             <div class="field">
                 <label>인증번호 확인</label>
@@ -571,11 +570,11 @@
                 <label>아이디 전송</label>
                 <div class="input-button-container">
                     <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
-                    <button class="ui button" type="button" id="usernameFind-sendUsername">Send</button>
+                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send</button>
                 </div>
             </div>
         </form>
-        <p class="cd-form-bottom-message"><a href="#0">메인으로</a></p>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
     </div>
 </div>
 
@@ -584,9 +583,6 @@
 
 </body>
 <script>
-    // 현재 로그인 중인 인증정보 가져오기
-    const authorization = Cookies.get('Authorization');
-
     $(document).ready(function () {
         function handleCreate() {
             // 게시글 작성 페이지로 이동합니다.
@@ -594,6 +590,8 @@
         }
 
         $("#createPostButton").click(function () {
+            // 현재 로그인 중인 인증정보 가져오기
+            const authorization = Cookies.get('Authorization');
 
             // 작성자 인증 정보 비교
             if (authorization == null) {
@@ -602,12 +600,6 @@
             }
             handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
         });
-
-        if (authorization == null) {
-            document.getElementById('myChatRoom-btn2').style.display = 'none';
-        } else {
-            document.getElementById('myChatRoom-btn2').style.display = 'block';
-        }
     });
 </script>
 </html>

@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -40,6 +43,9 @@ public class Reply extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "user_userId")
     private User user;
+
+    @OneToMany(mappedBy = "reply", cascade = CascadeType.ALL)
+    private List<ReplyLikes> replyLikesList = new ArrayList<>();
 
     public Reply(ReplyRequestDto requestDto, Post post, Comment comment, User user) {
         this.id = getId();
