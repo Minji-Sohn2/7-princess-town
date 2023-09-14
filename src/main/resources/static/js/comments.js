@@ -7,7 +7,19 @@ function getPostIdFromUrl() {
 
 // 댓글,답글 유저 id 중간 부분 별표로 가려 보안을 강화
 function maskingName(username) {
-    if (username.length >= 8) {
+    if (username.length >= 20) {
+        return (
+            username.slice(0, 3) +
+            "*".repeat(Math.max(0, username.length - 5)).slice(5, 10) +
+            username.slice(-3)
+        );
+    } else if (username.length >= 15) {
+        return (
+            username.slice(0, 3) +
+            "*".repeat(Math.max(0, username.length - 5)).slice(5, 8) +
+            username.slice(-3)
+        );
+    } else if (username.length >= 8) {
         return (
             username.slice(0, 3) +
             "*".repeat(Math.max(0, username.length - 5)) +
@@ -15,12 +27,12 @@ function maskingName(username) {
         );
     } else if (username.length >= 4) {
         return (
-            username.slice(0, 2) +
+            username.slice(0, 1) +
             "*".repeat(Math.max(0, username.length - 3)) +
             username.slice(-1)
         );
-    } else {
-        return username.replaceAll('*', username);
+    } else if (username.length <= 3){
+        return username = "***";
     }
 }
 
