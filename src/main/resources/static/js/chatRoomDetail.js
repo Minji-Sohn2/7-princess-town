@@ -122,7 +122,7 @@ const vm = new Vue({
                 .then(response => {
                     console.log(response);
                     alert('채팅방을 나갔습니다.');
-                    location.href = "/chat/room";
+                    location.href = "/view/chatRooms";
                 })
                 .catch(error => {
                     console.error(error);
