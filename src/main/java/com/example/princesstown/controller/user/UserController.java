@@ -3,6 +3,7 @@ package com.example.princesstown.controller.user;
 import com.example.princesstown.dto.request.SignupRequestDto;
 import com.example.princesstown.dto.response.ApiResponseDto;
 import com.example.princesstown.security.user.UserDetailsImpl;
+import com.example.princesstown.service.email.MailService;
 import com.example.princesstown.service.findPassword.AuthenticationService;
 import com.example.princesstown.service.message.MessageService;
 import com.example.princesstown.service.user.UserService;
@@ -25,22 +26,21 @@ import java.util.concurrent.TimeUnit;
 public class UserController {
 
     private final UserService userService;
-
     private final MessageService messageService;
-
     private final StringRedisTemplate redisTemplate;
     private final AuthenticationService authenticationService;
+    private final MailService mailService;
 
 
     //문자 인증번호 발송
     @PostMapping("/sms/codes")
-    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phoneNumber") String phoneNumber) throws Exception {
+    public ResponseEntity<ApiResponseDto> sendVerificationCode(@RequestParam("phonenumber") String phoneNumber) throws Exception {
         return messageService.sendVerificationCode(phoneNumber);
     }
 
     // 회원가입/탈퇴할 때 문자 인증 검사
     @PostMapping("/sms/verify-codes")
-    public ResponseEntity<ApiResponseDto> verifyPhoneCode(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("inputCode") String inputCode) {
+    public ResponseEntity<ApiResponseDto> verifyPhoneCode(@RequestParam("phonenumber") String phoneNumber, @RequestParam("inputcode") String inputCode) {
         ResponseEntity<ApiResponseDto> response = messageService.verifyCode(phoneNumber, inputCode);
         if (response.getStatusCode() != HttpStatus.OK) {
             redisTemplate.opsForValue().set("VerificationStatus_" + phoneNumber, "false", 1, TimeUnit.HOURS);
@@ -49,6 +49,14 @@ public class UserController {
         }
         return response;
     }
+
+//    //이메일로 회원가입 인증코드 발송
+//    @PostMapping("/email/signup/verify-codes")
+//    public ResponseEntity<ApiResponseDto> sendSignupCode(@RequestParam("email") String email) {
+//        mailService.sendSignupNeedEmailVerifyCode(email);
+//        return
+//    }
+
 
     // 회원가입
     @PostMapping("/signup")
@@ -62,8 +70,8 @@ public class UserController {
     }
 
     // 문자 인증 후 이메일로 회원탈퇴 인증코드 발송
-    @PostMapping("/email/verify-codes")
-    public ResponseEntity<ApiResponseDto> sendDeteactiveCode(@RequestParam("phoneNumber") String phoneNumber, @RequestParam("email") String email) {
+    @PostMapping("/email/deactivate/verify-codes")
+    public ResponseEntity<ApiResponseDto> sendDeteactiveCode(@RequestParam("phonenumber") String phoneNumber, @RequestParam("email") String email) {
         if ("true".equals(redisTemplate.opsForValue().get("VerificationStatus_" + phoneNumber))) {
             redisTemplate.delete("VerificationStatus_" + phoneNumber);
             return userService.sendDeteactiveCode(phoneNumber, email);
@@ -74,7 +82,7 @@ public class UserController {
 
     // 회원탈퇴
     @DeleteMapping("/account/deactivate")
-    public ResponseEntity<ApiResponseDto> deleteAccount(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("inputCode") String inputCode) {
+    public ResponseEntity<ApiResponseDto> deleteAccount(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("inputcode") String inputCode) {
         Long userId = userDetails.getUser().getUserId();
         String username = userDetails.getUser().getUsername();
         if (inputCode.equals(redisTemplate.opsForValue().get(username + "_deteactiveCode"))) {

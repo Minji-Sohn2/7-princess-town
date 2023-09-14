@@ -165,21 +165,20 @@ public class AuthenticationService {
                 String token = jwtUtil.createToken(storedUsername);
                 log.info("token : " + token);
 
-//                 헤더에 토큰 추가
+                //헤더에 토큰 추가
                 HttpHeaders headers = new HttpHeaders();
                 headers.add(JwtUtil.AUTHORIZATION_HEADER, token);
                 log.info("header info : " + headers);
 
+                // 엔티티 자체를 보내면 DB 작업과 웹 요청-응답 처리가 혼재되어 문제가 발생할 수 있으므로 returnData : tempLoginUser -> loginResponseDto로 변경
                 LoginResponseDto loginResponseDto = new LoginResponseDto(tempLoginUser.getUserId(), tempLoginUser.getNickname(),tempLoginUser.getProfileImage());
 
                 return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", loginResponseDto));
 
             } else {
-                log.info("첫번째 else");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패"));
             }
         } else {
-            log.info("두번쨰 else");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패. 임시 비밀번호나 아이디가 유효하지 않습니다."));
         }
     }
@@ -204,7 +203,6 @@ public class AuthenticationService {
             log.error("로그인 정보가 일치하지 않습니다.");
             throw new IllegalArgumentException("로그인 정보가 일치하지 않습니다.");
         }
-        log.info("통과");
         return ResponseEntity.status(200).body(new ApiResponseDto(HttpStatus.OK.value(), " 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.")); // 응답 수정
     }
 }

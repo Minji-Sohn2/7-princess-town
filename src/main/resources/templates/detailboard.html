@@ -253,7 +253,7 @@
                         <span id="selectedFileName"></span>
                     </div>
                 </div>
-                <div style="margin-top: 50px;"></div>
+                <div style="margin-top: 30px;"></div>
                 <div class="field">
                     <label>반경 설정</label>
                     <div class="location-input-button-container">
@@ -278,6 +278,8 @@
 <!-- Signup Form -->
 <div class="ui segment" id="modalContainer">
     <div class="ui segment modal" id="signupModal">
+        <div class="header" style="margin: -11px;">회원가입</div>
+        <div style="margin-bottom: 15px;"></div>
         <form class="ui form">
             <div class="field">
                 <label>아이디</label>
@@ -388,8 +390,8 @@
         <div style="margin-top: 50px;"></div>
         <div class="divider"></div>
         <div class="login-footer">
-            <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
             <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
+            <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
             <a href="/" class="cd-form-bottom-message">메인으로</a>
         </div>
     </div>
@@ -398,6 +400,8 @@
 
 <!-- Deactivation Form -->
 <div class="ui segment modal" id="deactivationModal">
+    <div class="header" style="margin: -11px;">회원탈퇴</div>
+    <div style="margin-bottom: 15px;"></div>
     <div class="ui segment">
         <form class="ui form">
             <!-- 전화번호 입력 및 인증번호 전송 -->
@@ -431,6 +435,7 @@
                 <label>이메일로 받은 회원탈퇴 코드</label>
                 <div class="input-button-container">
                     <input type="text" id="deactive-deactivationCodeInput" placeholder="회원탈퇴 코드를 입력해주세요">
+                    <button class="ui button red" id="deactivationButton">탈퇴</button>
                 </div>
                 <div style="margin-top: 50px;"></div>
             </div>
@@ -442,10 +447,7 @@
             <!--        </div>-->
             <!--      </div>-->
             <div style="margin-top: 30px;"></div>
-            <!-- 회원탈퇴 버튼 -->
-            <button class="ui button red" id="deactivationButton">회원탈퇴</button>
         </form>
-        <div style="margin-top: 30px;"></div>
         <a href="/" class="cd-form-bottom-message">메인으로</a>
     </div>
 </div>
