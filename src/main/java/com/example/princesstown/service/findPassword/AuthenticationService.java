@@ -170,6 +170,7 @@ public class AuthenticationService {
                 headers.add(JwtUtil.AUTHORIZATION_HEADER, token);
                 log.info("header info : " + headers);
 
+                // 엔티티 자체를 보내면 DB 작업과 웹 요청-응답 처리가 혼재되어 문제가 발생할 수 있으므로 returnData : tempLoginUser -> loginResponseDto로 변경
                 LoginResponseDto loginResponseDto = new LoginResponseDto(tempLoginUser.getUserId(), tempLoginUser.getNickname(),tempLoginUser.getProfileImage());
 
                 return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", loginResponseDto));

@@ -31,6 +31,8 @@ body {
 .cd-form-bottom-message {
   text-align: center;
   margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 /* 입력창 및 버튼 크기 및 위치 조정 */
@@ -103,6 +105,8 @@ body {
   padding: 15px;  /* 헤더 내부 패딩 설정 */
   font-weight: bold;  /* 헤더 텍스트 굵게 설정 */
 }
+
+
 
 
 
@@ -281,6 +285,11 @@ body {
 
 
 
+
+
+
+
+
 /*회원가입 관련 css*/
 #signupModal {
     max-width: 450px; /* 최대 가로 길이를 450px로 설정 */
@@ -352,6 +361,15 @@ label[for="signup-profileImageInput"] .icon {
     border-bottom-left-radius: 0.28571429rem!important;
 }
 
+.ui.selection.dropdown {
+    min-width: 16em !important;
+    min-height: 3.18em !important;
+}
+
+
+
+
+
 
 
 
@@ -376,19 +394,19 @@ label[for="signup-profileImageInput"] .icon {
 
 /*프로필 관련 css*/
 .ui.modal#profileModal {
-    width:450px;
+    width:400px;
 }
 
 .ui.modal#profileModal .content {
     margin: 0 auto;    /* 중앙 정렬 */
     padding: 20px;     /* 내부 패딩 추가 */
     min-height: 800px;  /* 최소 높이 설정 */
-    width: 450px;
+    width: 380px;
     overflow-y: auto;   /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
 }
 
 #setLocation {
-    width: 181px;
+    width: 130px;
     height: 45px;
 }
 
@@ -463,14 +481,13 @@ label[for="profile-imageInput"] .icon {
     background-color: transparent; /* 배경색 제거 */
     margin: 0 auto;    /* 중앙 정렬 */
     padding: 20px;     /* 내부 패딩 추가 */
-    min-height: 600px;  /* 최소 높이 설정 */
     width: 400px;
     overflow-y: auto;   /* 내용이 모달의 높이를 초과할 경우 스크롤 표시 */
 }
 
 #deactivationModal {
-    width:500px;
-    min-height: 600px;  /* 최소 높이 설정 */
+    width:420px;
+    min-height: 500px;  /* 최소 높이 설정 */
 }
 
 #deactive-deactivationCodeInput {
