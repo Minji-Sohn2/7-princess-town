@@ -56,7 +56,7 @@ $(document).ready(function() {
 			$('#user-icon .user.icon').show();
 		}
 
-		if (token && !profileImage) {
+		if (token && !profileImage || profileImage === null) {
 			$('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
 			$('#user-icon .user.icon').hide();
 		}
@@ -413,7 +413,7 @@ $(document).ready(function() {
 			return;
 		} else {
 			$.ajax({
-				url: "/api/users/sms/codes?phoneNumber=" + phoneNumber,
+				url: `/api/users/sms/codes?phoneNumber=${phoneNumber}`,
 				type: "POST",
 				success: function (res) {
 					alert("인증번호가 전송되었습니다.");
@@ -437,9 +437,8 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			url: "/api/users/sms/verify-codes",
+			url: `/api/users/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
 			type: "POST",
-			data: {phoneNumber: phoneNumber, inputCode: inputCode},
 			success: function (res) {
 				if (res.status === 200) {
 					alert("인증 성공");
@@ -840,9 +839,8 @@ $(document).ready(function() {
 		let phoneNumber = $('#deactive-phoneNumberInput').val();
 		if (phoneNumber) {
 			$.ajax({
-				url: "/api/users/sms/codes",
+				url: `/api/users/sms/codes?phoneNumber=${phoneNumber}`,
 				type: "POST",
-				data: { phoneNumber: phoneNumber },
 				success: function(res) {
 					alert("인증번호가 전송되었습니다.");
 				},
@@ -859,9 +857,8 @@ $(document).ready(function() {
 		let inputCode = $('#deactive-verifyCodeInput').val();
 		if (phoneNumber || inputCode ) {
 			$.ajax({
-				url: "/api/users/sms/verify-codes",
+				url: `/api/users/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
 				type: "POST",
-				data: { phoneNumber: phoneNumber, inputCode: inputCode },
 				success: function(res) {
 					alert("인증 성공!");
 				},
@@ -880,9 +877,8 @@ $(document).ready(function() {
 		let inputCode = $('#deactive-verifyCodeInput').val();
 		if (phoneNumber || inputCode || email) {
 			$.ajax({
-				url: "/api/users/email/verify-codes",
+				url: `/api/users/email/deactivate/verify-codes?phoneNumber=${phoneNumber}&email=${email}`,
 				type: "POST",
-				data: {phoneNumber: phoneNumber, email: email},
 				success: function (res) {
 					alert("이메일로 회원탈퇴 인증코드가 전송되었습니다.");
 				},
@@ -932,9 +928,8 @@ $(document).ready(function() {
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader("Authorization", token);
 			},
-			url: "/api/users/account/deactivate",
+			url: `/api/users/account/deactivate?inputCode=${inputCode}`,
 			type: 'DELETE',
-			data: {inputCode: inputCode},
 			success: function (res) {
 				// 쿠키삭제
 				Cookies.remove('Authorization');
@@ -966,11 +961,8 @@ $(document).ready(function() {
 		let phoneNumber = $('#usernameFind-phoneNumberInput').val();
 
 		$.ajax({
+			url: `/api/account-recovery/usernames/sms/codes?phoneNumber=${phoneNumber}`,
 			type: 'POST',
-			url: '/api/sms/codes',
-			data: {
-				phoneNumber: phoneNumber
-			},
 			success: function(res) {
 				alert('인증번호가 전송되었습니다.');
 			},
@@ -987,12 +979,8 @@ $(document).ready(function() {
 		let inputCode = $('#usernameFind-verifyCodeInput').val();
 
 		$.ajax({
+			url: `/api/account-recovery/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
 			type: 'POST',
-			url: '/api/account-recovery/sms/verify-codes',
-			data: {
-				phoneNumber: phoneNumber,
-				inputCode: inputCode
-			},
 			success: function(res) {
 				alert('인증번호가 확인되었습니다.');
 			},
@@ -1008,12 +996,8 @@ $(document).ready(function() {
 		let email = $('#usernameFind-emailInput').val();
 
 		$.ajax({
+			url: `/api/account-recovery/usernames?phoneNumber=${phoneNumber}&email=${email}`,
 			type: 'POST',
-			url: '/api/account-recovery/usernames',
-			data: {
-				phoneNumber: phoneNumber,
-				email: email
-			},
 			success: function(res) {
 				alert('아이디가 ' + email + '로 전송되었습니다.');
 			},
@@ -1039,9 +1023,8 @@ $(document).ready(function() {
 			return;
 		}
 		$.ajax({
-			url: "/api/account-recovery/verify-usernames",
+			url: `/api/account-recovery/verify-usernames?username=${username}`,
 			type: "POST",
-			data: {username: username},
 			success: function (res) {
 				if ( res.status === 200) {
 					alert("아이디가 인증되었습니다.");
@@ -1075,9 +1058,8 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			url: "/api/account-recovery/sms/codes",
+			url: `/api/account-recovery/password/sms/codes?phoneNumber=${phoneNumber}`,
 			type: "POST",
-			data: {phoneNumber: phoneNumber},
 			success: function (res) {
 				alert("인증번호가 전송되었습니다.");
 			},
@@ -1099,9 +1081,8 @@ $(document).ready(function() {
 			return;
 		}
 		$.ajax({
-			url: "/api/account-recovery/sms/verify-codes",
+			url: `/api/account-recovery/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
 			type: "POST",
-			data: {phoneNumber: phoneNumber, inputCode: inputCode},
 			success: function (res) {
 				if (res.status === 200) {
 					alert("인증 성공");
@@ -1120,9 +1101,8 @@ $(document).ready(function() {
 		var phoneNumber = $('#passwordReset-phoneNumberInput').val();
 		var email = $('#passwordReset-emailInput').val();
 		$.ajax({
-			url: "/api/account-recovery/temp-passwords",
+			url: `/api/account-recovery/temp-passwords?phoneNumber=${phoneNumber}&email=${email}`,
 			type: "POST",
-			data: {phoneNumber: phoneNumber, email: email},
 			success: function (res) {
 				alert("임시 비밀번호가 전송되었습니다.");
 			},
@@ -1175,7 +1155,7 @@ $(document).ready(function() {
 				Cookies.set('Authorization', token, {expires: expirationTime});
 				Cookies.set('nickname', nickname, {expires: expirationTime});
 				Cookies.set('userId', userId, {expires: expirationTime});
-				if (!profileImage) {
+				if (profileImage) {
 					Cookies.set('profileImage', profileImage, {expires: expirationTime});
 				}
 
