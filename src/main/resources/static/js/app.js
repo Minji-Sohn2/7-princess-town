@@ -413,7 +413,7 @@ $(document).ready(function() {
 			return;
 		} else {
 			$.ajax({
-				url: `/api/users/sms/codes?phoneNumber=${phoneNumber}`,
+				url: `/api/users/sms/codes?` + $.param({phonenumber:phoneNumber}),
 				type: "POST",
 				success: function (res) {
 					alert("인증번호가 전송되었습니다.");
@@ -437,7 +437,7 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			url: `/api/users/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
+			url: `/api/users/sms/verify-codes?` + $.param({phonenumber:phoneNumber, inputCode:inputCode}),
 			type: "POST",
 			success: function (res) {
 				if (res.status === 200) {
@@ -672,7 +672,7 @@ $(document).ready(function() {
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
 		const email = urlParams.get('email');
-		const phoneNumber = urlParams.get('phoneNumber');
+		const phoneNumber = urlParams.get('phonenumber');
 		const currentLatitude = urlParams.get('latitude');
 		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
@@ -744,7 +744,7 @@ $(document).ready(function() {
 		const userId = urlParams.get("userId");
 		const token = urlParams.get("token");
 		const email = urlParams.get('email');
-		const phoneNumber = urlParams.get('phoneNumber');
+		const phoneNumber = urlParams.get('phonenumber');
 		const currentLatitude = urlParams.get('latitude');
 		const currentLongitude = urlParams.get('longitude');
 		const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
