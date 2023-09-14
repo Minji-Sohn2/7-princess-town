@@ -172,8 +172,6 @@ public class AuthenticationService {
 
                 LoginResponseDto loginResponseDto = new LoginResponseDto(tempLoginUser.getUserId(), tempLoginUser.getNickname(),tempLoginUser.getProfileImage());
 
-                log.info(String.valueOf(tempLoginUser));
-
                 return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", loginResponseDto));
 
             } else {
