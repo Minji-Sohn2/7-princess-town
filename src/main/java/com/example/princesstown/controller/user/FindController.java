@@ -86,7 +86,7 @@ public class FindController {
 
     // 임시 로그인
     @PostMapping("/temp-login")
-    public ResponseEntity<ApiResponseDto> tempLogin(@RequestParam("username") String username, @RequestParam("tempPassword") String tempPassword) {
+    public ResponseEntity<ApiResponseDto> tempLogin(@RequestParam("username") String username, @RequestParam("temppassword") String tempPassword) {
         return authenticationService.unifiedLogin(username, tempPassword);
     }
 }
