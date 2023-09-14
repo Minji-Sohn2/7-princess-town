@@ -839,7 +839,7 @@ $(document).ready(function() {
 		let phoneNumber = $('#deactive-phoneNumberInput').val();
 		if (phoneNumber) {
 			$.ajax({
-				url: `/api/users/sms/codes?phoneNumber=${phoneNumber}`,
+				url: `/api/users/sms/codes?` + $.param({phonenumber: phoneNumber}),
 				type: "POST",
 				success: function(res) {
 					alert("인증번호가 전송되었습니다.");
@@ -857,7 +857,7 @@ $(document).ready(function() {
 		let inputCode = $('#deactive-verifyCodeInput').val();
 		if (phoneNumber || inputCode ) {
 			$.ajax({
-				url: `/api/users/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
+				url: `/api/users/sms/verify-codes?` + $.param({phonenumber: phoneNumber, verifycode: inputCode}),
 				type: "POST",
 				success: function(res) {
 					alert("인증 성공!");
@@ -877,7 +877,7 @@ $(document).ready(function() {
 		let inputCode = $('#deactive-verifyCodeInput').val();
 		if (phoneNumber || inputCode || email) {
 			$.ajax({
-				url: `/api/users/email/deactivate/verify-codes?phoneNumber=${phoneNumber}&email=${email}`,
+				url: `/api/users/email/deactivate/verify-codes?` + $.param({phonenumber: phoneNumber, email: email}),
 				type: "POST",
 				success: function (res) {
 					alert("이메일로 회원탈퇴 인증코드가 전송되었습니다.");
@@ -928,7 +928,7 @@ $(document).ready(function() {
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader("Authorization", token);
 			},
-			url: `/api/users/account/deactivate?inputCode=${inputCode}`,
+			url: `/api/users/account/deactivate?` + $.param({inputcode: inputCode}),
 			type: 'DELETE',
 			success: function (res) {
 				// 쿠키삭제
@@ -961,7 +961,7 @@ $(document).ready(function() {
 		let phoneNumber = $('#usernameFind-phoneNumberInput').val();
 
 		$.ajax({
-			url: `/api/account-recovery/usernames/sms/codes?phoneNumber=${phoneNumber}`,
+			url: `/api/account-recovery/usernames/sms/codes?` + $.param({phonenumber: phoneNumber}),
 			type: 'POST',
 			success: function(res) {
 				alert('인증번호가 전송되었습니다.');
@@ -979,7 +979,7 @@ $(document).ready(function() {
 		let inputCode = $('#usernameFind-verifyCodeInput').val();
 
 		$.ajax({
-			url: `/api/account-recovery/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
+			url: `/api/account-recovery/sms/verify-codes?` + $.param({phonenumber: phoneNumber, inputcode: inputCode}),
 			type: 'POST',
 			success: function(res) {
 				alert('인증번호가 확인되었습니다.');
@@ -996,7 +996,7 @@ $(document).ready(function() {
 		let email = $('#usernameFind-emailInput').val();
 
 		$.ajax({
-			url: `/api/account-recovery/usernames?phoneNumber=${phoneNumber}&email=${email}`,
+			url: `/api/account-recovery/usernames?` + $.param({phonenumber: phoneNumber, email: email}),
 			type: 'POST',
 			success: function(res) {
 				alert('아이디가 ' + email + '로 전송되었습니다.');
@@ -1023,7 +1023,7 @@ $(document).ready(function() {
 			return;
 		}
 		$.ajax({
-			url: `/api/account-recovery/verify-usernames?username=${username}`,
+			url: `/api/account-recovery/verify-usernames?` + $.param({username: username}),
 			type: "POST",
 			success: function (res) {
 				if ( res.status === 200) {
@@ -1058,7 +1058,7 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			url: `/api/account-recovery/password/sms/codes?phoneNumber=${phoneNumber}`,
+			url: `/api/account-recovery/password/sms/codes?` + $.param({phonenumber: phoneNumber}),
 			type: "POST",
 			success: function (res) {
 				alert("인증번호가 전송되었습니다.");
@@ -1081,7 +1081,7 @@ $(document).ready(function() {
 			return;
 		}
 		$.ajax({
-			url: `/api/account-recovery/sms/verify-codes?phoneNumber=${phoneNumber}&inputCode=${inputCode}`,
+			url: `/api/account-recovery/sms/verify-codes?` + $.param({phonenumber: phoneNumber, inputcode: inputCode}),
 			type: "POST",
 			success: function (res) {
 				if (res.status === 200) {
@@ -1101,7 +1101,7 @@ $(document).ready(function() {
 		var phoneNumber = $('#passwordReset-phoneNumberInput').val();
 		var email = $('#passwordReset-emailInput').val();
 		$.ajax({
-			url: `/api/account-recovery/temp-passwords?phoneNumber=${phoneNumber}&email=${email}`,
+			url: `/api/account-recovery/temp-passwords?` + $.param({phonenumber: phoneNumber, email: email}),
 			type: "POST",
 			success: function (res) {
 				alert("임시 비밀번호가 전송되었습니다.");
