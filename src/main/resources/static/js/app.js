@@ -57,7 +57,7 @@ $(document).ready(function () {
         }
 
         if (token && !profileImage || profileImage === null) {
-            $('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
+            $('#profile-picture').attr("src", "/img/defaultImg/tomato.png").show();
             $('#user-icon .user.icon').hide();
         }
     }
@@ -815,7 +815,7 @@ $(document).ready(function () {
         const phoneNumber = urlParams.get('phonenumber');
         const currentLatitude = urlParams.get('latitude');
         const currentLongitude = urlParams.get('longitude');
-        const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+        const defaultProfileImagePath = "/img/defaultImg/.png";
 
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
@@ -887,7 +887,7 @@ $(document).ready(function () {
         const phoneNumber = urlParams.get('phonenumber');
         const currentLatitude = urlParams.get('latitude');
         const currentLongitude = urlParams.get('longitude');
-        const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+        const defaultProfileImagePath = "/img/defaultImg/tomato.png";
 
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
