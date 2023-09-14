@@ -30,7 +30,8 @@
     rel="stylesheet">
     <link rel="stylesheet" href="https://webfontworld.github.io/daegu/DalseoHealing.css">
 
-
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c6072caed86d58e141a7a115ca39de4c"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
     <style>
         .main-content {
             flex: 1;
@@ -316,7 +317,7 @@
                 <input type="email" name="profile-emailInput" placeholder="이메일" readonly>
             </div>
             <div style="margin-top: 50px;"></div>
-            <div class="field">
+            <div class="field" id="profileset">
                 <label>전화번호</label>
                 <input type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
                 <div style="margin-top: 50px;"></div>
@@ -344,6 +345,8 @@
                         <button class="ui button" id="setLocation">위치 설정</button>
                     </div>
                 </div>
+
+                <div id="map" style="width:350px;height:300px;"></div>
             </div>
             <div style="margin-top: 30px;"></div>
             <p></p>
@@ -417,6 +420,8 @@
                         <button class="ui button" id="signup-setLocation">위치 설정</button>
                     </div>
                 </div>
+
+                <div id="signup-map" style="width:350px;height:300px; display: none;"></div>
             </div>
             <div style="margin-top: 30px;"></div>
             <div class="signup-center-content">
