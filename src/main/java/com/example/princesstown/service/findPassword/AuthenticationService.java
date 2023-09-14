@@ -175,11 +175,9 @@ public class AuthenticationService {
                 return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponseDto(200, "로그인 성공. 임시 비밀번호로 로그인하였습니다. 비밀번호를 즉시 변경해 주세요.", loginResponseDto));
 
             } else {
-                log.info("첫번째 else");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패"));
             }
         } else {
-            log.info("두번쨰 else");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "로그인 실패. 임시 비밀번호나 아이디가 유효하지 않습니다."));
         }
     }
