@@ -1736,3 +1736,11 @@ p.para {
     max-width: 100%;
 }
 
+.userComment {
+    word-break:break-all;
+}
+
+.replyContents {
+    word-break:break-all;
+}
+
