@@ -1190,7 +1190,7 @@ $(document).ready(function() {
 				window.location.href = '/';
 			},
 			error: function (error) {
-				console.log(error)
+				alert(error.responseJSON.message)
 			}
 		});
 	});
