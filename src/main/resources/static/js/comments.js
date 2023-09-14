@@ -50,7 +50,7 @@ if (token) {
     // 댓글 닉네임에 표시해주는 기능
     $.ajax({
         type: 'GET',
-        url: `/api/nickname?username=${usernames}`,
+        url: `/api/nickname?` + $.param({username: usernames}),
         success: function (data) {
             $('#loginUserName').text(data.result);
         },
