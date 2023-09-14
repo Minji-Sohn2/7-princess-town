@@ -437,7 +437,7 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			url: `/api/users/sms/verify-codes?` + $.param({phonenumber:phoneNumber, inputCode:inputCode}),
+			url: `/api/users/sms/verify-codes?` + $.param({phonenumber:phoneNumber, inputcode:inputCode}),
 			type: "POST",
 			success: function (res) {
 				if (res.status === 200) {
@@ -857,7 +857,7 @@ $(document).ready(function() {
 		let inputCode = $('#deactive-verifyCodeInput').val();
 		if (phoneNumber || inputCode ) {
 			$.ajax({
-				url: `/api/users/sms/verify-codes?` + $.param({phonenumber: phoneNumber, verifycode: inputCode}),
+				url: `/api/users/sms/verify-codes?` + $.param({phonenumber: phoneNumber, inputcode: inputCode}),
 				type: "POST",
 				success: function(res) {
 					alert("인증 성공!");
