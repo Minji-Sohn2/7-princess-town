@@ -361,6 +361,7 @@ $(document).ready(function () {
 
     // 프로필 버튼 클릭 시 모달 표시
     $('#profile-btn').on('click', function () {
+        handleLocationClick();
         $('#profileModal').modal('show');
         $signupModal.modal('hide');
         $loginModal.modal('hide');
@@ -893,6 +894,10 @@ $(document).ready(function () {
         const currentLongitude = urlParams.get('longitude');
         const defaultProfileImagePath = "/img/defaultImg/tomato.png";
 
+        console.log(nickname)
+        console.log(email)
+        console.log(phoneNumber)
+
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
 
@@ -908,21 +913,21 @@ $(document).ready(function () {
         // 로그인 상태 UI 업데이트
         $('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
 
-        if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+        if (email === "null" && phoneNumber === "null" && currentLatitude === "0.0" && currentLongitude === "0.0") {
             alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-        } else if (!email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (email === "null" && phoneNumber !== "null" && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-        } else if (!phoneNumber && email && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (phoneNumber === "null" && email !== "null" && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-        } else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
+        } else if (currentLatitude === 0.0 && currentLongitude === "0.0" && phoneNumber !== "null" && email !== "null") {
             alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-        } else if (!email && !phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (email === "null" && phoneNumber === "null" && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-        } else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
+        } else if (email === "null" && currentLatitude === "0.0" && currentLongitude === "0.0" && phoneNumber !== "null") {
             alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-        } else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
+        } else if (phoneNumber === "null" && currentLatitude === "0.0" && currentLongitude === "0.0" && email === "null") {
             alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-        } else if (email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (email !== "null" && phoneNumber !== "null" && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공!")
         }
 
@@ -964,6 +969,9 @@ $(document).ready(function () {
         const currentLatitude = urlParams.get('latitude');
         const currentLongitude = urlParams.get('longitude');
         const defaultProfileImagePath = "/img/defaultImg/tomato.png";
+        console.log(nickname)
+        console.log(email)
+        console.log(phoneNumber)
 
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
@@ -983,21 +991,21 @@ $(document).ready(function () {
         console.log("latitude : " + currentLatitude)
         console.log("longitude : " + currentLongitude)
 
-        if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
+        if (!email && !phoneNumber && currentLatitude === "0.0" && currentLongitude === "0.0") {
             alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
-        } else if (!email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (!email && phoneNumber && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공! 프로필에서 지금 바로 이메일을 설정해주세요!")
-        } else if (!phoneNumber && email && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (!phoneNumber && email && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공! 프로필에서 지금 바로 전화번호를 설정해주세요!")
-        } else if (currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber && email) {
+        } else if (currentLatitude === "0.0" && currentLongitude === "0.0" && phoneNumber && email) {
             alert("로그인 성공! 프로필에서 지금 바로 위치를 설정해주세요!")
-        } else if (!email && !phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (!email && !phoneNumber && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공! 프로필에서 지금 바로 이메일, 전화번호를 설정해주세요!")
-        } else if (!email && currentLatitude === 0.0 && currentLongitude === 0.0 && phoneNumber) {
+        } else if (!email && currentLatitude === "0.0" && currentLongitude === "0.0" && phoneNumber) {
             alert("로그인 성공! 프로필에서 지금 바로 이메일, 위치를 설정해주세요!")
-        } else if (!phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0 && email) {
+        } else if (!phoneNumber && currentLatitude === "0.0" && currentLongitude === "0.0" && email) {
             alert("로그인 성공! 프로필에서 지금 바로 전화번호, 위치를 설정해주세요!")
-        } else if (email && phoneNumber && currentLatitude !== 0.0 && currentLongitude !== 0.0) {
+        } else if (email && phoneNumber && currentLatitude !== "0.0" && currentLongitude !== "0.0") {
             alert("로그인 성공!")
         }
 
