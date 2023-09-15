@@ -732,6 +732,21 @@
         });
 
         $("#newPostImage").change(function () {
+
+            // 선택된 파일의 확장자 가져오기
+            var fileName = $(this).val();
+            var fileExtension = fileName.split('.').pop().toLowerCase();
+
+            // 허용된 확장자 목록 설정
+            var allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+            // 확장자가 허용된 목록에 포함되지 않으면 경고 표시 및 파일 선택 취소
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                alert("jpg 또는 png 파일만 업로드할 수 있습니다.");
+                $(this).val(""); // 파일 선택 초기화
+                return;
+            }
+
             previewImage(this);
         });
 
