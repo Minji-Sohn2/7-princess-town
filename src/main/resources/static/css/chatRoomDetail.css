@@ -206,3 +206,29 @@ html, body {
     align-items: center;
     height: 100%;
 }
+
+/* 이미지 전송 */
+.custom-file-input {
+    display: none; /* 입력된 파일 이름 미리보기 x*/
+}
+
+.custom-file-label {
+    cursor: pointer;
+    background-color: #6c747d;
+    color: #fff;
+    padding: 7px 10px;
+    border-radius: 5px;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-label::after {
+    content: '파일';
+}
+
+#filePreview {
+    display: none;
+    width: 200px;
+}

@@ -22,6 +22,7 @@ public class ChatMessageDto {
     private Long roomId;
     private String sender;  // nickname
     private String message;
+    private String imgData;
 
     @JsonFormat(pattern = "yy-MM-dd HH:mm")
     private String createdAt;
@@ -30,7 +31,18 @@ public class ChatMessageDto {
         this.type = MessageType.TALK;
         this.roomId = chatMessage.getChatRoomId();
         this.sender = chatMessage.getSenderNickname();
-        this.message = chatMessage.getMessage();
+        if(chatMessage.getMessage() != null) {
+            this.message = chatMessage.getMessage();
+        }
+        if(chatMessage.getImgUrl() != null) {
+            this.imgData = chatMessage.getImgUrl();
+        }
         this.createdAt = chatMessage.getCreatedAt().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"));
+    }
+
+    public ChatMessageDto(Long roomId, String imageUrl) {
+        this.type = MessageType.TALK;
+        this.roomId = roomId;
+        this.imgData = imageUrl;
     }
 }

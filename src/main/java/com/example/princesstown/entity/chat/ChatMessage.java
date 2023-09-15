@@ -23,8 +23,11 @@ public class ChatMessage {
     @Column(nullable = false)
     private String senderNickname;
 
-    @Column(nullable = false)
+    @Column
     private String message;
+
+    @Column
+    private String imgUrl;
 
     @Column
     private LocalDateTime createdAt;
@@ -32,11 +35,16 @@ public class ChatMessage {
     @Column(nullable = false)
     private Long chatRoomId;
 
-    public ChatMessage(User user, ChatMessageDto chatMessage) {
+    public ChatMessage(User user, ChatMessageDto chatMessageDto) {
         this.senderId = user.getUserId();
         this.senderNickname = user.getNickname();
-        this.message = chatMessage.getMessage();
-        this.chatRoomId = chatMessage.getRoomId();
+        if(chatMessageDto.getMessage() != null) {
+            this.message = chatMessageDto.getMessage();
+        }
+        if(chatMessageDto.getImgData() != null) {
+            this.imgUrl = chatMessageDto.getImgData();
+        }
+        this.chatRoomId = chatMessageDto.getRoomId();
         this.createdAt = LocalDateTime.now();
     }
 }

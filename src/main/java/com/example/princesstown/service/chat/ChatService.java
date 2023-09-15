@@ -22,6 +22,14 @@ public interface ChatService {
     void sendChatMessage(ChatMessageDto chatMessage, String token);
 
     /**
+     * 파일 메세지 전송, 저장
+     * @param roomId 채팅방 id
+     * @param imageUrl s3 업로드 된 imageUrl
+     * @param user 보낸 사람
+     */
+    void sendImageMessage(Long roomId, String imageUrl, User user);
+
+    /**
      * username 으로 user 찾기
      *
      * @param username username

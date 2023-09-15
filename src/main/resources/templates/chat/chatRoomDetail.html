@@ -104,14 +104,19 @@
             </li>
         </ul>
 
+        <img id="filePreview" src="#" alt="File Preview">
+
         <!--  입력칸  -->
         <div class="input-group" id="input-container">
             <div class="input-group-prepend">
-                <label class="input-group-text">내용</label>
+                <form id="sendFileForm" enctype="multipart/form-data">
+                    <label for="imageInput" class="custom-file-label"></label>
+                    <input type="file" id="imageInput" name="imageInput" class="custom-file-input" @change="fileInputChange">
+                </form>
             </div>
-            <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('TALK')">
+            <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('TALK')" :disabled="isFileSelected">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" @click="sendMessage('TALK')">보내기</button>
+                <button class="btn btn-outline-secondary" type="button" @click="sendChat">보내기</button>
             </div>
         </div>
     </div>

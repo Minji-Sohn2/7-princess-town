@@ -44,6 +44,7 @@ const vm = new Vue({
         members: [],
         users: [],
         token: '',
+        isFileSelected: false
     },
     created() {
         this.initializeWebSocket();     // 접속 시 웹소켓 연결
@@ -87,6 +88,60 @@ const vm = new Vue({
                 })
                 .catch(error => {
                     console.error('실패' + error);
+                });
+        },
+        fileInputChange(event) {    //
+            this.isFileSelected = event.target.files.length > 0;
+            let fileInput = document.getElementById("imageInput");
+            this.previewImage(fileInput);
+        },
+        previewImage: function (fileInput) {
+            let filePreview = document.getElementById("filePreview");
+
+            let file = fileInput.files[0]; // 선택한 파일
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Set the src attribute of the img element to the file's data URL
+                    filePreview.src = e.target.result;
+                    filePreview.style.display = "block"; // Display the img element
+                };
+
+                // Read the selected file as a data URL
+                reader.readAsDataURL(file);
+            } else {
+                // 선택된 파일이 없다면
+                filePreview.style.display = "none";
+            }
+        },
+        sendChat: function () {
+            if (this.isFileSelected) {
+                this.sendImage();
+            } else {
+                this.sendMessage('TALK');
+            }
+        },
+        sendImage: function () {
+            let fileInput = document.getElementById("imageInput");
+            // let file = fileInput.files[0]; // 선택한 파일
+
+            let formData = new FormData($("#sendFileForm")[0]);
+            formData.append('chatImage', fileInput.files[0]);
+            let file = formData.get('imageInput');
+
+            if (file !== null) {
+                console.log(file);
+            }
+
+            axios.post('/chat/file/' + this.roomId, formData, config)
+                .then(response => {
+                    console.log(response);
+                    alert('파일 전송 성공');
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('파일 전송 실패');
                 });
         },
         sendMessage: function (type) {
@@ -328,7 +383,7 @@ $(document).ready(function () {
         console.log('new Room Name -> ' + newRoomName);
 
         let data = {
-            newChatRoomName : newRoomName
+            newChatRoomName: newRoomName
         }
         axios.put(`/api/chatRooms/` + roomId, data, config)
             .then(response => {

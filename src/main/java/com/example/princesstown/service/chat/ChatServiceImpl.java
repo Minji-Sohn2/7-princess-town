@@ -36,31 +36,74 @@ public class ChatServiceImpl implements ChatService {
             return "";
     }
 
-    /**
-     * 채팅방에 메시지 발송
-     */
+
+    // 채팅방에 메시지 발송
     @Override
-    public void sendChatMessage(ChatMessageDto chatMessage, String token) {
+    public void sendChatMessage(ChatMessageDto chatMessageDto, String token) {
         log.info("sendMessage 메서드 시작");
 
+        // 메세지 header 의 토큰으로 sender 설정
         String username = jwtUtil.getUsernameFromJwt(token);
-        log.info("받은 메세지 토큰으로 찾은 username : " + username);
         User user = findUserByUsername(username);
 
-        chatMessage.setSender(user.getNickname());
+        chatMessageDto.setSender(user.getNickname());
 
-        if (ChatMessageDto.MessageType.QUIT.equals(chatMessage.getType())) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 방에서 나갔습니다.");
-            chatMessage.setSender("[알림]");
+        // 나가기 메세지일 경우
+        if (ChatMessageDto.MessageType.QUIT.equals(chatMessageDto.getType())) {
+            chatMessageDto.setMessage(chatMessageDto.getSender() + "님이 방에서 나갔습니다.");
+            chatMessageDto.setSender("[알림]");
         }
 
-        chatMessageRepository.save(new ChatMessage(user, chatMessage));
+        // 메세지 저장
+        chatMessageRepository.save(new ChatMessage(user, chatMessageDto));
 
-        chatMessage.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm")));
-        log.info("메세지 발송 시각? " + chatMessage.getCreatedAt());
+        // 메세지 dto에 현재 시각 설정 (사용자에게 바로 보내질 시각)
+        chatMessageDto.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm")));
+        log.info("메세지 발송 시각? " + chatMessageDto.getCreatedAt());
 
-        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
+        // 발송
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageDto);
     }
+
+    @Override
+    public void sendImageMessage(Long roomId, String imageUrl, User user) {
+        log.info("sendImageMessage 메서드 시작");
+
+        ChatMessageDto chatMessageDto = new ChatMessageDto(roomId, imageUrl);
+        chatMessageDto.setSender(user.getNickname());
+
+        // 메세지 저장
+        chatMessageRepository.save(new ChatMessage(user, chatMessageDto));
+
+        // 메세지 dto에 현재 시각 설정 (사용자에게 바로 보내질 시각)
+        chatMessageDto.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm")));
+        log.info("메세지 발송 시각? " + chatMessageDto.getCreatedAt());
+
+        // 발송
+//        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageDto);
+        log.info("imageUrl : " + imageUrl);
+    }
+
+    // 받아온 이미지(바이너리) 메세지 s3에 업로드
+//    private void binaryImageUpload (ChatMessageDto chatMessageDto) {
+//        String[] strings = chatMessageDto.getImgData().split(","); // ","을 기준으로 바이트 코드를 나눠준다
+//        String base64Image = strings[1];
+//        String extension = ""; // if 문을 통해 확장자명을 정해줌
+//        if (strings[0].equals("data:image/jpeg;base64")) {
+//            extension = "jpeg";
+//        } else if (strings[0].equals("data:image/png;base64")){
+//            extension = "png";
+//        } else {
+//            extension = "jpg";
+//        }
+//
+//        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image); // 바이트 코드를
+//
+//        File tempFile = File.createTempFile("image", "." + extension); // createTempFile을 통해 임시 파일을 생성해준다. (임시파일은 지워줘야함)
+//        try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+//            outputStream.write(imageBytes); // OutputStream outputStream = new FileOutputStream(tempFile)을 통해 생성한 outputStream 객체에 imageBytes를 작성해준다.
+//        }
+//    }
 
     @Override
     public User findUserByUsername(String username) {
