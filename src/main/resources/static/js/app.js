@@ -279,6 +279,7 @@ $(document).ready(function () {
 
         // 이미 생성된 지도 객체를 초기화하여 크기만 조절
         initializeMap();
+        console.log(currentLatitude, currentLongitude)
 
         // 선택한 반경 값 가져오기
         var selectedRadius = parseInt($('#radiusSelect').val());
@@ -361,7 +362,6 @@ $(document).ready(function () {
     // 프로필 버튼 클릭 시 모달 표시
     $('#profile-btn').on('click', function () {
         $('#profileModal').modal('show');
-        handleLocationClick();
         $signupModal.modal('hide');
         $loginModal.modal('hide');
         $deactivationModal.modal('hide');
@@ -409,6 +409,10 @@ $(document).ready(function () {
 
                 currentLatitude = res.latitude;
                 currentLongitude = res.longitude;
+
+                if (currentLongitude === null && currentLatitude === null) {
+                    handleLocationClick();
+                }
                 const currentRadius = res.radius;
                 let setRadius = 5 + res.radius;
 
