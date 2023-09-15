@@ -262,6 +262,8 @@ $(document).ready(function () {
         // // 마커가 지도 위에 표시되도록 설정합니다
         // marker.setMap(map);
 
+        // marker.setDraggable(true);
+
         // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
         // marker.setMap(null);
 
@@ -327,6 +329,8 @@ $(document).ready(function () {
         // // 마커가 지도 위에 표시되도록 설정합니다
         // marker.setMap(map);
 
+        // marker.setDraggable(true);
+
         // 선택한 반경 값을 가져옵니다.
         var selectedRadius = parseInt(getRedius); // 선택한 반경 값을 정수로 변환합니다.
 
@@ -384,6 +388,10 @@ $(document).ready(function () {
                     $(`.location-input-button-container .item[data-value=${res.radius}]`).attr('class', 'item active selected');
 
                     $('.location-input-button-container .text').text(res.radius + "km")
+                    if ($('.location-input-button-container .text').text(res.radius) === null) {
+                        $(`.location-input-button-container .item[data-value="1"]`).attr('class', 'item active selected');
+                        $('.location-input-button-container .text').text("1");
+                    }
                 }
 
                 // $('#radiusSelect').val(res.radius);
@@ -417,6 +425,8 @@ $(document).ready(function () {
                 //
                 // // 마커가 지도 위에 표시되도록 설정합니다
                 // marker.setMap(map);
+
+                // marker.setDraggable(true);
 
                 // 선택한 반경 값을 가져옵니다.
                 var selectedRadius = parseInt(currentRadius); // 선택한 반경 값을 정수로 변환합니다.
@@ -489,28 +499,6 @@ $(document).ready(function () {
         formData.append('phoneNumber', phoneNumber);
         formData.append('latitude', currentLatitude); // 위도 추가
         formData.append('longitude', currentLongitude); // 경도 추가
-
-        var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-        var options = { //지도를 생성할 때 필요한 기본 옵션
-            center: new kakao.maps.LatLng(currentLatitude, currentLongitude), //지도의 중심좌표.
-            level: 3 //지도의 레벨(확대, 축소 정도)
-        };
-
-        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-        // 마커가 표시될 위치입니다
-        var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
-
-        // 마커를 생성합니다
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
-        });
-
-        // 마커가 지도 위에 표시되도록 설정합니다
-        marker.setMap(map);
-
-        // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
-        // marker.setMap(null);
 
         $.ajax({
             url: `/api/users/profile`,

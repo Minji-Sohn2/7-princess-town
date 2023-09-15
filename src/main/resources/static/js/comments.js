@@ -10,7 +10,7 @@ function maskingName(username) {
     if (username.length >= 20) {
         return (
             username.slice(0, 3) +
-            "*".repeat(Math.max(0, username.length - 5)).slice(5, 10) +
+            ".".repeat(Math.max(0, username.length - 5)).slice(5, 10) +
             username.slice(-3)
         );
     } else if (username.length >= 15) {
