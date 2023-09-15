@@ -68,13 +68,11 @@ const vm = new Vue({
             });
         },
         getChatHistory(page) {
-            console.log('getChatHistory 시작');
             this.roomId = localStorage.getItem('wschat.roomId');
             const _this = this;
             // let page = 0;
             axios.get(`/api/chatRooms/${_this.roomId}?page=${page}`, config)
                 .then(response => {
-                    console.log(response);
 
                     let lastMessages = response.data;
                     lastMessages.forEach(lastM => {
@@ -138,9 +136,7 @@ const vm = new Vue({
             let file = formData.get('imageInput');
 
             axios.post('/chat/file/' + this.roomId, formData, config)
-                .then(response => {
-                    console.log(response);
-                    console.log('파일 전송 성공');
+                .then(() => {
 
                     this.deleteSelectedFile();
                 })
@@ -188,13 +184,11 @@ const vm = new Vue({
             this.sendMessage('QUIT');
 
             axios.delete('/api/chatRooms/' + this.roomId + '/members', config)
-                .then(response => {
-                    console.log(response);
+                .then(() => {
                     alert('채팅방을 나갔습니다.');
                     location.href = "/view/chatRooms";
                 })
-                .catch(error => {
-                    console.error(error);
+                .catch(() => {
                     alert('채팅방 나가기 실패');
                 });
         },
@@ -202,7 +196,6 @@ const vm = new Vue({
 
             axios.get('/api/chatRooms/' + this.roomId + '/members', config)
                 .then(response => {
-                    console.log(response);
 
                     let members = response.data.chatMemberInfoList;
                     members.forEach(member => {
@@ -258,7 +251,7 @@ $(document).ready(function () {
 
     document.getElementById('submitSearchKeyword').addEventListener('click', () => {
         const searchInput = document.getElementById('searchInput').value;
-        console.log('검색 키워드 -> ' + searchInput);
+
         if (searchInput.trim() === '') {
             alert('검색어를 입력하세요');
             return;
@@ -272,7 +265,7 @@ $(document).ready(function () {
 
         axios.get('/api/search/users?keyword=' + keyword, config)
             .then(response => {
-                console.log(response);
+
                 const results = response.data.searchUserResults;
 
                 if (results.length === 0) {
@@ -356,28 +349,24 @@ $(document).ready(function () {
                     selectedUserIds.splice(index, 1);
                 }
             }
-            console.log(selectedUserIds);
         });
     }
 
     // 모달의 초대 버튼 누르면
     document.getElementById('submitSelectUser').addEventListener('click', function () {
         const memberIdList = selectedUserIds.map(userId => ({userId}));
-        console.log(memberIdList);
         let data = {
             memberIdList: memberIdList
         };
 
         axios.post(`/api/chatRooms/` + roomId + `/members`, data, config)
-            .then(response => {
-                console.log(response);
+            .then(() => {
                 hideElement('search-container');
                 hideElement('submitSelectUser');
                 showElement('complete-creating');
             })
-            .catch(error => {
-                console.error(error);
-                console.error('사용자 초대 요청 실패');
+            .catch(() => {
+                alert('사용자 초대 요청 실패');
             });
     });
 
@@ -394,14 +383,12 @@ $(document).ready(function () {
 
     document.getElementById('submitNewRoomName').addEventListener('click', function () {
         const newRoomName = document.getElementById('roomNameInput').value;
-        console.log('new Room Name -> ' + newRoomName);
 
         let data = {
             newChatRoomName: newRoomName
         }
         axios.put(`/api/chatRooms/` + roomId, data, config)
-            .then(response => {
-                console.log(response);
+            .then(() => {
                 hideElement('new-roomname-container');
                 hideElement('submitNewRoomName');
                 showElement('complete-changing');
@@ -409,7 +396,6 @@ $(document).ready(function () {
             })
             .catch(error => {
                 alert(error.response.data.message);
-                console.error('채팅방 이름 변경 요청 실패');
             });
     });
 });

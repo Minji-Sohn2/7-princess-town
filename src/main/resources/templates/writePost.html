@@ -723,13 +723,11 @@
             var formData = new FormData($("#createPostForm")[0]);
             // FormData 객체 내용 확인
             var postImage = formData.get('postImage');
-            console.log('postImage:', postImage);
 
             var url = "/api/boards/" + $("#boardId").val() + "/posts";
 
             //이미지가 첨부되지 않는 쿠키
             var token = Cookies.get('Authorization');
-            console.log(token);
 
             $.ajax({
                 url: url,
@@ -741,8 +739,6 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    console.log('FormData:', formData);
-                    console.log('postImage:', postImage);
                     alert("게시글을 작성하였습니다!");
                     window.location.href = "/view/mainpage"
                 },

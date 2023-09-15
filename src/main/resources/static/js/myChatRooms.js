@@ -40,7 +40,6 @@ closeCreateRoomModal.addEventListener('click', () => {
 document.getElementById('submitSearchKeyword').addEventListener('click', () => {
     const searchInput = document.getElementById('searchInput').value;
 
-    console.log('검색 키워드 -> ' + searchInput);
     if (searchInput.trim() === '') {
         alert('검색어를 입력하세요');
         return;
@@ -54,7 +53,6 @@ function searchUserByKeyword(keyword) {
 
     axios.get('/api/search/users?keyword=' + keyword, config)
         .then(response => {
-            console.log(response);
             const results = response.data.searchUserResults;
 
             if (results.length === 0) {
@@ -138,7 +136,6 @@ function createSearchResultCard(user, container) {
                 selectedUserIds.splice(index, 1);
             }
         }
-        console.log(selectedUserIds);
     });
 }
 
@@ -153,7 +150,7 @@ document.getElementById('submitSelectUser').addEventListener('click', function (
 // 만들기 버튼 눌렀을 때
 document.getElementById('registerNewChatRoom').addEventListener('click', function () {
     const newChatRoomName = document.getElementById('newChatRoomNameInput').value;
-    console.log('입력한 새로운 채팅방 이름 -> ' + newChatRoomName);
+
     createNewChatRoom(newChatRoomName);
     hideElement('registerNewChatRoom');
     hideElement('new-roomname-container');
@@ -164,7 +161,7 @@ document.getElementById('registerNewChatRoom').addEventListener('click', functio
 function createNewChatRoom(newChatRoomName) {
 
     const memberIdList = selectedUserIds.map(userId => ({userId}));
-    console.log(memberIdList);
+
     let data = {
         "chatRoomName": newChatRoomName,
         memberIdList
@@ -172,7 +169,6 @@ function createNewChatRoom(newChatRoomName) {
 
     axios.post("/api/chatRooms", data, config)
         .then(response => {
-            console.log(response);
 
         })
         .catch(error => {
@@ -220,7 +216,6 @@ function createRoomCard(room) {
 function getAllMyRooms() {
     axios.get('/api/chatRooms/myRooms', config)
         .then(response => {
-            console.log(response);
             const rooms = response.data.myChatRoomList;
             if (rooms.length !== 0) {
                 rooms.forEach(room => {
@@ -234,8 +229,6 @@ function getAllMyRooms() {
 
 // 채팅방 입장
 function enterRoom(roomId, roomName) {
-    console.log('enterRoom clicked roomId : ' + roomId);
-    console.log('enterRoom clicked roomName : ' + roomName);
 
     localStorage.setItem('wschat.roomId', roomId);
     localStorage.setItem('wschat.roomName', roomName);

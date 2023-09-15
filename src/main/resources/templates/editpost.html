@@ -792,12 +792,10 @@
             var formData = new FormData($("#editPostForm")[0]);
             // FormData 객체 내용 확인
             var newPostImage = formData.get('newPostImage');
-            console.log('newPostImage:', newPostImage);
 
             var url = "/api/boards/" + $("#boardId").val() + "/posts/" + postId;
 
             var token = Cookies.get('Authorization');
-            console.log(token);
 
             $.ajax({
                 url: url,
@@ -809,8 +807,7 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    console.log('FormData:', formData);
-                    console.log('newPostImage:', newPostImage);
+
                     alert("게시글을 수정하였습니다!");
                     window.location.href = "/view/mainpage"
                 },

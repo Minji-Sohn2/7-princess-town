@@ -616,7 +616,6 @@
         });
 
         var token = Cookies.get('Authorization');
-        console.log(token);
 
         // 위치 반경 내 게시글 가져오기
         function loadRadiusPosts() {
@@ -631,7 +630,6 @@
                     radiusPosts.empty(); // 기존 목록 비우기
 
                     $.each(data, function (index, post) {
-                        console.log('게시글 정보:', post); // 디버그 정보 출력
 
                         var listItem = $("<li>").addClass("post");
                         var postContent = $("<div>").addClass("post-content");

@@ -5,7 +5,6 @@ $(document).ready(function () {
 
         var searchType = $("#searchType").val();
         var searchKeyword = $("#searchKeyword").val();
-        console.log('searchKeyword는? -> ' + searchKeyword);
 
         if (searchType === "title") {
             window.location.href = "/view/searchTitle?title=" + encodeURIComponent(searchKeyword);

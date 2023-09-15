@@ -44,15 +44,12 @@ $(document).ready(function () {
 
     // 검색 폼 제출 시 처리
     $(".search-form").submit(function (event) {
-        console.log("start")
         event.preventDefault(); // 기본 제출 동작 방지
 
         // 현재 선택된 드롭다운 항목 가져오기
         var searchType = $("#searchTypeDropdown .menu .item.active").text();
         var defaultType = $("#defaultitem").text();
         var searchKeyword = $("#searchKeyword").val();
-        console.log(searchKeyword)
-        console.log(searchType)
 
         // 선택된 드롭다운 항목을 기반으로 리다이렉션 처리
         if (searchType === "제목") {
