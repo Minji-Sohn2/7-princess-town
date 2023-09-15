@@ -397,11 +397,6 @@ $(document).ready(function () {
                                                 if (reply.img === null) {
                                                     $(`.profile-img[data-reply-id="${reply.id}"]`).attr("src", "/img/free-icon-user-9435149.png");
                                                 }
-
-                                                if (usernames === "Guest") {
-                                                    $(`.unreplysLikes[data-reply-id="${reply.id}"]`).removeAttr("onclick");
-                                                    $(`.replysLikes[data-reply-id="${reply.id}"]`).removeAttr("onclick");
-                                                }
                                             })
                                         }
 
@@ -424,8 +419,6 @@ $(document).ready(function () {
                                 $(`.editComments[data-comment-id="${comment.id}"]`).remove();
                                 $(`.deleteComments[data-comment-id="${comment.id}"]`).remove();
                                 $(`.replyCreate[data-comment-id="${comment.id}"]`).remove();
-                                $(`.commentunLikes[data-comment-id="${comment.id}"]`).removeAttr("onclick");
-                                $(`.commentLikes[data-comment-id="${comment.id}"]`).removeAttr("onclick");
                             }
 
                             if (comment.emoji === null || comment.emoji === "") {
@@ -1165,6 +1158,14 @@ function likesClick(postId, commentId, cnt) {
             $(`.commentsLikes[data-comment-id=${commentId}]`).append(temp_html);
         },
         error: function (e) {
+            if(usernames === "Guest") {
+                Swal.fire({
+                    icon: 'error',
+                    title: '좋아요 실패',
+                    text: '좋아요를 누르시려면 로그인이 필요합니다.'
+                });
+                return false;
+            }
             Swal.fire({
                 icon: 'error',
                 title: '좋아요 실패',
@@ -1236,6 +1237,14 @@ function replyLikesClick(postId, commentId, replyId, cnt) {
             $(`.replyslikes[data-reply-id=${replyId}]`).append(temp_html);
         },
         error: function (e) {
+            if(usernames === "Guest") {
+                Swal.fire({
+                    icon: 'error',
+                    title: '좋아요 실패',
+                    text: '좋아요를 누르시려면 로그인이 필요합니다.'
+                });
+                return false;
+            }
             Swal.fire({
                 icon: 'error',
                 title: '좋아요 실패',
