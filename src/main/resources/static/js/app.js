@@ -512,6 +512,16 @@ $(document).ready(function () {
             formData.append('password', newPassword);
         }
 
+        if (phoneNumber === "" || email === "") {
+            alert("전화번호나 이메일이 공백일 수 없습니다. 다시 수정해주세요.")
+            return false;
+        }
+
+        if (currentLatitude === undefined && currentLongitude === undefined || currentLatitude === 0 && currentLongitude === 0) {
+            alert("위치 설정이 되어있지 않습니다. 위치 설정을 해주세요.");
+            return false;
+        }
+
         formData.append('radius', $('#radiusSelect').val());// 결정된 반경 값 추가
         formData.append('nickname', $("input[name='profile-nicknameInput']").val());
         formData.append('email', email);
