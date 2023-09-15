@@ -302,9 +302,6 @@ $(document).ready(function () {
         event.preventDefault();
         handleLocationClick();
 
-        console.log(currentLatitude)
-        console.log(currentLongitude)
-
         if (currentLatitude === undefined && currentLongitude === undefined) {
             handleLocationClick();
         }
@@ -364,6 +361,7 @@ $(document).ready(function () {
     // 프로필 버튼 클릭 시 모달 표시
     $('#profile-btn').on('click', function () {
         $('#profileModal').modal('show');
+        handleLocationClick();
         $signupModal.modal('hide');
         $loginModal.modal('hide');
         $deactivationModal.modal('hide');
@@ -390,9 +388,6 @@ $(document).ready(function () {
                 $("input[name='profile-phoneNumberInput']").val(res.phoneNumber);
                 $("input[name='profile-passwordInput']").val(res.password);
 
-                console.log(res.email)
-                console.log(res.phoneNumber)
-
                 const selectItem = $('.location-input-button-container .menu .item').data();
 
                 console.log(selectItem.value)
@@ -402,6 +397,10 @@ $(document).ready(function () {
                     $(`.location-input-button-container .item[data-value=${res.radius}]`).attr('class', 'item active selected');
 
                     $('.location-input-button-container .text').text(res.radius + "km")
+                    if ($('.location-input-button-container .text').val() === null) {
+                        $(`.location-input-button-container .item[data-value="1"]`).attr('class', 'item active selected');
+                        $('.location-input-button-container .text').text("1km")
+                    }
                 }
 
                 // $('#radiusSelect').val(res.radius);
