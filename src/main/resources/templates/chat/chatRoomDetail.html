@@ -107,7 +107,12 @@
             </li>
         </ul>
 
-        <img id="filePreview" src="#" alt="File Preview">
+        <div id="preview-container" style="display: none">
+            <img id="filePreview" src="#" alt="File Preview">
+            <div id="delete-selected-file" @click="deleteSelectedFile">
+                <i class="undo alternate icon"></i>
+            </div>
+        </div>
 
         <!--  입력칸  -->
         <div class="input-group" id="input-container">

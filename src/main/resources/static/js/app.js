@@ -1405,6 +1405,23 @@ $(document).ready(function () {
             }
         });
     });
+
+    function handleCreate() {
+        // 게시글 작성 페이지로 이동합니다.
+        window.location.href = "/view/createpost";
+    }
+
+    $("#createPostButton").click(function () {
+        // 현재 로그인 중인 인증정보 가져오기
+        const authorization = Cookies.get('Authorization');
+
+        // 작성자 인증 정보 비교
+        if (authorization == null) {
+            alert("글 작성을 위해서는 로그인이 필요합니다");
+            return false;
+        }
+        handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
+    });
 });
 
 // 만료시간 화면에 표시

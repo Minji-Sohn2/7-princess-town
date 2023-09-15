@@ -93,19 +93,19 @@ const vm = new Vue({
                                 "createdAt": lastM.createdAt
                             })
                         }
-
                     })
                 })
                 .catch(error => {
                     console.error('실패' + error);
                 });
         },
-        fileInputChange(event) {    //
+        fileInputChange(event) {
             this.isFileSelected = event.target.files.length > 0;
             let fileInput = document.getElementById("imageInput");
             this.previewImage(fileInput);
         },
         previewImage: function (fileInput) {
+            showElement('preview-container');
             let filePreview = document.getElementById("filePreview");
 
             let file = fileInput.files[0]; // 선택한 파일
@@ -113,12 +113,10 @@ const vm = new Vue({
                 const reader = new FileReader();
 
                 reader.onload = function (e) {
-                    // Set the src attribute of the img element to the file's data URL
                     filePreview.src = e.target.result;
-                    filePreview.style.display = "block"; // Display the img element
+                    filePreview.style.display = "block";
                 };
 
-                // Read the selected file as a data URL
                 reader.readAsDataURL(file);
             } else {
                 // 선택된 파일이 없다면
@@ -143,18 +141,21 @@ const vm = new Vue({
                 .then(response => {
                     console.log(response);
                     console.log('파일 전송 성공');
-                    hideElement('filePreview');
 
-                    formData.forEach(function (value, key) {
-                        formData.delete(key);
-                    });
+                    this.deleteSelectedFile();
                 })
                 .catch(error => {
                     console.error(error);
-                    console.log('파일 전송 실패');
-
-                    hideElement('filePreview');
+                    alert('파일 전송 실패');
                 });
+        },
+        deleteSelectedFile: function () {
+            let formData = new FormData($("#sendFileForm")[0]);
+            formData.forEach(function (value, key) {
+                formData.delete(key);
+            });
+            hideElement('preview-container');
+            this.isFileSelected = false;
         },
         sendMessage: function (type) {
 
