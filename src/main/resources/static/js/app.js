@@ -397,7 +397,7 @@ $(document).ready(function () {
                     $(`.location-input-button-container .item[data-value=${res.radius}]`).attr('class', 'item active selected');
 
                     $('.location-input-button-container .text').text(res.radius + "km")
-                    if ($('.location-input-button-container .text').val() === null) {
+                    if ($('.location-input-button-container .text').val() === "nullkm") {
                         $(`.location-input-button-container .item[data-value="1"]`).attr('class', 'item active selected');
                         $('.location-input-button-container .text').text("1km")
                     }
