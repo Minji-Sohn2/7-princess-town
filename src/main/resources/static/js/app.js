@@ -401,7 +401,7 @@ $(document).ready(function () {
                 currentLatitude = res.latitude;
                 currentLongitude = res.longitude;
 
-                if (currentLongitude === 0 && currentLatitude === 0 || currentLongitude === undefined && currentLatitude === undefined) {
+                if (currentLongitude === 0 && currentLatitude === 0 || currentLongitude === undefined && currentLatitude === undefined || currentLongitude === null && currentLatitude === null) {
                     handleLocationClick();
                 }
                 const currentRadius = res.radius;
