@@ -78,12 +78,22 @@ const vm = new Vue({
 
                     let lastMessages = response.data;
                     lastMessages.forEach(lastM => {
-                        this.messages.unshift({
-                            "type": lastM.type,
-                            "sender": lastM.sender,
-                            "message": lastM.message,
-                            "createdAt": lastM.createdAt
-                        })
+                        if (lastM.message !== null) {
+                            this.messages.unshift({
+                                "type": lastM.type,
+                                "sender": lastM.sender,
+                                "message": lastM.message,
+                                "createdAt": lastM.createdAt
+                            })
+                        } else {
+                            this.messages.unshift({
+                                "type": lastM.type,
+                                "sender": lastM.sender,
+                                "imgData": lastM.imgData,
+                                "createdAt": lastM.createdAt
+                            })
+                        }
+
                     })
                 })
                 .catch(error => {
@@ -124,24 +134,26 @@ const vm = new Vue({
         },
         sendImage: function () {
             let fileInput = document.getElementById("imageInput");
-            // let file = fileInput.files[0]; // 선택한 파일
 
             let formData = new FormData($("#sendFileForm")[0]);
             formData.append('chatImage', fileInput.files[0]);
             let file = formData.get('imageInput');
 
-            if (file !== null) {
-                console.log(file);
-            }
-
             axios.post('/chat/file/' + this.roomId, formData, config)
                 .then(response => {
                     console.log(response);
-                    alert('파일 전송 성공');
+                    console.log('파일 전송 성공');
+                    hideElement('filePreview');
+
+                    formData.forEach(function (value, key) {
+                        formData.delete(key);
+                    });
                 })
                 .catch(error => {
                     console.error(error);
-                    alert('파일 전송 실패');
+                    console.log('파일 전송 실패');
+
+                    hideElement('filePreview');
                 });
         },
         sendMessage: function (type) {
@@ -166,6 +178,7 @@ const vm = new Vue({
                 "type": recv.type,
                 "sender": recv.sender,
                 "message": recv.message,
+                "imgData": recv.imgData,
                 "createdAt": recv.createdAt
             })
         },

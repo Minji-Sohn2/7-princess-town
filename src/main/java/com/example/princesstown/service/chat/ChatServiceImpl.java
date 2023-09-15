@@ -65,6 +65,7 @@ public class ChatServiceImpl implements ChatService {
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageDto);
     }
 
+    // 채팅방에 파일 발송
     @Override
     public void sendImageMessage(Long roomId, String imageUrl, User user) {
         log.info("sendImageMessage 메서드 시작");
@@ -80,30 +81,8 @@ public class ChatServiceImpl implements ChatService {
         log.info("메세지 발송 시각? " + chatMessageDto.getCreatedAt());
 
         // 발송
-//        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageDto);
-        log.info("imageUrl : " + imageUrl);
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageDto);
     }
-
-    // 받아온 이미지(바이너리) 메세지 s3에 업로드
-//    private void binaryImageUpload (ChatMessageDto chatMessageDto) {
-//        String[] strings = chatMessageDto.getImgData().split(","); // ","을 기준으로 바이트 코드를 나눠준다
-//        String base64Image = strings[1];
-//        String extension = ""; // if 문을 통해 확장자명을 정해줌
-//        if (strings[0].equals("data:image/jpeg;base64")) {
-//            extension = "jpeg";
-//        } else if (strings[0].equals("data:image/png;base64")){
-//            extension = "png";
-//        } else {
-//            extension = "jpg";
-//        }
-//
-//        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image); // 바이트 코드를
-//
-//        File tempFile = File.createTempFile("image", "." + extension); // createTempFile을 통해 임시 파일을 생성해준다. (임시파일은 지워줘야함)
-//        try (OutputStream outputStream = new FileOutputStream(tempFile)) {
-//            outputStream.write(imageBytes); // OutputStream outputStream = new FileOutputStream(tempFile)을 통해 생성한 outputStream 객체에 imageBytes를 작성해준다.
-//        }
-//    }
 
     @Override
     public User findUserByUsername(String username) {

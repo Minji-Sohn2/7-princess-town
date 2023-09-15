@@ -30,9 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
-    /*
-        Websocket 앞단에서 StompHandler가 token을 체크
-     */
+    // Websocket 앞에서 StompHandler가 token을 체크
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         //필터체인 통과 후 컨트롤러에 가기 전 Message 객체를 가져오기

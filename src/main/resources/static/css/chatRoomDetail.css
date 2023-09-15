@@ -188,6 +188,10 @@ html, body {
     color: #666;
 }
 
+.message-image {
+    width: 400px;
+}
+
 /* 검색 결과 카드 속 체크박스 */
 .checkbox-container {
     display: flex;
