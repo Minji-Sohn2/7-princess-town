@@ -6,9 +6,8 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -26,10 +25,34 @@ public class S3Uploader {
     private String bucket;
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+
+        String fileExtension = getFileExtension(multipartFile.getOriginalFilename());
+
+        // 허용된 파일 확장자 검사
+        if (!isAllowedFileExtension(fileExtension)) {
+            throw new IllegalArgumentException("jpg 또는 png 파일만 업로드할 수 있습니다.");
+        }
+
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
 
         return upload(uploadFile, dirName);
+    }
+
+    //파일 확장자명 검사
+    private boolean isAllowedFileExtension(String fileExtension) {
+        return StringUtils.hasText(fileExtension) &&
+                (fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("png") || fileExtension.equalsIgnoreCase("jpeg"));
+    }
+
+    private String getFileExtension(String fileName) {
+        if (StringUtils.hasText(fileName)) {
+            int dotIndex = fileName.lastIndexOf(".");
+            if (dotIndex >= 0) {
+                return fileName.substring(dotIndex + 1).toLowerCase();
+            }
+        }
+        return null;
     }
 
     private String upload(File uploadFile, String dirName) {

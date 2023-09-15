@@ -464,7 +464,6 @@
     </div>
 </div>
 
-
 <!-- Deactivation Form -->
 <div class="ui segment modal" id="deactivationModal">
     <div class="header" style="margin: -11px;">회원탈퇴</div>
@@ -555,7 +554,6 @@
         <button class="ui button" type="submit">임시 비밀번호로 로그인</button>
     </form>
 </div>
-
 
 <!-- Password Reset Form -->
 <div class="ui segment modal" id="passwordResetModal">
@@ -661,9 +659,22 @@
 
         // 이미지 파일 선택 시 미리보기
         $("#postImage").change(function () {
+
+            var fileName = $(this).val();
+            var fileExtension = fileName.split('.').pop().toLowerCase();
+
+            // 허용된 확장자 목록 설정
+            var allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+            // 확장자가 허용된 목록에 포함되지 않으면 경고 표시 및 파일 선택 취소
+            if (allowedExtensions.indexOf(fileExtension) === -1) {
+                alert("jpg 또는 png 파일만 업로드할 수 있습니다.");
+                $(this).val(""); // 파일 선택 초기화
+                return;
+            }
+
             previewImage(this);
         });
-
 
 // 이미지 파일 미리보기를 추가하는 함수
         function previewImage(input) {
