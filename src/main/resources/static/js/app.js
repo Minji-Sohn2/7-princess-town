@@ -126,6 +126,8 @@ $(document).ready(function () {
     const $profileModal = $('#profileModal').modal({
         onShow: function () {
             $('#user-menu').hide();
+            // 초기화 함수를 호출하여 지도를 생성
+            initializeMap();
         },
         onHide: function () {
             $('#user-icon').show();
@@ -228,7 +230,7 @@ $(document).ready(function () {
             navigator.geolocation.getCurrentPosition(function (position) {
                 currentLatitude = position.coords.latitude;
                 currentLongitude = position.coords.longitude;
-                // $('#signup-setLocation').off('click', handleLocationClick);
+                $('#signup-setLocation').off('click', handleLocationClick);
             }, function (error) {
                 alert(`ERROR(${error.code}): ${error.message}`);
             });
@@ -237,11 +239,12 @@ $(document).ready(function () {
         }
     }
 
-    $('#setLocation').click(function () {
-        handleLocationClick();
-        $('#map').remove()
-        $('#profileset').append('<div id="map" style="width:350px; height:300px;"></div>');
-        var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+    // 지도 객체 선언
+    var map;
+
+// 프로필 모달이 열릴 때 지도 초기화 함수를 호출
+    function initializeMap() {
+        var container = document.getElementById('map'); // 지도를 담을 영역의 DOM 레퍼런스
         const setLocation = $('#radiusSelect').val();
 
         let setRadius = 5 + parseInt(setLocation);
@@ -250,49 +253,42 @@ $(document).ready(function () {
             setRadius = 8;
         }
 
-        var options = { //지도를 생성할 때 필요한 기본 옵션
-            center: new kakao.maps.LatLng(currentLatitude, currentLongitude), //지도의 중심좌표.
-            level: setRadius //지도의 레벨(확대, 축소 정도)
+        var options = {
+            center: new kakao.maps.LatLng(currentLatitude, currentLongitude),
+            level: setRadius
         };
 
-        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+        // 지도 객체를 초기화
+        map = new kakao.maps.Map(container, options);
+    }
 
-        // // 마커가 표시될 위치입니다
-        // var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
-        //
-        // // 마커를 생성합니다
-        // var marker = new kakao.maps.Marker({
-        //     position: markerPosition
-        // });
-        //
-        // // 마커가 지도 위에 표시되도록 설정합니다
-        // marker.setMap(map);
+// 위치설정 버튼 클릭 이벤트에서 initializeMap 함수를 호출하여 지도를 초기화하고 크기를 조절
+    $('#setLocation').click(function () {
+        handleLocationClick();
+        var container = document.getElementById('map');
 
-        // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
-        // marker.setMap(null);
+        // 이미 생성된 지도 객체를 초기화하여 크기만 조절
+        initializeMap();
 
-        // 선택한 반경 값을 가져옵니다.
-        var selectedRadius = parseInt($('#radiusSelect').val()); // 선택한 반경 값을 정수로 변환합니다.
+        // 선택한 반경 값 가져오기
+        var selectedRadius = parseInt($('#radiusSelect').val());
 
-        // 카카오 지도의 중심 좌표를 가져옵니다.
-        var center = map.getCenter();
-
-        // 카카오 지도에 원을 추가하여 반경을 표시합니다.
+        // 카카오 지도에 원을 추가하여 반경을 표시
         var circle = new kakao.maps.Circle({
-            center: center,
-            radius: selectedRadius * 1000, // 선택한 반경(km)을 미터로 변환합니다.
-            strokeWeight: 5, // 원의 선 두께
-            strokeColor: '#75B8FA', // 선의 색깔
-            strokeOpacity: 1, // 선의 불투명도
-            strokeStyle: 'dashed', // 선의 스타일
-            fillColor: '#CFE7FF', // 채우기 색깔
-            fillOpacity: 0.7 // 채우기 불투명도
+            center: map.getCenter(),
+            radius: selectedRadius * 1000,
+            strokeWeight: 5,
+            strokeColor: '#75B8FA',
+            strokeOpacity: 1,
+            strokeStyle: 'dashed',
+            fillColor: '#CFE7FF',
+            fillOpacity: 0.7
         });
-        // 원을 지도에 추가합니다.
-        circle.setMap(null);
 
+        circle.setMap(null);
         circle.setMap(map);
     });
+
 
     $('#signup-setLocation').click(function (event) {
         event.preventDefault();
@@ -469,8 +465,18 @@ $(document).ready(function () {
 
     // 프로필 정보 수정 버튼 클릭 이벤트
     $('#editProfile').click(function () {
+        // 반경 설정 필드와 버튼을 보이게 하고, 수정 버튼 숨김
+        $('#radiusSelect, #setLocation').show();
+        $('#profileModal input').css('border', '');
+        $('#profile-imageInput').css('display','none');
+        $('.temp-none').show();
+        $('.divider').hide();
+        $('#radius-id').show();
+        $('#profile-image-id').show();
+
         // 수정 가능한 필드들의 readonly 속성 제거
         $('#profileModal input').prop('readonly', false);
+
         // username 입력 필드만 다시 읽기 전용으로 설정합니다.
         $("input[name='profile-usernameInput']").prop('readonly', true);
         $('#customRadiusInput').prop('readonly', false);
@@ -512,16 +518,16 @@ $(document).ready(function () {
 
         var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 
-        // 마커가 표시될 위치입니다
-        var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
-
-        // 마커를 생성합니다
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
-        });
+        // // 마커가 표시될 위치입니다
+        // var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
+        //
+        // // 마커를 생성합니다
+        // var marker = new kakao.maps.Marker({
+        //     position: markerPosition
+        // });
 
         // 마커가 지도 위에 표시되도록 설정합니다
-        marker.setMap(map);
+        // marker.setMap(map);
 
         // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
         // marker.setMap(null);
@@ -874,7 +880,7 @@ $(document).ready(function () {
         const phoneNumber = urlParams.get('phonenumber');
         const currentLatitude = urlParams.get('latitude');
         const currentLongitude = urlParams.get('longitude');
-        const defaultProfileImagePath = "/img/defaultImg/.png";
+        const defaultProfileImagePath = "/img/defaultImg/tomato.png";
 
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
