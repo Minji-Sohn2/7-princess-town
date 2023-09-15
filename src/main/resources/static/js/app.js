@@ -279,7 +279,6 @@ $(document).ready(function () {
 
         // 이미 생성된 지도 객체를 초기화하여 크기만 조절
         initializeMap();
-        console.log(currentLatitude, currentLongitude)
 
         // 선택한 반경 값 가져오기
         var selectedRadius = parseInt($('#radiusSelect').val());
@@ -391,8 +390,6 @@ $(document).ready(function () {
 
                 const selectItem = $('.location-input-button-container .menu .item').data();
 
-                console.log(selectItem.value)
-
                 if (res.radius !== selectItem) {
                     $('.location-input-button-container .selected').attr('class', 'item');
                     $(`.location-input-button-container .item[data-value=${res.radius}]`).attr('class', 'item active selected');
@@ -411,7 +408,7 @@ $(document).ready(function () {
                 currentLatitude = res.latitude;
                 currentLongitude = res.longitude;
 
-                if (currentLongitude === null && currentLatitude === null) {
+                if (currentLongitude === 0 && currentLatitude === 0 || currentLongitude === undefined && currentLatitude === undefined) {
                     handleLocationClick();
                 }
                 const currentRadius = res.radius;
