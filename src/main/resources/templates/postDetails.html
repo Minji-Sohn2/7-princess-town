@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel='stylesheet' href="/css/comment.css"/>
 
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c6072caed86d58e141a7a115ca39de4c"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
     <style>
         .post-header {
             border-bottom: 1px solid #ddd;
@@ -569,7 +571,7 @@
                 <input type="email" name="profile-emailInput" placeholder="이메일" readonly>
             </div>
             <div style="margin-top: 50px;"></div>
-            <div class="field">
+            <div class="field" id="profileset">
                 <label>전화번호</label>
                 <input type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
                 <div style="margin-top: 50px;"></div>
@@ -597,6 +599,8 @@
                         <button class="ui button" id="setLocation">위치 설정</button>
                     </div>
                 </div>
+
+                <div id="map" style="height:300px;"></div>
             </div>
             <div style="margin-top: 30px;"></div>
             <p></p>
@@ -650,8 +654,7 @@
             <div class="field">
                 <label>프로필 이미지</label>
                 <div class="input-file-container">
-                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput"
-                           style="display: none;">
+                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
                     <label for="signup-profileImageInput">
                         <i class="images icon"></i>
                     </label>
@@ -660,7 +663,7 @@
                 <div style="margin-top: 30px;"></div>
                 <div class="field">
                     <label>반경 설정</label>
-                    <div class="location-input-button-container">
+                    <div class = "location-input-button-container">
                         <select class="ui dropdown" id="signup-radiusSelect">
                             <option value="1">1km</option>
                             <option value="2">2km</option>
@@ -671,6 +674,8 @@
                         <button class="ui button" id="signup-setLocation">위치 설정</button>
                     </div>
                 </div>
+
+                <div id="signup-map" style="height:300px; display: none;"></div>
             </div>
             <div style="margin-top: 30px;"></div>
             <div class="signup-center-content">
@@ -888,8 +893,7 @@
                 <label>아이디 전송</label>
                 <div class="input-button-container">
                     <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
-                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send
-                    </button>
+                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send</button>
                 </div>
             </div>
         </form>

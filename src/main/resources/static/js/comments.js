@@ -7,7 +7,19 @@ function getPostIdFromUrl() {
 
 // 댓글,답글 유저 id 중간 부분 별표로 가려 보안을 강화
 function maskingName(username) {
-    if (username.length >= 8) {
+    if (username.length >= 20) {
+        return (
+            username.slice(0, 3) +
+            ".".repeat(Math.max(0, username.length - 5)).slice(5, 10) +
+            username.slice(-3)
+        );
+    } else if (username.length >= 15) {
+        return (
+            username.slice(0, 3) +
+            "*".repeat(Math.max(0, username.length - 5)).slice(5, 8) +
+            username.slice(-3)
+        );
+    } else if (username.length >= 8) {
         return (
             username.slice(0, 3) +
             "*".repeat(Math.max(0, username.length - 5)) +
@@ -15,12 +27,12 @@ function maskingName(username) {
         );
     } else if (username.length >= 4) {
         return (
-            username.slice(0, 2) +
+            username.slice(0, 1) +
             "*".repeat(Math.max(0, username.length - 3)) +
             username.slice(-1)
         );
-    } else {
-        return username.replaceAll('*', username);
+    } else if (username.length <= 3){
+        return username = "***";
     }
 }
 
@@ -120,14 +132,12 @@ $(document).ready(function () {
                 totalItems = data.result.paginationInfo.totalItems;
                 displayCommentsAndReplies(comments, page);
                 updatePagination(totalPages, page);
-                // console.log(page,pageSize)
             }
         });
     }
 
     // 화면에 댓글과 답글을 띄워줌
     function displayCommentsAndReplies(comments, page) {
-        // console.log("페이지 로딩")
         // 이전에 표시된 댓글과 답글 제거
         commentsContainer.empty();
 
@@ -173,10 +183,6 @@ $(document).ready(function () {
                                 minute: "2-digit",
                                 second: "2-digit",
                             });
-
-                            // console.log(comment)
-
-                            // console.log(comment)
 
                             let temp_html = `
                                 <div class="grid1_of_2" data-comment-id="${comment.id}">
@@ -226,7 +232,6 @@ $(document).ready(function () {
                             });
 
                             if (likeInfo && likeInfo.likes) {
-                                // console.log(likeInfo)
                                 temp_html = `
                                 <div class="grid1_of_2" data-comment-id="${comment.id}">
                                 <div class="grid_text">
@@ -272,8 +277,6 @@ $(document).ready(function () {
 
                             let commentWrapper = $(`<div class="commentbox" data-comment-id="${comment.id}">${temp_html}</div>`);
 
-                            // console.log(comment.username)
-
                             // 답글 가져오기
                             $.ajax({
                                 url: "/api/posts/" + postId + "/comments/" + comment.id + "/reply",
@@ -289,7 +292,6 @@ $(document).ready(function () {
                                         dataType: "json",
                                         success: function (replylikesval) {
                                             let replyLikesData = replylikesval.result;
-                                            // console.log(replyLikesData)
 
                                             data2.forEach(function (reply) {
                                                 const createdAt = reply.createdAt;
@@ -390,11 +392,9 @@ $(document).ready(function () {
                                                 // 답글의 이모티콘이 존재하지 않을경우 이모티콘 태그를 숨김
                                                 if (reply.emoji === undefined || reply.emoji === "" || reply.emoji === null) {
                                                     $(`.emoji[data-reply-id="${reply.id}"]`).hide();
-                                                    // console.log("이미지 생성")
                                                 }
 
                                                 if (reply.img === null) {
-                                                    // console.log(reply.img)
                                                     $(`.profile-img[data-reply-id="${reply.id}"]`).attr("src", "/img/free-icon-user-9435149.png");
                                                 }
 
@@ -461,8 +461,6 @@ $(document).ready(function () {
                             </li>`;
             pageNumbersContainer.append(pageButton);
         }
-
-        // console.log(startPage, endPage)
     }
 
     // 댓글 페이지 추가
@@ -473,9 +471,6 @@ $(document).ready(function () {
         if (totalPages === totalPages.toString().slice(0, -1) * 10) {
             paginationContainer.find('.next-page-button').toggleClass('disabled', currentPage + 1 > totalPages.toString().slice(0, -1) * 10 - 10);
         }
-        // console.log(currentPage)
-        // console.log(totalPages)
-        // console.log(totalPages.toString().slice(0, -1) * 10)
     }
 
     // 초기 페이지 로드
@@ -497,7 +492,6 @@ $(document).ready(function () {
                 currentPage -= pageSize;
             } else {
                 currentPage = currentPage.toString().slice(0, -1) * 10 - pageSize;
-                // console.log(currentPage)
             }
             if (currentPage < startPage) {
                 startPage -= 10;
@@ -515,7 +509,6 @@ $(document).ready(function () {
                 currentPage += pageSize;
             } else {
                 currentPage = currentPage.toString().slice(0, -1) * 10 + pageSize;
-                // console.log(currentPage)
             }
             if (currentPage > endPage) {
                 startPage += 10;
@@ -596,8 +589,6 @@ $(document).ready(function () {
                 // const commentsPerPage = 10; // 페이지당 댓글 수
                 // const commentPage = Math.floor(commentIndex / commentsPerPage);
                 let commentIndex = parseInt(totalItems.toString().slice(0, -1));
-                // console.log("totalPages = " + totalPages)
-                // console.log("commentIndex = " + commentIndex)
 
                 // 페이지 이동
                 if (isNaN(commentIndex) || isNaN(startPage) || isNaN(endPage)) {
@@ -608,8 +599,6 @@ $(document).ready(function () {
                 currentPage = commentIndex; // currentPage 업데이트
                 startPage = commentIndex.toString().slice(0, -1) * 10;
                 endPage = startPage + 9;
-                console.log("startPage = " + startPage)
-                console.log("endPage = " + endPage)
                 updatePagination();
                 loadCommentsAndReplies(currentPage);
                 $('#userComment').val("");
@@ -643,7 +632,6 @@ $(document).ready(function () {
         const commentId = $(this).data('comment-id');
         const content = $(`.userCommentEdit[data-comment-id="${commentId}"]`).val()
         const img = $(`.editemoji-container[data-comment-id="${commentId}"] .editCommentEmoji img`).attr("src")
-        console.log(commentId)
 
         if (img === undefined && content.length < 1) {
             Swal.fire({
@@ -736,10 +724,8 @@ $(document).ready(function () {
                             $(`.emoji[data-comment-id="${commentId}"]`).hide().attr("src", "null");
                             // $(`.emoji[data-comment-id="${commentId}"]`).attr("src", "null");
                         }
-                        console.log(img)
                     },
                     error: function (e) {
-                        console.log(e)
                         alert(e.responseJSON.message)
                         Swal.fire({
                             icon: 'error',
@@ -758,7 +744,6 @@ $(document).ready(function () {
     $(document).on('click', '.deleteComments', function () {
         const postId = getPostIdFromUrl();
         const commentId = $(this).data('comment-id');
-        // console.log(commentId);
         Swal.fire({
             title: '댓글을 삭제하시겠습니까?',
             text: "확인을 누르시면 삭제가 완료됩니다.",
@@ -798,12 +783,9 @@ $(document).ready(function () {
                         totalItems--
                         // updatePagination();
                         // loadCommentsAndReplies(currentPage);
-                        // console.log(currentPage)
-                        // console.log(totalItems)
 
                         if ($('.commentbox').length === 0) {
                             --currentPage;
-                            // console.log("commentIndex = " + currentPage)
                             startPage = currentPage.toString().slice(0, -1) * 10;
                             endPage = startPage + 9;
                             updatePagination();
@@ -818,7 +800,6 @@ $(document).ready(function () {
                                 totalPages = data.result.paginationInfo.totalPages;
                                 displayCommentsAndReplies(comments, currentPage);
                                 updatePagination(totalPages, currentPage);
-                                // console.log(currentPage,pageSize)
                             }
                         });
 
@@ -853,7 +834,6 @@ $(document).ready(function () {
 function replyCreate(postId, commentId) {
     const createReplyValue = $(`.userReply[data-comment-id="${commentId}"]`).val();
     const img = $(`.replyemoji-container[data-comment-id="${commentId}"] img`).attr("src")
-    console.log(commentId)
 
     if (img === undefined && createReplyValue.length < 1) {
         Swal.fire({
@@ -979,14 +959,10 @@ function replyCreate(postId, commentId) {
             }
 
             if (data.result.img === null) {
-                console.log(data.result.img)
                 $(`.profile-img[data-reply-id="${data.result.id}"]`).attr("src", "/img/free-icon-user-9435149.png");
             }
         },
         error: function (e) {
-            console.log(createReplyValue)
-            console.log(img)
-            console.log(e)
             Swal.fire({
                 icon: 'error',
                 title: '답글 생성실패',
@@ -1047,7 +1023,6 @@ function replyEdit(postId, commentId, replyId) {
         cancelButtonText: '취소'
     }).then((result) => {
         if (result.isConfirmed) {
-            // console.log(token);
             $.ajax({
                 type: 'PUT',
                 url: `/api/posts/${postId}/comments/${commentId}/reply/${replyId}`,
@@ -1087,12 +1062,10 @@ function replyEdit(postId, commentId, replyId) {
                     if (img === "" || img === undefined || img === null) {
                         $(`.emoji[data-reply-id="${replyId}"]`).hide().attr("src", "null");
                         // $(`.emoji[data-reply-id="${replyId}"]`).attr("src", "null");
-                        console.log("진입")
                     }
                     closeReplyEdit(replyId)
                 },
                 error: function (e) {
-                    console.log(e.responseJSON.message);
                     Swal.fire({
                         icon: 'error',
                         title: '답글 수정실패',
@@ -1120,7 +1093,6 @@ function replyDelete(postId, commentId, replyId) {
         cancelButtonText: '취소'
     }).then((result) => {
         if (result.isConfirmed) {
-            // console.log(token);
             $.ajax({
                 type: 'DELETE',
                 url: `/api/posts/${postId}/comments/${commentId}/reply/${replyId}`,
@@ -1155,7 +1127,6 @@ function replyDelete(postId, commentId, replyId) {
                     }
                 },
                 error: function (e) {
-                    console.log(e.responseJSON.message);
                     Swal.fire({
                         icon: 'error',
                         title: '답글 수정실패',
@@ -1171,8 +1142,6 @@ function replyDelete(postId, commentId, replyId) {
 
 // 댓글 좋아요 추가
 function likesClick(postId, commentId, cnt) {
-
-    // console.log(token);
     $.ajax({
         type: 'POST',
         url: `/api/posts/${postId}/comments/${commentId}/likes`,
@@ -1196,7 +1165,6 @@ function likesClick(postId, commentId, cnt) {
             $(`.commentsLikes[data-comment-id=${commentId}]`).append(temp_html);
         },
         error: function (e) {
-            console.log(e);
             Swal.fire({
                 icon: 'error',
                 title: '좋아요 실패',
@@ -1210,8 +1178,6 @@ function likesClick(postId, commentId, cnt) {
 
 // 댓글 좋아요 취소
 function unlikesClick(postId, commentId, cnt) {
-
-    // console.log(token);
     $.ajax({
         type: 'PUT',
         url: `/api/posts/${postId}/comments/${commentId}/likes`,
@@ -1235,7 +1201,6 @@ function unlikesClick(postId, commentId, cnt) {
             $(`.commentsLikes[data-comment-id=${commentId}]`).append(temp_html);
         },
         error: function (e) {
-            console.log(e);
             Swal.fire({
                 icon: 'error',
                 title: '좋아요 취소 실패',
@@ -1249,8 +1214,6 @@ function unlikesClick(postId, commentId, cnt) {
 
 // 답글 좋아요 추가
 function replyLikesClick(postId, commentId, replyId, cnt) {
-
-    // console.log(token);
     $.ajax({
         type: 'POST',
         url: `/api/posts/${postId}/comments/${commentId}/reply/${replyId}/likes`,
@@ -1398,8 +1361,6 @@ $(document).on('click', '.editComments', function () {
         </div>
     `
 
-    // console.log(srcValue)
-
     $(`.userCommentEdit-Form[data-comment-id=${commentId}]`).append(temp_html);
     $(`.editshow[data-comment-id="${commentId}"]`).css('top', '55.3%')
     $(`.userEditCommentsComplete[data-comment-id="${commentId}"]`).css('top', '51.7%')
@@ -1486,7 +1447,6 @@ $('.popup img').click(function () {
 // 댓글 이모티콘 닫기버튼 클릭
 $(document).on('click', '#img-wrap div a', function () {
     $('#img-wrap').remove();
-    console.log("작동 확인")
 })
 
 // 댓글 수정 이모티콘 닫기버튼 클릭
@@ -1512,8 +1472,6 @@ function editpopupclose() {
 $('.editpopup img').click(function () {
     const srcValue = $(this).attr("src");
     const commentId = $(this).attr("data-comment-id");
-    console.log(commentId)
-    console.log(srcValue)
     const temp_html = `
             <div class="editemoji-container" data-comment-id="${commentId}">
                  <div class="editCommentEmoji" data-comment-id="${commentId}">
@@ -1554,8 +1512,6 @@ function replypopupclose() {
 $('.replypopup img').click(function () {
     const srcValue = $(this).attr("src");
     const commentId = $(this).attr("data-comment-id");
-    console.log(commentId)
-    console.log(srcValue)
     const temp_html = `
             <div class="replyemoji-container" data-comment-id="${commentId}">
                  <div class="replyCommentEmoji" data-comment-id="${commentId}">
@@ -1596,8 +1552,6 @@ function editreplypopupclose() {
 $('.editreplypopup img').click(function () {
     const srcValue = $(this).attr("src");
     const replyId = $(this).attr("data-reply-id");
-    console.log(replyId)
-    console.log(srcValue)
     const temp_html = `
             <div class="editreplyemoji-container" data-reply-id="${replyId}">
                  <div class="editreplyCommentEmoji" data-reply-id="${replyId}">

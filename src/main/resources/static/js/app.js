@@ -6,7 +6,6 @@ $(document).ready(function () {
 
     // 아이콘 버튼을 클릭할 때 메뉴를 토글합니다.
     userIcon.addEventListener('click', () => {
-        console.log("start")
         userMenu.classList.toggle('active');
     });
 
@@ -57,7 +56,7 @@ $(document).ready(function () {
         }
 
         if (token && !profileImage || profileImage === null) {
-            $('#profile-picture').attr("src", "/img/defaultImg/스프링르탄이.png").show();
+            $('#profile-picture').attr("src", "/img/defaultImg/tomato.png").show();
             $('#user-icon .user.icon').hide();
         }
     }
@@ -167,6 +166,7 @@ $(document).ready(function () {
     $('.item:contains("회원가입")').on('click', function (event) {
         event.preventDefault();
         event.stopPropagation(); // 이벤트 버블링 중지
+        handleLocationClick();
         $loginModal.modal('hide');
         $deactivationModal.modal('hide');
         $deactivationConfirmModal.modal('hide');
@@ -190,7 +190,6 @@ $(document).ready(function () {
 
     // 로그아웃 모달 표시
     $('.item:contains("로그아웃")').on('click', function (event) {
-        console.log("로그아웃 클릭 이벤트 시작");
         event.preventDefault();
         event.stopPropagation();
         $logoutModal.modal('show');
@@ -203,29 +202,39 @@ $(document).ready(function () {
 
     // 비밀번호 재설정 모달 표시
     $('.item:contains("비밀번호 찾기")').on('click', function (event) {
-        console.log("비밀번호 찾기 클릭 이벤트 시작");
         event.preventDefault();
         event.stopPropagation();
         $passwordResetModal.modal('show');
-        console.log("비밀번호 찾기 클릭 이벤트 종료");
     });
 
     // 아이디 찾기 모달 표시
     $('.item:contains("아이디 찾기")').on('click', function (event) {
-        console.log("아이디 찾기 클릭 이벤트 시작");
         event.preventDefault();
         event.stopPropagation(); // 이벤트 버블링 중지
         $usernameFindModal.modal('show');
-        console.log("아이디 찾기 클릭 이벤트 종료");
     });
 
     // 위치 설정 버튼 클릭 시 현재 위치 정보만 가져옴
     var currentLatitude, currentLongitude;
 
+    function handleLocationClick() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                currentLatitude = position.coords.latitude;
+                currentLongitude = position.coords.longitude;
+                // $('#signup-setLocation').off('click', handleLocationClick);
+            }, function (error) {
+                alert(`ERROR(${error.code}): ${error.message}`);
+            });
+        } else {
+            alert("브라우저가 위치 정보를 지원하지 않습니다.");
+        }
+    }
+
     $('#setLocation').click(function () {
         handleLocationClick();
         $('#map').remove()
-        $('#profileset').append('<div id="map" style="width:350px; height:300px;"></div>');
+        $('#profileset').append('<div id="map" style="height:300px;"></div>');
         var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
         const setLocation = $('#radiusSelect').val();
 
@@ -242,16 +251,18 @@ $(document).ready(function () {
 
         var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 
-        // 마커가 표시될 위치입니다
-        var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
+        // // 마커가 표시될 위치입니다
+        // var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
+        //
+        // // 마커를 생성합니다
+        // var marker = new kakao.maps.Marker({
+        //     position: markerPosition
+        // });
+        //
+        // // 마커가 지도 위에 표시되도록 설정합니다
+        // marker.setMap(map);
 
-        // 마커를 생성합니다
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
-        });
-
-        // 마커가 지도 위에 표시되도록 설정합니다
-        marker.setMap(map);
+        // marker.setDraggable(true);
 
         // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
         // marker.setMap(null);
@@ -282,21 +293,64 @@ $(document).ready(function () {
     $('#signup-setLocation').click(function (event) {
         event.preventDefault();
         handleLocationClick();
-    });
 
-    function handleLocationClick() {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                currentLatitude = position.coords.latitude;
-                currentLongitude = position.coords.longitude;
-                $('#signup-setLocation').off('click', handleLocationClick);
-            }, function (error) {
-                alert(`ERROR(${error.code}): ${error.message}`);
-            });
-        } else {
-            alert("브라우저가 위치 정보를 지원하지 않습니다.");
+        if (currentLatitude === undefined && currentLongitude === undefined) {
+            handleLocationClick();
         }
-    }
+
+        if(currentLatitude !== undefined && currentLongitude !== undefined) {
+            $('#signup-map').show();
+        }
+
+        const getRedius = $('#signup-radiusSelect').val();
+
+        let setRadius = 5 + parseInt(getRedius);
+
+        if (getRedius > 3) {
+            setRadius = 8;
+        }
+
+        var container = document.getElementById('signup-map'); //지도를 담을 영역의 DOM 레퍼런스
+        var options = { //지도를 생성할 때 필요한 기본 옵션
+            center: new kakao.maps.LatLng(currentLatitude, currentLongitude), //지도의 중심좌표.
+            level: setRadius //지도의 레벨(확대, 축소 정도)
+        };
+
+        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+        // // 마커가 표시될 위치입니다
+        // var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
+        //
+        // // 마커를 생성합니다
+        // var marker = new kakao.maps.Marker({
+        //     position: markerPosition
+        // });
+        //
+        // // 마커가 지도 위에 표시되도록 설정합니다
+        // marker.setMap(map);
+
+        // marker.setDraggable(true);
+
+        // 선택한 반경 값을 가져옵니다.
+        var selectedRadius = parseInt(getRedius); // 선택한 반경 값을 정수로 변환합니다.
+
+        // 카카오 지도의 중심 좌표를 가져옵니다.
+        var center = map.getCenter();
+
+        // 카카오 지도에 원을 추가하여 반경을 표시합니다.
+        var circle = new kakao.maps.Circle({
+            center: center,
+            radius: selectedRadius * 1000, // 선택한 반경(km)을 미터로 변환합니다.
+            strokeWeight: 5, // 원의 선 두께
+            strokeColor: '#75B8FA', // 선의 색깔
+            strokeOpacity: 1, // 선의 불투명도
+            strokeStyle: 'dashed', // 선의 스타일
+            fillColor: '#CFE7FF', // 채우기 색깔
+            fillOpacity: 0.7 // 채우기 불투명도
+        });
+        // 원을 지도에 추가합니다.
+        circle.setMap(map);
+    });
 
     // 프로필 버튼 클릭 시 모달 표시
     $('#profile-btn').on('click', function () {
@@ -327,18 +381,17 @@ $(document).ready(function () {
                 $("input[name='profile-phoneNumberInput']").val(res.phoneNumber);
                 $("input[name='profile-passwordInput']").val(res.password);
 
-                console.log(res.email)
-                console.log(res.phoneNumber)
-
                 const selectItem = $('.location-input-button-container .menu .item').data();
-
-                console.log(selectItem.value)
 
                 if (res.radius !== selectItem) {
                     $('.location-input-button-container .selected').attr('class', 'item');
                     $(`.location-input-button-container .item[data-value=${res.radius}]`).attr('class', 'item active selected');
 
                     $('.location-input-button-container .text').text(res.radius + "km")
+                    if ($('.location-input-button-container .text').text(res.radius) === null) {
+                        $(`.location-input-button-container .item[data-value="1"]`).attr('class', 'item active selected');
+                        $('.location-input-button-container .text').text("1");
+                    }
                 }
 
                 // $('#radiusSelect').val(res.radius);
@@ -362,16 +415,18 @@ $(document).ready(function () {
 
                 var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 
-                // 마커가 표시될 위치입니다
-                var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
+                // // 마커가 표시될 위치입니다
+                // var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
+                //
+                // // 마커를 생성합니다
+                // var marker = new kakao.maps.Marker({
+                //     position: markerPosition
+                // });
+                //
+                // // 마커가 지도 위에 표시되도록 설정합니다
+                // marker.setMap(map);
 
-                // 마커를 생성합니다
-                var marker = new kakao.maps.Marker({
-                    position: markerPosition
-                });
-
-                // 마커가 지도 위에 표시되도록 설정합니다
-                marker.setMap(map);
+                // marker.setDraggable(true);
 
                 // 선택한 반경 값을 가져옵니다.
                 var selectedRadius = parseInt(currentRadius); // 선택한 반경 값을 정수로 변환합니다.
@@ -445,31 +500,6 @@ $(document).ready(function () {
         formData.append('latitude', currentLatitude); // 위도 추가
         formData.append('longitude', currentLongitude); // 경도 추가
 
-        var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-        var options = { //지도를 생성할 때 필요한 기본 옵션
-            center: new kakao.maps.LatLng(currentLatitude, currentLongitude), //지도의 중심좌표.
-            level: 3 //지도의 레벨(확대, 축소 정도)
-        };
-
-        var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-        // 마커가 표시될 위치입니다
-        var markerPosition = new kakao.maps.LatLng(currentLatitude, currentLongitude);
-
-        // 마커를 생성합니다
-        var marker = new kakao.maps.Marker({
-            position: markerPosition
-        });
-
-        // 마커가 지도 위에 표시되도록 설정합니다
-        marker.setMap(map);
-
-        // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
-        // marker.setMap(null);
-
-        console.log("latitude : " + currentLatitude)
-        console.log("longitude : " + currentLongitude)
-
         $.ajax({
             url: `/api/users/profile`,
             type: 'PUT',
@@ -488,7 +518,6 @@ $(document).ready(function () {
 
                 // 이미지URL 가져오기
                 const newprofileImage = res.data.profileImage;
-                console.log("profileImage : " + profileImage)
 
                 // 현재 시간을 가져옵니다.
                 const currentTime = new Date();
@@ -519,7 +548,6 @@ $(document).ready(function () {
                 window.location.href = '/';
             },
             error: function (res) {
-                console.log(res)
                 if (res.responseJSON.message === "중복된 전화번호입니다.") {
                     alert("중복된 전화번호입니다.")
                 } else if (res.responseJSON.message === "중복된 이메일입니다.") {
@@ -546,7 +574,6 @@ $(document).ready(function () {
         event.preventDefault();
 
         var phoneNumber = $('#signup-phoneNumberInput').val();
-        console.log("phoneNumber : " + phoneNumber)
         if (!phoneNumber) { // 전화번호가 입력되지 않았을 때
             alert("전화번호를 입력해주세요.");
             return;
@@ -671,7 +698,6 @@ $(document).ready(function () {
                 window.location.href = '/';
             },
             error: function (res) {
-                console.log(res)
                 alert(res.responseText.message)
             }
         });
@@ -745,18 +771,14 @@ $(document).ready(function () {
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
             success: function (res, status, xhr) {
-                console.log(res.data)
-                console.log("status : " + status)
 
                 // HTTP 헤더에서 토큰 가져오기
                 const token = xhr.getResponseHeader("Authorization");
-                console.log("token : " + token)
 
                 // 서버 응답에서 userId, nickname 꺼내오기
                 const userId = res.data.userId;
                 const nickname = res.data.nickname;
                 const profileImage = res.data.profileImage;
-                console.log("profileImage : " + profileImage)
 
                 // 현재 시간을 가져옵니다.
                 const currentTime = new Date();
@@ -815,7 +837,7 @@ $(document).ready(function () {
         const phoneNumber = urlParams.get('phonenumber');
         const currentLatitude = urlParams.get('latitude');
         const currentLongitude = urlParams.get('longitude');
-        const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+        const defaultProfileImagePath = "/img/defaultImg/.png";
 
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
@@ -887,7 +909,7 @@ $(document).ready(function () {
         const phoneNumber = urlParams.get('phonenumber');
         const currentLatitude = urlParams.get('latitude');
         const currentLongitude = urlParams.get('longitude');
-        const defaultProfileImagePath = "/img/defaultImg/스프링르탄이.png";
+        const defaultProfileImagePath = "/img/defaultImg/tomato.png";
 
         // 현재 시간을 가져옵니다.
         const currentTime = new Date();
@@ -903,9 +925,6 @@ $(document).ready(function () {
 
         // 로그인 상태 UI 업데이트
         $('#login-btn').replaceWith('<li class="welcome-msg">' + nickname + '님 환영합니다.</li>');
-
-        console.log("latitude : " + currentLatitude)
-        console.log("longitude : " + currentLongitude)
 
         if (!email && !phoneNumber && currentLatitude === 0.0 && currentLongitude === 0.0) {
             alert("로그인 성공! 프로필에서 이메일, 전화번호, 위치설정을 바로 설정해주세요!")
@@ -940,14 +959,11 @@ $(document).ready(function () {
     // 로그아웃 확인 모달의 확인 버튼 클릭 시 로그아웃 이벤트 실행
     $('#logout-confirm-modal .ui.green.ok.inverted.button').on('click', function () {
         // 확인 버튼을 클릭하면 로그아웃을 실행
-        console.log("로그아웃 시작");
 
         var token = Cookies.get('Authorization');
         if (!token.startsWith("Bearer ")) {
             token = "Bearer " + token;
         }
-
-        console.log("token : " + token);
 
         $.ajax({
             url: "/api/users/logout",
@@ -968,7 +984,6 @@ $(document).ready(function () {
                 }
             },
             error: function (error) {
-                console.log("로그아웃 종료");
                 alert("로그아웃 요청 실패: " + error.statusText);
             }
         });
@@ -1033,7 +1048,6 @@ $(document).ready(function () {
     $('#deactivationButton').on('click', function (event) {
         event.preventDefault();
         event.stopPropagation(); // 이벤트 버블링 중지
-        console.log("start")
         let phoneNumber = $('#deactive-phoneNumberInput').val();
         let inputCode = $('#deactive-verifyCodeInput').val();
         let email = $('#deactive-emailInput').val();
@@ -1061,8 +1075,6 @@ $(document).ready(function () {
     $('#confirmDeactivationButton').on('click', function () {
         let inputCode = $('#deactive-deactivationCodeInput').val();
         let token = Cookies.get('Authorization');
-        console.log("inputCode : " + inputCode)
-        console.log("token : " + token)
 
         $.ajax({
             beforeSend: function (xhr) {
@@ -1107,7 +1119,6 @@ $(document).ready(function () {
                 alert('인증번호가 전송되었습니다.');
             },
             error: function (error) {
-                console.log(error);
                 alert('오류가 발생했습니다.');
             }
         });
@@ -1157,7 +1168,6 @@ $(document).ready(function () {
         event.preventDefault();
 
         var username = $('#passwordReset-usernameInput').val();
-        console.log("username : " + username)
         if (!username.trim()) {
             alert("아이디를 입력해주세요.");
             return;
@@ -1266,21 +1276,16 @@ $(document).ready(function () {
         // 폼에서 입력한 아이디와 임시 비밀번호 가져오기
         var username = $('input[name="tempLogin-usernameInput"]').val();
         var tempPassword = $('input[name="tempLogin-passwordInput"]').val();
-        console.log("username : " + username)
-        console.log("tempPassword : " + tempPassword)
 
         $.ajax({
             url: `/api/account-recovery/temp-login?` + $.param({username: username, temppassword: tempPassword}),
             type: "POST",
             success: function (res, status, xhr) {
-                console.log("status : " + status)
 
                 // HTTP 헤더에서 토큰 가져오기
                 var token = xhr.getResponseHeader("Authorization");
-                console.log("token : " + token)
 
                 // 서버 응답에서 userId 꺼내오기
-                console.log("tempuser : " + res.data)
                 var userId = res.data.userId;
                 var nickname = res.data.nickname;
                 var profileImage = res.data.profileImage;
