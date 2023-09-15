@@ -123,11 +123,18 @@ $(document).ready(function () {
         }
     });
 
+    // 프로필 모달이 열릴 때 한 번만 호출되도록 플래그 설정
+    var isProfileModalInitialized = false;
+
+    // 프로필 모달이 열릴 때 초기화 함수를 호출하여 지도를 생성
     const $profileModal = $('#profileModal').modal({
         onShow: function () {
             $('#user-menu').hide();
-            // 초기화 함수를 호출하여 지도를 생성
-            initializeMap();
+            if (!isProfileModalInitialized) {
+                // 초기화 함수를 호출하여 지도를 생성
+                initializeMap();
+                isProfileModalInitialized = true;
+            }
         },
         onHide: function () {
             $('#user-icon').show();
@@ -224,6 +231,7 @@ $(document).ready(function () {
 
     // 위치 설정 버튼 클릭 시 현재 위치 정보만 가져옴
     var currentLatitude, currentLongitude;
+    var circle; // circle 변수를 전역 스코프로 이동
 
     function handleLocationClick() {
         if ("geolocation" in navigator) {
@@ -238,9 +246,6 @@ $(document).ready(function () {
             alert("브라우저가 위치 정보를 지원하지 않습니다.");
         }
     }
-
-    // 지도 객체 선언
-    var map;
 
 // 프로필 모달이 열릴 때 지도 초기화 함수를 호출
     function initializeMap() {
@@ -262,10 +267,15 @@ $(document).ready(function () {
         map = new kakao.maps.Map(container, options);
     }
 
-// 위치설정 버튼 클릭 이벤트에서 initializeMap 함수를 호출하여 지도를 초기화하고 크기를 조절
+// 위치설정 버튼 클릭 시 원을 초기화하고 새로운 반경에 따라 원을 추가
     $('#setLocation').click(function () {
         handleLocationClick();
         var container = document.getElementById('map');
+
+        // 기존 원을 지도에서 제거
+        if (circle) {
+            circle.setMap(null);
+        }
 
         // 이미 생성된 지도 객체를 초기화하여 크기만 조절
         initializeMap();
@@ -273,8 +283,8 @@ $(document).ready(function () {
         // 선택한 반경 값 가져오기
         var selectedRadius = parseInt($('#radiusSelect').val());
 
-        // 카카오 지도에 원을 추가하여 반경을 표시
-        var circle = new kakao.maps.Circle({
+        // 카카오 지도에 원을 추가하여 새로운 반경을 표시
+        circle = new kakao.maps.Circle({
             center: map.getCenter(),
             radius: selectedRadius * 1000,
             strokeWeight: 5,
@@ -285,10 +295,8 @@ $(document).ready(function () {
             fillOpacity: 0.7
         });
 
-        circle.setMap(null);
         circle.setMap(map);
     });
-
 
     $('#signup-setLocation').click(function (event) {
         event.preventDefault();
