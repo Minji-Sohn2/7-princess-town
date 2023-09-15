@@ -547,67 +547,75 @@
     <div class="header">
         개인정보
         <button class="ui right floated button" id="editProfile">수정</button>
-        <button class="ui right floated button" id="saveProfile">저장</button>
+        <button class="ui right floated button" id="saveProfile" style="display: none;">저장</button>
     </div>
     <div class="content">
         <div class="ui form">
             <div class="field">
                 <label>아이디</label>
-                <input type="text" name="profile-usernameInput" placeholder="아이디" readonly>
+                <input style="border: none;" type="text" name="profile-usernameInput" placeholder="아이디" readonly>
             </div>
-            <div style="margin-top: 50px;"></div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
             <div class="field">
                 <label>비밀번호</label>
-                <input type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
+                <input style="border: none;" type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
             </div>
-            <div style="margin-top: 50px;"></div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
             <div class="field">
                 <label>닉네임</label>
-                <input type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
+                <input style="border: none;" type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
             </div>
-            <div style="margin-top: 50px;"></div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
             <div class="field">
                 <label>이메일</label>
-                <input type="email" name="profile-emailInput" placeholder="이메일" readonly>
+                <input style="border: none;" type="email" name="profile-emailInput" placeholder="이메일" readonly>
             </div>
-            <div style="margin-top: 50px;"></div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
             <div class="field" id="profileset">
                 <label>전화번호</label>
-                <input type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
-                <div style="margin-top: 50px;"></div>
-                <div class="field">
-                    <label>프로필 이미지</label>
-                    <div class="input-file-container">
-                        <input type="file" id="profile-imageInput" name="profile-imageInput" style="display: none;">
-                        <label for="profile-imageInput">
-                            <i class="images icon"></i>
-                        </label>
-                        <span id="selectedFileName"></span>
-                    </div>
-                </div>
-                <div style="margin-top: 30px;"></div>
-                <div class="field">
-                    <label>반경 설정</label>
-                    <div class="location-input-button-container">
-                        <select class="ui dropdown" id="radiusSelect">
-                            <option value="1">1km</option>
-                            <option value="2">2km</option>
-                            <option value="3">3km</option>
-                            <option value="4">4km</option>
-                            <option value="5">5km</option>
-                        </select>
-                        <button class="ui button" id="setLocation">위치 설정</button>
-                    </div>
-                </div>
-
-                <div id="map" style="height:300px;"></div>
+                <input style="border: none;" type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
             </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field" id="profile-image-id" style="display: none;">
+                <label>프로필 이미지</label>
+                <div class="input-file-container">
+                    <input type="file" id="profile-imageInput" name="profile-imageInput">
+                    <label for="profile-imageInput">
+                        <i class="images icon"></i>
+                    </label>
+                    <span id="selectedFileName"></span>
+                </div>
+            </div>
+            <div class="field" id="radius-id" style="display: none; margin-top: 20px">
+                <label>반경 설정</label>
+                <div class="location-input-button-container">
+                    <select class="ui dropdown" id="radiusSelect" style="display: none;">
+                        <option value="1">1km</option>
+                        <option value="2">2km</option>
+                        <option value="3">3km</option>
+                        <option value="4">4km</option>
+                        <option value="5">5km</option>
+                    </select>
+                    <button class="ui button" id="setLocation" style="display: none;">위치 설정</button>
+                </div>
+            </div>
+            <div class="map" style="margin-bottom: 20px">
+                <div class="temp-none" style="margin-top: 50px; display: none"></div>
+                <label>지도</label>
+            </div>
+            <div id="map" style="height:300px;"></div>
             <div style="margin-top: 30px;"></div>
             <p></p>
             <a href="/" class="cd-form-bottom-message">메인으로</a>
         </div>
     </div>
 </div>
+
 
 <!-- Signup Form -->
 <div class="ui segment" id="modalContainer">
@@ -900,10 +908,11 @@
         <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
     </div>
 </div>
-</body>
+
 <script src="/js/comments.js"></script>
 <script src="/js/app.js"></script>
 <script src="/js/mainpage.js"></script>
+</body>
 <script th:inline="javascript">
     const createdAt = [[${post.createdAt}]];
     const modifiedAt = [[${post.modifiedAt}]];
