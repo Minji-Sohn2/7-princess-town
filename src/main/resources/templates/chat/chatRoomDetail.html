@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="shortcut icon" href="/img/tomato-logo-img/tomato_logo.png">
+    <title>우리동네 커뮤니티 토마토</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Cookie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/header.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/chatRoomDetail.css">
+
+    <!--  구글 폰트  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&font-family: 'Gugi', cursive;display=swap"
+          rel="stylesheet">
+
+    <!--  SemanticUI  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c6072caed86d58e141a7a115ca39de4c"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
+</head>
+<body>
+<div id="app" v-cloak>
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div class="header-buttons">
+                <div>
+                    <a class="item" id="myChatRoom-btn2" href="/view/chatRooms" style="display: block">
+                        <i class="comment icon"></i>
+                    </a>
+                </div>
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--  상단바 끝  -->
+
+    <div class="container">
+
+        <!--  채팅방 이름/ 버튼  -->
+        <div class="chat-header">
+            <div class="col-md-6" style="display: flex">
+                <h2>{{roomName}} </h2>
+                <div id="changeRoomName">
+                    <i class="edit outline icon"></i>
+                </div>
+            </div>
+            <div id="chatRoomServiceBtns">
+                <div id="getThisChatRoomMembersBtn">
+                    <i class="users icon"></i>
+                </div>
+                <div id="inviteModalBtn">
+                    <i class="plus icon"></i>
+                </div>
+                <div @click="leaveChatRoom">
+                    <i class="sign-out alternate icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!--  채팅 내용  -->
+        <ul class="list-group" id="message-upper-container">
+
+            <button class="btn btn-secondary btn-block" @click="loadMoreChatHistory">More</button>
+
+            <li class="list-group-item" v-for="message in messages">
+                <div class="message-container">
+                    <div class="sender-profile">
+                        {{message.sender}}
+                    </div>
+                    <div class="sender-message-info">
+                        <h5 v-if="message.message">
+                            {{message.message}}
+                        </h5>
+                        <img v-if="message.imgData" :src="message.imgData" class="message-image" alt="Chat Image Data">
+                        <div>
+                            {{message.createdAt}}
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div id="preview-container" style="display: none">
+            <img id="filePreview" src="#" alt="File Preview">
+            <div id="delete-selected-file" @click="deleteSelectedFile">
+                <i class="undo alternate icon"></i>
+            </div>
+        </div>
+
+        <!--  입력칸  -->
+        <div class="input-group" id="input-container">
+            <div class="input-group-prepend">
+                <form id="sendFileForm" enctype="multipart/form-data">
+                    <label for="imageInput" class="custom-file-label"></label>
+                    <input type="file" id="imageInput" name="imageInput" class="custom-file-input" accept="image/*" @change="fileInputChange">
+                </form>
+            </div>
+            <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('TALK')" :disabled="isFileSelected">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" @click="sendChat">보내기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 대화상대 확인하기 모달 -->
+    <div class="modal-overlay" id="chatMembersModalOverlay"></div>
+    <div class="register-modal" id="registerChatMemberModal">
+        <h3 class="modal-title" id="chatMemberModalTitle">채팅방 참여자</h3>
+        <div class="modal-content">
+
+            <div id="member-container">
+                <!-- 대화상대 리스트 -->
+                <div class="search-result" id="memberListContainer" v-for="member in members">
+                    <div class="member-result-card" id="member-{{member.id}}">
+                        <div class="user-profile-container">
+                            <div class="user-username">
+                                {{member.username}}
+                            </div>
+                            <div class="user-nickname">
+                                {{member.nickname}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="close-modal-button" id="closeChatMemberModal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 대화상대 초대하기 모달 -->
+<div class="modal-overlay" id="inviteUserModalOverlay"></div>
+<div class="register-modal" id="registerInviteUserModal">
+    <h3 class="modal-title" id="inviteUserModalTitle">대화상대 초대하기</h3>
+    <div class="modal-content">
+
+        <!-- 채팅방 생성 1. 초대할 사용자 선택 -->
+        <div id="search-container">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="초대할 대화상대 검색" id="searchInput">
+                <button class="btn btn-outline-secondary" type="button" id="submitSearchKeyword">검색</button>
+            </div>
+
+            <!-- 대화상대 검색 결과 -->
+            <div class="search-result" id="searchResultsContainer">
+
+            </div>
+        </div>
+
+        <!-- 채팅방 생성 2. 완료 -->
+        <div id="complete-creating" style="display: none">
+            <h4>초대 완료</h4>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitSelectUser">초대</button>
+            <button class="close-modal-button" id="closeCreateRoomModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 채팅방 이름 변경하기 모달 -->
+<div class="modal-overlay" id="changeRoomNameModalOverlay"></div>
+<div class="register-modal" id="registerChangeRoomNameModal">
+    <h3 class="modal-title" id="changeRoomNameModalTitle">채팅방 이름 변경하기</h3>
+    <div class="modal-content">
+        <!-- 채팅방 이름 변경 1. 새로운 채팅방 이름 입력 -->
+        <div class="input-group mb-3" id="new-roomname-container">
+            <input type="text" class="form-control" placeholder="새로운 채팅방 이름" id="roomNameInput">
+        </div>
+
+        <!-- 채팅방 이름 변경 2. 완료 -->
+        <div id="complete-changing" style="display: none">
+            <h4>변경 완료</h4>
+        </div>
+
+        <div class="modal-buttons">
+            <button class="submit-modal-button" id="submitNewRoomName">변경</button>
+            <button class="close-modal-button" id="closeChangeRoomNameModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<div class="ui vertical menu" id="user-menu">
+    <div class="header" id="menu-header">User</div>
+    <div class="menu">
+        <a class="item" data-modal="#loginModal" id="login-btn" href="#0">
+            <i class="sign-in icon"></i> 로그인
+        </a>
+        <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">
+            <i class="user plus icon"></i> 회원가입
+        </a>
+        <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">
+            <i class="user circle icon"></i> 프로필
+        </a>
+        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">
+            <i class="comment icon"></i>내 채팅방
+        </a>
+        <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
+            <i class="sign-out icon"></i> 로그아웃
+        </a>
+        <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">
+            <i class="user times icon"></i> 회원탈퇴
+        </a>
+    </div>
+    <div class="divider"></div>
+</div>
+
+<!-- 로그아웃 모달 창 -->
+<div class="ui basic modal" id="logout-confirm-modal">
+    <div class="ui icon header">
+        <i class="sign-out icon"></i>
+        로그아웃 확인
+    </div>
+    <div class="content">
+        <p>로그아웃 하시겠습니까?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            취소
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            확인
+        </div>
+    </div>
+</div>
+
+<!-- 프로필 정보 모달 창 -->
+<div id="profileModal" class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        개인정보
+        <button class="ui right floated button" id="editProfile">수정</button>
+        <button class="ui right floated button" id="saveProfile">저장</button>
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="profile-usernameInput" placeholder="아이디" readonly>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" name="profile-emailInput" placeholder="이메일" readonly>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field" id="profileset">
+                <label>전화번호</label>
+                <input type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
+                <div style="margin-top: 50px;"></div>
+                <div class="field">
+                    <label>프로필 이미지</label>
+                    <div class="input-file-container">
+                        <input type="file" id="profile-imageInput" name="profile-imageInput" style="display: none;">
+                        <label for="profile-imageInput">
+                            <i class="images icon"></i>
+                        </label>
+                        <span id="selectedFileName"></span>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <div class="field">
+                    <label>반경 설정</label>
+                    <div class="location-input-button-container">
+                        <select class="ui dropdown" id="radiusSelect">
+                            <option value="1">1km</option>
+                            <option value="2">2km</option>
+                            <option value="3">3km</option>
+                            <option value="4">4km</option>
+                            <option value="5">5km</option>
+                        </select>
+                        <button class="ui button" id="setLocation">위치 설정</button>
+                    </div>
+                </div>
+
+                <div id="map" style="width:350px;height:300px;"></div>
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <p></p>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
+        </div>
+    </div>
+</div>
+
+<!-- Signup Form -->
+<div class="ui segment" id="modalContainer">
+    <div class="ui segment modal" id="signupModal">
+        <div class="header" style="margin: -11px;">회원가입</div>
+        <div style="margin-bottom: 15px;"></div>
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" id="signup-usernameInput" placeholder="아이디">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" id="signup-passwordInput" placeholder="비밀번호">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" id="signup-nicknameInput" placeholder="닉네임">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" id="signup-emailInput" placeholder="이메일">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>전화번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-phoneNumberInput" placeholder="전화번호">
+                    <button class="ui button" id="signup-sendVerificationCode">인증번호 전송</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-verifyCodeInput" placeholder="인증번호">
+                    <button class="ui button" id="signup-verificationCode">인증번호 확인</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>프로필 이미지</label>
+                <div class="input-file-container">
+                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
+                    <label for="signup-profileImageInput">
+                        <i class="images icon"></i>
+                    </label>
+                    <span id="signup-selectedFileName"></span>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <div class="field">
+                    <label>반경 설정</label>
+                    <div class = "location-input-button-container">
+                        <select class="ui dropdown" id="signup-radiusSelect">
+                            <option value="1">1km</option>
+                            <option value="2">2km</option>
+                            <option value="3">3km</option>
+                            <option value="4">4km</option>
+                            <option value="5">5km</option>
+                        </select>
+                        <button class="ui button" id="signup-setLocation">위치 설정</button>
+                    </div>
+                </div>
+
+                <div id="signup-map" style="width:350px;height:300px; display: none;"></div>
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <div class="signup-center-content">
+                <div class="inline field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="accept-terms">
+                        <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <!-- 회원가입 완료 여부를 저장하는 input 엘리먼트 -->
+                <input type="hidden" id="verificationCompleted" value="false">
+                <button class="ui button" type="submit" id="signup-submit">회원가입</button>
+                <div style="margin-top: 50px;"></div>
+                <a href="/" class="cd-form-bottom-message">메인으로</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Login Form -->
+<div class="ui segment modal" id="loginModal">
+    <div class="login-container">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="login-usernameInput" placeholder="아이디">
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="login-passwordInput" placeholder="비밀번호">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="login-buttons">
+                <button class="ui button" type="submit" id="login-submit">로그인</button>
+                <div class="social-login-text">소셜로그인</div>
+                <div class="custom-button-container">
+                    <button class="custom-image-button" id="naverLogin">
+                        <img src="/img/loginButton/naverButton.png" class="custom-icon-img">
+                    </button>
+                    <button class="custom-image-button" id="kakaoLogin">
+                        <img src="/img/loginButton/kakaoButton.png" class="custom-icon-img">
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div style="margin-top: 50px;"></div>
+        <div class="divider"></div>
+        <div class="login-footer">
+            <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
+            <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Deactivation Form -->
+<div class="ui segment modal" id="deactivationModal">
+    <div class="header" style="margin: -11px;">회원탈퇴</div>
+    <div style="margin-bottom: 15px;"></div>
+    <div class="ui segment">
+        <form class="ui form">
+            <!-- 전화번호 입력 및 인증번호 전송 -->
+            <div class="field">
+                <label>전화번호</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 인증번호 확인 -->
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>회원탈퇴 인증코드 발송</label>
+                <div class="input-button-container">
+                    <input type="email" id="deactive-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendDeactiveCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 이메일로 받은 회원탈퇴 코드 확인 -->
+            <div class="field">
+                <label>이메일로 받은 회원탈퇴 코드</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-deactivationCodeInput" placeholder="회원탈퇴 코드를 입력해주세요">
+                    <button class="ui button red" id="deactivationButton">탈퇴</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 회원탈퇴 최종 확인 -->
+            <!--      <div class="field">-->
+            <!--        <div class="ui checkbox">-->
+            <!--          <input type="checkbox" id="confirmDeactivation">-->
+            <!--          <label>정말 회원탈퇴를 진행하시겠습니까?</label>-->
+            <!--        </div>-->
+            <!--      </div>-->
+            <div style="margin-top: 30px;"></div>
+        </form>
+        <a href="/" class="cd-form-bottom-message">메인으로</a>
+    </div>
+</div>
+
+<!-- 회원탈퇴 확인 모달 창 -->
+<div class="ui modal" id="deactivationConfirmModal">
+    <i class="close icon"></i>
+    <div class="header">
+        회원탈퇴 확인
+    </div>
+    <div class="content">
+        <p>정말 회원탈퇴를 진행하시겠습니까?</p>
+        <p>회원탈퇴 시 모든 데이터가 삭제되며, 로그인이 불가능합니다.</p>
+        <!-- 확인 체크박스 -->
+        <div class="ui checkbox">
+            <input type="checkbox" id="confirmDeactivation">
+            <label>위 내용을 확인하였으며, 회원탈퇴에 동의합니다.</label>
+        </div>
+    </div>
+    <div class="actions">
+        <!-- 확인 및 취소 버튼 -->
+        <button class="ui button red" id="confirmDeactivationButton" disabled>회원탈퇴</button>
+        <button class="ui button" id="cancelDeactivation">취소</button>
+    </div>
+</div>
+
+<!-- Temp Password Login Form -->
+<div class="ui segment modal" id="tempLoginModal">
+    <form class="ui form">
+        <div class="field">
+            <label>아이디</label>
+            <input type="text" name="tempLogin-usernameInput" placeholder="아이디">
+        </div>
+        <div class="field">
+            <label>임시 비밀번호</label>
+            <input type="password" name="tempLogin-passwordInput" placeholder="임시 비밀번호">
+        </div>
+        <button class="ui button" type="submit">임시 비밀번호로 로그인</button>
+    </form>
+</div>
+
+
+<!-- Password Reset Form -->
+<div class="ui segment modal" id="passwordResetModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디 인증</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-usernameInput" placeholder="아이디를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verifyUsername">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>임시 비밀번호 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="passwordReset-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendTempPassword">Send</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label style="margin-bottom: -10px;">임시 비밀번호로 임시 로그인 후, 비밀번호를 변경해주세요.</label>
+                <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
+    </div>
+</div>
+
+<!-- Username Find Form -->
+<div class="ui segment modal" id="usernameFindModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendVerificationCode">인증번호 전송</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-verifyPhoneNumber">인증번호 확인</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>아이디 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send</button>
+                </div>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
+<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+<script src="/webjars/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.4/stomp.min.js"></script>
+
+<!-- static js -->
+<script src="/js/app.js"></script>
+<script src="/js/chatRoomDetail.js"></script>
+
+</body>
+</html>

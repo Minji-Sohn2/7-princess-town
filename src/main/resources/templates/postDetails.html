@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ko-KR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="shortcut icon" href="/img/tomato-logo-img/tomato_logo.png">
+    <title>우리동네 커뮤니티 토마토</title>
+
+    <!--    구글 폰트      -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://webfontworld.github.io/daegu/DalseoHealing.css">
+
+    <!-- Cookie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/mainpage.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel='stylesheet' href="/css/comment.css"/>
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c6072caed86d58e141a7a115ca39de4c"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
+    <style>
+        .post-header {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .post-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .post-info {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .post-image {
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .post-contents {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .post-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* footer */
+        .footer {
+            color: grey;
+            text-align: center;
+            border-top: 1px solid black;
+            width: 100%;
+            padding-bottom: 10px;
+            margin-top: 30px;
+            background-color: #242428;
+        }
+
+        .footer > p {
+            font-family: 'Gugi', cursive;
+            font-size: 30px;
+            margin-top: 50px;
+        }
+
+        .footer > div {
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<!--  상단바  -->
+<div class="ui secondary pointing menu" id="header">
+    <div id="header-info">
+        <div class="header-logo" id="header-name">
+            <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+            <a href="/view/mainpage" style="color: #a96b6b">
+                <h2>토마토</h2>
+            </a>
+        </div>
+        <div style="display: flex">
+            <form class="search-form" style="display: flex; justify-content: center;">
+                <div class="ui selection menu" style="margin-right: 10px; border-radius: 10px;">
+                    <div class="ui simple dropdown item" id="searchTypeDropdown">
+                        <div id="defaultitem" class="text">제목</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu transition hidden">
+                            <div class="item" data-value="title" style="border: none;">제목</div>
+                            <div class="item" data-value="contents" style="border: none;">내용</div>
+                            <div class="item" data-value="titleAndContents" style="border: none;">제목+내용</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui right aligned category search" style="display: flex; justify-content: center;">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요"
+                               style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
+                        <button type="submit" id="searchButton"
+                                style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                            <i class="search icon"></i>
+                        </button>
+                    </div>
+                </div>
+                <!--                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>-->
+            </form>
+            <button class="btn-create-post" id="createPostButton"
+                    style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;">
+                <i class="pencil alternate icon"></i></button>
+        </div>
+
+        <div class="header-buttons">
+            <div>
+                <a class="item" id="myChatRoom-btn2" href="/view/chatRooms">
+                    <i class="comment icon"></i>
+                </a>
+            </div>
+            <!--  사용자 버튼  -->
+            <button id="user-icon" class="ui icon button">
+                <i class="user icon"></i>
+                <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+            </button>
+        </div>
+    </div>
+</div>
+<!--  상단바 끝  -->
+
+<!-- 게시글 -->
+<div class="content-mainpage">
+    <div class="sidebar-mainpage">
+        <div class="box">
+            <h2 class="h2">인기검색어</h2>
+            <ol class="search-ranking">
+                <!--<li>검색어 1</li>-->
+            </ol>
+        </div>
+        <div>
+            <ul class="board-list">
+                <li><a href="/view/mainpage">전체게시판</a>
+                    <ul class="sub-board-list">
+                        <th:block th:each="board : ${boardList}">
+                            <li>
+                                <a th:href="@{/view/boards/{boardId}(boardId=${board.id})}"
+                                   th:text="${board.title}">게시판</a>
+                                <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
+                            </li>
+                        </th:block>
+                    </ul>
+                </li>
+                <li><a href="/view/radiusposts">지역게시판</a>
+                    <ul class="sub-board-list">
+                        <th:block th:each="board : ${boardList}">
+                            <li>
+                                <a th:href="@{/view/boards/{boardId}/radiusposts(boardId=${board.id})}"
+                                   th:text="${board.title}">게시판</a>
+                                <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
+                            </li>
+                        </th:block>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--  게시글 상세 시작  -->
+    <div class="main-content">
+        <div class="post-header">
+            <span>전체게시판/</span>
+            <a th:href="@{/view/boards/{boardId}(boardId=${post.boardId})}" th:text="${post.boards}"
+               style="color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"></a>
+            <h1 class="post-title" th:text="${post.title}">게시글 제목</h1>
+            <div class="post-info">
+                <span th:text="'작성자: ' + ${post.nickname}"></span>
+                <span id="createdAt"></span>
+                <span id="modifiedAt"> | 수정일: </span>
+                <span th:text="' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+            </div>
+        </div>
+        <br/>
+        <img class="post-image" id="post-image" th:src="${post.postImageUrl}" alt="게시글 이미지">
+        <div class="post-contents">
+            <p th:text="${post.contents}">
+                게시글 내용이 여기에 들어갑니다.
+            </p>
+        </div>
+        <br/>
+        <div class="post-actions" id="postActions" style="display: none;">
+            <div class="ui labeled button" id="unlikeButton" tabindex="0">
+                <div class="ui red button">
+                    <i class="heart icon"></i> Like
+                </div>
+                <a class="ui basic red left pointing label" th:text="${post.likeCnt}"></a>
+            </div>
+            <div class="ui labeled button" id="likeButton" tabindex="0">
+                <div class="ui button">
+                    <i class="heart icon"></i> Like
+                </div>
+                <a class="ui basic label" th:text="${post.likeCnt}"></a>
+            </div>
+            <!--            수정버튼-->
+            <i class="edit outline icon" id="editButton"
+               style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
+            <!--            삭제버튼-->
+            <i class="trash alternate outline icon" id="deleteButton"
+               style="font-size: 26px; margin-left: 20px; vertical-align: -4px; cursor: pointer;"></i>
+        </div>
+    </div>
+</div>
+
+<!---start-comments-section--->
+<div class="comment-section" style="padding:30px;">
+    <div class="grids_of_2">
+        <div class="grids_of_2" id="comments">
+        </div>
+        <div class="artical-commentbox">
+            <hr style="border-top: 1px solid #6c757d;">
+            <h2 class="comment-h2" style="font-family: 'Jua', sans-serif">댓글<span class="comment-h5"
+                                                                                  style="font-size: 20px"></span></h2>
+            <div class="table-form">
+                <form name="post_comment" style="position: relative">
+                    <div>
+                        <label style="font-family: 'Jua', sans-serif;">닉네임<span>*</span></label>
+                        <h4 id="loginUserName"></h4>
+                    </div>
+                    <div>
+                        <label for="userComment" style="font-family: 'Jua', sans-serif;">댓글창<span>*</span></label>
+                        <button id="show" type="button">😀</button>
+                        <textarea type="text" id="userComment" name="content" placeholder="내용을 입력해주세요."></textarea>
+                    </div>
+                    <div class="background">
+                        <div class="window">
+                            <div class="popup">
+                                <button id="close" type="button">✖️️</button>
+                                <div id="imglist" style="padding-left: 5px">
+                                    <img id="airplane" src="/img/free-sticker-airplane-7496612.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="birthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="cauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="coffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="confused" src="/img/free-sticker-confused-6684479.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="couple" src="/img/free-sticker-couple-7173075.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="eggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="hate" src="/img/free-sticker-hate-7598095.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="hate2" src="/img/free-sticker-hate-7598096.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="heartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="inspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="lazy" src="/img/free-sticker-lazy-7470569.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="patient" src="/img/free-sticker-patient-7268641.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="pet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="pet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="read" src="/img/free-sticker-read-7182833.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="sad" src="/img/free-sticker-sad-7598102.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="stay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="stir" src="/img/free-sticker-stir-fry-7554151.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="worker" src="/img/free-sticker-worker-7546325.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="edit-background">
+                        <div class="window">
+                            <div class="editpopup">
+                                <button id="editclose" type="button" onclick="editpopupclose()">✖️️</button>
+                                <div id="editimglist" style="padding-left: 5px">
+                                    <img id="editairplane" src="/img/free-sticker-airplane-7496612.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editbirthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editcauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editcoffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editconfused" src="/img/free-sticker-confused-6684479.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editcouple" src="/img/free-sticker-couple-7173075.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editeggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="edithate" src="/img/free-sticker-hate-7598095.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="edithate2" src="/img/free-sticker-hate-7598096.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editinspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editlazy" src="/img/free-sticker-lazy-7470569.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editpatient" src="/img/free-sticker-patient-7268641.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editpet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editpet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editread" src="/img/free-sticker-read-7182833.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editsad" src="/img/free-sticker-sad-7598102.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editstay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editstir" src="/img/free-sticker-stir-fry-7554151.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editworker" src="/img/free-sticker-worker-7546325.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reply-background">
+                        <div class="window">
+                            <div class="replypopup">
+                                <button id="replyclose" type="button" onclick="replypopupclose()">✖️️</button>
+                                <div id="replyimglist" style="padding-left: 5px">
+                                    <img id="replyairplane" src="/img/free-sticker-airplane-7496612.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replybirthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replycauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replycoffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyconfused" src="/img/free-sticker-confused-6684479.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replycouple" src="/img/free-sticker-couple-7173075.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyeggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyhate" src="/img/free-sticker-hate-7598095.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyhate2" src="/img/free-sticker-hate-7598096.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyinspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replylazy" src="/img/free-sticker-lazy-7470569.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replypatient" src="/img/free-sticker-patient-7268641.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replypet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replypet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyread" src="/img/free-sticker-read-7182833.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replysad" src="/img/free-sticker-sad-7598102.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replystay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replystir" src="/img/free-sticker-stir-fry-7554151.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="replyworker" src="/img/free-sticker-worker-7546325.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editreply-background">
+                        <div class="window">
+                            <div class="editreplypopup">
+                                <button id="editreplyclose" type="button" onclick="editreplypopupclose()">✖️️</button>
+                                <div id="editreplyimglist" style="padding-left: 5px">
+                                    <img id="editreplyairplane" src="/img/free-sticker-airplane-7496612.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplybirthday" src="/img/free-sticker-birthday-boy-7379346.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplycauliflower" src="/img/free-sticker-cauliflower-7598101.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplycoffee" src="/img/free-sticker-coffee-shop-7182801.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyconfused" src="/img/free-sticker-confused-6684479.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplycouple" src="/img/free-sticker-couple-7173075.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyeggplant" src="/img/free-sticker-eggplant-7598097.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyhate" src="/img/free-sticker-hate-7598095.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyhate2" src="/img/free-sticker-hate-7598096.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyheartbeat" src="/img/free-sticker-heartbeat-7173072.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyinspiration" src="/img/free-sticker-inspiration-6684493.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplylazy" src="/img/free-sticker-lazy-7470569.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplypatient" src="/img/free-sticker-patient-7268641.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplypet" src="/img/free-sticker-play-with-pet-7260274.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplypet2" src="/img/free-sticker-play-with-pet-7260277.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyread" src="/img/free-sticker-read-7182833.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplysad" src="/img/free-sticker-sad-7598102.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplystay" src="/img/free-sticker-stay-at-home-7546335.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplystir" src="/img/free-sticker-stir-fry-7554151.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                    <img id="editreplyworker" src="/img/free-sticker-worker-7546325.png"
+                                         style="height: 100px; width: 100px; cursor: pointer">
+                                </div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button id="createComments" class="btn btn-secondary" type="button">댓글 작성</button>
+            </div>
+            <div class="clear" id="comment"></div>
+        </div>
+    </div>
+</div>
+<nav aria-label="...">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a href="#comment" class="page-link prev-page-button" style="cursor: pointer" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item page-numbers">
+            <a href="#comment" class="page-link page-button active pagenumber"></a>
+        </li>
+        <li class="page-item">
+            <a href="#comment" class="page-link next-page-button" style="cursor: pointer" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<br/>
+<div id="eventLoading" class="ui active dimmer" style="position: fixed; display: none;">
+    <div class="ui massive text loader">Loading</div>
+</div>
+
+<!-- footer 시작 -->
+<footer>
+    <div class="footer">
+        <p><img src="/img/tomato-logo-img/tomato_logo.png" style="width: 50px;">우리 동네 커뮤니티 토마토</p>
+        <br/>
+        <div>
+            <p>김휘수 | 모성민 | 손민지 | 주인수</p>
+            <p>© 2023 7PRINCESS TOMATO ALL RIGHTS RESERVED</p>
+        </div>
+        <br/>
+    </div>
+</footer>
+
+<div class="ui vertical menu" id="user-menu">
+    <div class="header" id="menu-header">User</div>
+    <div class="menu">
+        <a class="item" data-modal="#loginModal" id="login-btn" href="#0">
+            <i class="sign-in icon"></i> 로그인
+        </a>
+        <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">
+            <i class="user plus icon"></i> 회원가입
+        </a>
+        <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">
+            <i class="user circle icon"></i> 프로필
+        </a>
+        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">
+            <i class="comment icon"></i>내 채팅방
+        </a>
+        <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
+            <i class="sign-out icon"></i> 로그아웃
+        </a>
+        <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">
+            <i class="user times icon"></i> 회원탈퇴
+        </a>
+    </div>
+    <div class="divider"></div>
+</div>
+
+<!-- 로그아웃 모달 창 -->
+<div class="ui basic modal" id="logout-confirm-modal">
+    <div class="ui icon header">
+        <i class="sign-out icon"></i>
+        로그아웃 확인
+    </div>
+    <div class="content">
+        <p>로그아웃 하시겠습니까?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            취소
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            확인
+        </div>
+    </div>
+</div>
+
+<!-- 프로필 정보 모달 창 -->
+<div id="profileModal" class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        개인정보
+        <button class="ui right floated button" id="editProfile">수정</button>
+        <button class="ui right floated button" id="saveProfile" style="display: none;">저장</button>
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input style="border: none;" type="text" name="profile-usernameInput" placeholder="아이디" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input style="border: none;" type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field">
+                <label>닉네임</label>
+                <input style="border: none;" type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field">
+                <label>이메일</label>
+                <input style="border: none;" type="email" name="profile-emailInput" placeholder="이메일" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field" id="profileset">
+                <label>전화번호</label>
+                <input style="border: none;" type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field" id="profile-image-id" style="display: none;">
+                <label>프로필 이미지</label>
+                <div class="input-file-container">
+                    <input type="file" id="profile-imageInput" name="profile-imageInput">
+                    <label for="profile-imageInput">
+                        <i class="images icon"></i>
+                    </label>
+                    <span id="selectedFileName"></span>
+                </div>
+            </div>
+            <div class="field" id="radius-id" style="display: none; margin-top: 20px">
+                <label>반경 설정</label>
+                <div class="location-input-button-container">
+                    <select class="ui dropdown" id="radiusSelect" style="display: none;">
+                        <option value="1">1km</option>
+                        <option value="2">2km</option>
+                        <option value="3">3km</option>
+                        <option value="4">4km</option>
+                        <option value="5">5km</option>
+                    </select>
+                    <button class="ui button" id="setLocation" style="display: none;">위치 설정</button>
+                </div>
+            </div>
+            <div class="map" style="margin-bottom: 20px">
+                <div class="temp-none" style="margin-top: 50px; display: none"></div>
+                <label>지도</label>
+            </div>
+            <div id="map" style="height:300px;"></div>
+            <div style="margin-top: 30px;"></div>
+            <p></p>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Signup Form -->
+<div class="ui segment" id="modalContainer">
+    <div class="ui segment modal" id="signupModal">
+        <div class="header" style="margin: -11px;">회원가입</div>
+        <div style="margin-bottom: 15px;"></div>
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" id="signup-usernameInput" placeholder="아이디">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" id="signup-passwordInput" placeholder="비밀번호">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" id="signup-nicknameInput" placeholder="닉네임">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" id="signup-emailInput" placeholder="이메일">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>전화번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-phoneNumberInput" placeholder="전화번호">
+                    <button class="ui button" id="signup-sendVerificationCode">인증번호 전송</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-verifyCodeInput" placeholder="인증번호">
+                    <button class="ui button" id="signup-verificationCode">인증번호 확인</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>프로필 이미지</label>
+                <div class="input-file-container">
+                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
+                    <label for="signup-profileImageInput">
+                        <i class="images icon"></i>
+                    </label>
+                    <span id="signup-selectedFileName"></span>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <div class="field">
+                    <label>반경 설정</label>
+                    <div class = "location-input-button-container">
+                        <select class="ui dropdown" id="signup-radiusSelect">
+                            <option value="1">1km</option>
+                            <option value="2">2km</option>
+                            <option value="3">3km</option>
+                            <option value="4">4km</option>
+                            <option value="5">5km</option>
+                        </select>
+                        <button class="ui button" id="signup-setLocation">위치 설정</button>
+                    </div>
+                </div>
+
+                <div id="signup-map" style="height:300px; display: none;"></div>
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <div class="signup-center-content">
+                <div class="inline field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="accept-terms">
+                        <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <!-- 회원가입 완료 여부를 저장하는 input 엘리먼트 -->
+                <input type="hidden" id="verificationCompleted" value="false">
+                <button class="ui button" type="submit" id="signup-submit">회원가입</button>
+                <div style="margin-top: 50px;"></div>
+                <a href="/" class="cd-form-bottom-message">메인으로</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Login Form -->
+<div class="ui segment modal" id="loginModal">
+    <div class="login-container">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="login-usernameInput" placeholder="아이디">
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="login-passwordInput" placeholder="비밀번호">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="login-buttons">
+                <button class="ui button" type="submit" id="login-submit">로그인</button>
+                <div class="social-login-text">소셜로그인</div>
+                <div class="custom-button-container">
+                    <button class="custom-image-button" id="naverLogin">
+                        <img src="/img/loginButton/naverButton.png" class="custom-icon-img">
+                    </button>
+                    <button class="custom-image-button" id="kakaoLogin">
+                        <img src="/img/loginButton/kakaoButton.png" class="custom-icon-img">
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div style="margin-top: 50px;"></div>
+        <div class="divider"></div>
+        <div class="login-footer">
+            <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
+            <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Deactivation Form -->
+<div class="ui segment modal" id="deactivationModal">
+    <div class="header" style="margin: -11px;">회원탈퇴</div>
+    <div style="margin-bottom: 15px;"></div>
+    <div class="ui segment">
+        <form class="ui form">
+            <!-- 전화번호 입력 및 인증번호 전송 -->
+            <div class="field">
+                <label>전화번호</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 인증번호 확인 -->
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>회원탈퇴 인증코드 발송</label>
+                <div class="input-button-container">
+                    <input type="email" id="deactive-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendDeactiveCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 이메일로 받은 회원탈퇴 코드 확인 -->
+            <div class="field">
+                <label>이메일로 받은 회원탈퇴 코드</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-deactivationCodeInput" placeholder="회원탈퇴 코드를 입력해주세요">
+                    <button class="ui button red" id="deactivationButton">탈퇴</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 회원탈퇴 최종 확인 -->
+            <!--      <div class="field">-->
+            <!--        <div class="ui checkbox">-->
+            <!--          <input type="checkbox" id="confirmDeactivation">-->
+            <!--          <label>정말 회원탈퇴를 진행하시겠습니까?</label>-->
+            <!--        </div>-->
+            <!--      </div>-->
+            <div style="margin-top: 30px;"></div>
+        </form>
+        <a href="/" class="cd-form-bottom-message">메인으로</a>
+    </div>
+</div>
+
+<!-- 회원탈퇴 확인 모달 창 -->
+<div class="ui modal" id="deactivationConfirmModal">
+    <i class="close icon"></i>
+    <div class="header">
+        회원탈퇴 확인
+    </div>
+    <div class="content">
+        <p>정말 회원탈퇴를 진행하시겠습니까?</p>
+        <p>회원탈퇴 시 모든 데이터가 삭제되며, 로그인이 불가능합니다.</p>
+        <!-- 확인 체크박스 -->
+        <div class="ui checkbox">
+            <input type="checkbox" id="confirmDeactivation">
+            <label>위 내용을 확인하였으며, 회원탈퇴에 동의합니다.</label>
+        </div>
+    </div>
+    <div class="actions">
+        <!-- 확인 및 취소 버튼 -->
+        <button class="ui button red" id="confirmDeactivationButton" disabled>회원탈퇴</button>
+        <button class="ui button" id="cancelDeactivation">취소</button>
+    </div>
+</div>
+
+<!-- Temp Password Login Form -->
+<div class="ui segment modal" id="tempLoginModal">
+    <form class="ui form">
+        <div class="field">
+            <label>아이디</label>
+            <input type="text" name="tempLogin-usernameInput" placeholder="아이디">
+        </div>
+        <div class="field">
+            <label>임시 비밀번호</label>
+            <input type="password" name="tempLogin-passwordInput" placeholder="임시 비밀번호">
+        </div>
+        <button class="ui button" type="submit">임시 비밀번호로 로그인</button>
+    </form>
+</div>
+
+
+<!-- Password Reset Form -->
+<div class="ui segment modal" id="passwordResetModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디 인증</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-usernameInput" placeholder="아이디를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verifyUsername">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>임시 비밀번호 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="passwordReset-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendTempPassword">Send</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label style="margin-bottom: -10px;">임시 비밀번호로 임시 로그인 후, 비밀번호를 변경해주세요.</label>
+                <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
+    </div>
+</div>
+
+<!-- Username Find Form -->
+<div class="ui segment modal" id="usernameFindModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendVerificationCode">인증번호 전송</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-verifyPhoneNumber">인증번호 확인</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>아이디 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send</button>
+                </div>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
+    </div>
+</div>
+
+<script src="/js/comments.js"></script>
+<script src="/js/app.js"></script>
+<script src="/js/mainpage.js"></script>
+</body>
+<script th:inline="javascript">
+    const createdAt = [[${post.createdAt}]];
+    const modifiedAt = [[${post.modifiedAt}]];
+
+    // let date = new Date(createdAt);
+    //
+    // const createdAtformattedDate = date.toLocaleString("ko-KR", {
+    //     year: "numeric",
+    //     month: "2-digit",
+    //     day: "2-digit",
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //     second: "2-digit",
+    // });
+
+    $('#createdAt').text(` | 작성일: ${createdAt}`)
+
+    // date = new Date(modifiedAt)
+    //
+    // const modifiedAtformattedDate = date.toLocaleString("ko-KR", {
+    //     year: "numeric",
+    //     month: "2-digit",
+    //     day: "2-digit",
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //     second: "2-digit",
+    // });
+
+    $('#modifiedAt').text(` | 마지막수정일: ${modifiedAt}`)
+
+    $(document).ready(function () {
+        if (!$('#post-image').attr('src')) {
+            $('.post-image').hide();
+        }
+
+        // 인기검색어 데이터 가져와서 렌더링
+        function renderPopularSearches(data) {
+            var searchRanking = $(".search-ranking");
+            searchRanking.empty();
+
+            $.each(data, function (index, popularSearch) {
+                var listItem = $("<li>").text(popularSearch.keyword);
+                listItem.on("click", function () {
+                    var keyword = encodeURIComponent(popularSearch.keyword);
+                    var searchType = "titleAndContents";
+                    window.location.href = "/view/searchKeyword?searchType=" + searchType + "&keyword=" + keyword;
+                });
+                searchRanking.append(listItem);
+            });
+        }
+
+        // 백엔드 API 호출하여 인기검색어 데이터 가져오기
+        $.ajax({
+            url: "/api/popular-searches",
+            method: "GET",
+            success: function (data) {
+                renderPopularSearches(data);
+            },
+            error: function () {
+                console.error("Error fetching popular searches data.");
+            }
+        });
+
+        var token = Cookies.get('Authorization');
+        var postActions = $('#postActions'); // 요소를 변수로 저장
+
+        if (token) {
+            // 사용자가 로그인한 경우
+            postActions.css('display', 'block'); // display 속성을 변경하여 요소를 보이게 함
+        }
+
+        var urlParts = window.location.pathname.split("/");
+        var postId = urlParts[urlParts.length - 1];
+
+        function handleLike(postId) {
+            $.ajax({
+                url: "/api/posts/" + postId + "/likes",
+                method: "POST",
+                dataType: "json",
+                headers: {
+                    'Authorization': token,
+                },
+                success: function (response) {
+                    if (response.status === 201 || response.status === 200) {
+                        alert("게시물을 좋아요 했습니다!");
+                        window.location.reload();
+                    } else {
+                        alert("좋아요 처리에 실패했습니다.");
+                        window.location.reload();
+                    }
+                },
+                error: function (response) {
+                    if (response.status === 400) {
+                        alert("이미 좋아요를 누른 게시물 입니다.");
+                    } else {
+                        alert("서버에서 오류가 발생했습니다.");
+                    }
+                }
+            });
+        }
+
+        // 좋아요 버튼 클릭 이벤트 처리
+        $("#likeButton").click(function () {
+            handleLike(postId);
+        });
+
+        $("#unlikeButton").click(function () {
+            handleUnlike(postId);
+        });
+
+// 좋아요 취소 요청을 서버에 보내는 함수
+        function handleUnlike(postId) {
+            $.ajax({
+                url: "/api/posts/" + postId + "/likes",
+                method: "DELETE",
+                dataType: "json",
+                headers: {
+                    'Authorization': token, // 토큰주입 임시방편
+                },
+                success: function (response) {
+                    if (response.status === 201 || response.status === 200) {
+                        alert("게시물 좋아요를 취소했습니다!");
+                        window.location.reload();
+                    } else {
+                        alert("좋아요 취소 처리에 실패했습니다.");
+                        window.location.reload();
+                    }
+                },
+                error: function (response) {
+                    if (response.status === 400) {
+                        alert("아직 좋아요를 누르지 않은 게시물 입니다.");
+                    } else {
+                        alert("서버에서 오류가 발생했습니다.");
+                    }
+                }
+            });
+        }
+
+        $("#deleteButton").click(function () {
+            handleDelete(postId);
+        });
+
+        function handleDelete(postId) {
+            if (confirm("게시물을 삭제하시겠습니까?")) {
+                // 게시물 삭제 요청을 서버에 보냅니다.
+                $.ajax({
+                    url: "/api/posts/" + postId, // postId에 실제 게시물 ID를 할당하세요.
+                    method: "DELETE",
+                    dataType: "json",
+                    headers: {
+                        'Authorization': token,
+                    },
+                    success: function (response) {
+                        if (response.status === 200) {
+                            alert("게시물이 성공적으로 삭제되었습니다.");
+                            window.location.href = "/view/mainpage"; // 삭제 후 홈페이지로 이동하거나 필요한 페이지로 리다이렉션합니다.
+                        } else {
+                            alert("작성자만 삭제 가능합니다.");
+                        }
+                    },
+                    error: function (response) {
+                        if (response.status === 400) {
+                            alert("작성자만 삭제 가능합니다.");
+                        } else {
+                            alert("서버에서 오류가 발생했습니다.");
+                        }
+                    }
+                });
+            }
+        }
+
+        $("#editButton").click(function () {
+            const postnickname = [[${post.nickname}]];
+
+            const nickname = Cookies.get('nickname');
+
+            if (postnickname !== nickname) {
+                alert("글 작성자가 아니므로 수정이 불가능합니다.")
+                return false;
+            }
+            handleEdit(postId);
+        });
+
+        function handleEdit(postId) {
+            // 게시글 수정 페이지로 이동합니다.
+            window.location.href = "/view/editpost/" + postId; // 적절한 URL로 수정 페이지 경로를 지정하세요.
+        }
+
+        function handleCreate() {
+            // 게시글 작성 페이지로 이동합니다.
+            window.location.href = "/view/createpost";
+        }
+
+        $("#createPostButton").click(function () {
+
+            // 작성자 인증 정보 비교
+            if (authorization == null) {
+                $('#loginModal').modal('show');
+                return false;
+            }
+            handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
+        });
+
+        /**
+         * 게시글 좋아요 조회후 좋아요를 누른 아이디일 경우 좋아요 버튼 없앰
+         * 아니면 좋아요 취소 버튼을 없애줌
+         */
+        $.ajax({
+            url: `/api/posts/${postId}/likes`,
+            method: "GET",
+            success: function (data) {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                const usernames = payload.sub;
+
+                for (const result of data.result) {
+                    if (result.username === usernames && result.likes === true) {
+                        $('#likeButton').hide();
+                    }
+                }
+
+                if ($('#likeButton').css('display') !== 'none') {
+                    $('#unlikeButton').hide();
+                }
+            },
+            error: function () {
+                console.log("좋아요 조회 오류");
+            }
+        })
+
+        const authorization = Cookies.get('Authorization');
+
+        if (authorization == null) {
+            document.getElementById('myChatRoom-btn2').style.display = 'none';
+        } else {
+            document.getElementById('myChatRoom-btn2').style.display = 'block';
+        }
+
+    });
+</script>
+</html>

@@ -1,0 +1,71 @@
+ /* 기본 설정 */
+body {
+    background-color: #fafafa; /* 좀 더 밝은 배경색으로 설정 */
+    font-family: 'Noto Sans KR', sans-serif;
+    /*font-family: 'DalseoHealing';*/
+    line-height: 1.5; /* 기본 줄 간격 설정 */
+}
+
+#except-footer {
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 30px;
+}
+
+/* 상단바 */
+#header {
+    background-color: #fafafa;
+    color: #a96b6b;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+
+    width: 100%;
+}
+
+#header-info {
+    display: flex;
+    justify-content: space-between; /* header-name 과 header-buttons 정렬 */
+    align-items: center;
+    width: 100%;
+}
+
+#header-name {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.header-logo img {
+    max-height: 40px;
+    margin-right: 10px;
+}
+
+#header-name h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    font-family: 'Gugi', cursive;
+}
+
+#header .header-buttons {
+    display: flex;
+    align-items: center;
+    float: right;
+    padding-bottom: 10px;
+}
+
+ /* 프로필 아이콘에 오른쪽 여백 추가 */
+ #user-icon {
+     /*margin-left: 50px; !* 아이콘 사이의 간격을 조절할 수 있습니다. *!*/
+
+ }
+
+ #myChatRoom-btn2 {
+     margin-right: 50px; /* 아이콘 사이의 간격을 조절할 수 있습니다. */
+     /*font-size: 20px; !* 아이콘 크기를 조절할 수 있습니다. *!*/
+     /*margin-bottom: 10px;*/
+     margin-top: 10px;
+     display: none;
+     border: none;
+ }
+

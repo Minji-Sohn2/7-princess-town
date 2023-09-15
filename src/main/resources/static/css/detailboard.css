@@ -1,0 +1,129 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+/* 상단바 */
+#header {
+    background-color: #3f3d6c;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+#header-info {
+    display: flex;
+    justify-content: space-between; /* header-name 과 header-buttons 정렬 */
+    align-items: center;
+    width: 100%;
+}
+
+#header-name {
+    display: flex;
+    align-items: center;
+}
+
+#header-name h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    float: right;
+}
+
+.header-button {
+    background-color: #ceace1;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+
+    margin-right: 0.8rem;
+}
+
+/* 내용 */
+.content {
+    display: flex;
+    padding-top: 10px;
+}
+
+.sidebar {
+    padding: 20px;
+    background-color: #f2f2f2;
+    min-width: 200px;
+}
+
+.box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.board-list, .search-ranking {
+    list-style: none;
+    padding: 0;
+    margin: 0; /* remove default margin for ul/ol */
+}
+
+.board-list li, .search-ranking li {
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.board-list li:last-child, .search-ranking li:last-child {
+    margin-bottom: 0;
+}
+
+.post-title {
+    font-weight: bold;
+    text-align: left;
+}
+
+.post-info {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+    margin-top: 3px;
+}
+
+.post {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px;
+    background-color: #fff;
+    margin: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.post-title-container {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.post-info-container {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.main-content {
+    margin-left: 20px;
+}

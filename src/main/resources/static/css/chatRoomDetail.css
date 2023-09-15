@@ -1,0 +1,238 @@
+[v-cloak] {
+    display: none;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#room-info {
+    display: flex;
+    flex-direction: column;
+}
+
+#room-name {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+/* 상단바 아래 컨테이너 */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 59em;   /* 채팅방 컨테이너 사이즈 고정 */
+    border-radius: 5px;
+
+    max-width: 600px;
+    margin: 10px auto 10px;
+    padding: 20px;
+    background: #e79393;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+#changeRoomName {
+    padding: 10px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+#chatRoomServiceBtns {
+    display: flex;
+    font-size: 20px;
+}
+
+#chatRoomServiceBtns div {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* 채팅 내용 컨테이너 */
+#message-upper-container {
+    margin-bottom: 10px;
+}
+
+.list-group {
+    flex: 1;
+    overflow-y: auto; /* 채팅방 내부 스크롤 생기도록 */
+}
+
+/*  메세지 1개  */
+.list-group-item {
+    margin-top: 10px;
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+}
+
+.sender-profile {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+.user-img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.sender-message-info {
+    flex: 9;
+}
+
+/* 입력칸 */
+#input-container {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.input-group-append button {
+    background: #bababc;
+}
+
+/* 모달 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+}
+
+.register-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title {
+    margin-bottom: 10px;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: none;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 회원 검색 -> 초대 */
+.search-result-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.user-profile-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 프로필 사진 */
+.user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* User Information */
+.user-username {
+    font-weight: bold;
+}
+
+.user-nickname {
+    color: #666;
+}
+
+.message-image {
+    width: 400px;
+}
+
+/* 검색 결과 카드 속 체크박스 */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.checkbox-label {
+    margin-left: 5px;
+}
+
+/* 채팅방 생성 완료 문구 */
+#complete-creating h4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* 이미지 전송 */
+.custom-file-input {
+    display: none; /* 입력된 파일 이름 미리보기 x*/
+}
+
+.custom-file-label {
+    cursor: pointer;
+    background-color: #6c747d;
+    color: #fff;
+    padding: 7px 10px;
+    border-radius: 5px;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom-file-label::after {
+    content: '파일';
+}
+
+#filePreview {
+    display: none;
+    width: 200px;
+}

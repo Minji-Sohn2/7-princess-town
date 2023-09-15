@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<!--<html lang="en">-->
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+<!--        <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/img/tomato-logo-img/tomato_logo.png">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>우리동네 커뮤니티 토마토</title>
+
+    <!-- Cookie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--  SemanticUI  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/mainpage.css">
+
+    <!--  구글 폰트  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Jua&family=Gugi&font-family: 'Gugi', cursive;display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://webfontworld.github.io/daegu/DalseoHealing.css">
+
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c6072caed86d58e141a7a115ca39de4c"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
+</head>
+<body>
+<div id="except-footer">
+    <!--  상단바  -->
+    <div class="ui secondary pointing menu" id="header">
+        <div id="header-info">
+            <div class="header-logo" id="header-name">
+                <img src="/img/tomato-logo-img/tomato_logo.png" alt="Tomato Logo">
+                <a href="/view/mainpage" style="color: #a96b6b">
+                    <h2>토마토</h2>
+                </a>
+            </div>
+            <div style="display: flex">
+                <form class="search-form" style="display: flex; justify-content: center;">
+                    <div class="ui selection menu" style="margin-right: 10px; border-radius: 10px;">
+                        <div class="ui simple dropdown item" id="searchTypeDropdown">
+                            <div id="defaultitem" class="text">제목</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu transition hidden">
+                                <div class="item" data-value="title" style="border: none;">제목</div>
+                                <div class="item" data-value="contents" style="border: none;">내용</div>
+                                <div class="item" data-value="titleAndContents" style="border: none;">제목+내용</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui right aligned category search" style="display: flex; justify-content: center;">
+                        <div class="ui icon input">
+                            <input class="prompt" type="text" id="searchKeyword" placeholder="검색어를 입력하세요" style="display: flex; justify-content: center; width: 600px; padding-right: 30px; text-align: center; border-radius: 10px;">
+                            <button type="submit" id="searchButton" style="border: none; background: transparent; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; cursor: pointer;">
+                                <i class="search icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!--                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>-->
+                </form>
+                <button class="btn-create-post" id="createPostButton" style="border: none; background: transparent; justify-content: center; cursor: pointer; margin-left: 2em;"><i class="pencil alternate icon" ></i></button>
+            </div>
+
+            <div class="header-buttons">
+                <div>
+                    <a class="item" id="myChatRoom-btn2" href="/view/chatRooms">
+                        <i class="comment icon"></i>
+                    </a>
+                </div>
+                <!--  사용자 버튼  -->
+                <button id="user-icon" class="ui icon button">
+                    <i class="user icon"></i>
+                    <img id="profile-picture" class="ui avatar image" style="display: none;" src="">
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--  상단바 끝  -->
+
+    <!-- 메인페이지 -->
+    <div class="content-mainpage">
+        <div class="sidebar-mainpage">
+            <div class="box">
+                <h2 class="h2">인기검색어</h2>
+                <ol class="search-ranking">
+                    <!--<li>검색어 1</li>-->
+                </ol>
+            </div>
+            <div>
+                <ul class="board-list">
+                    <li><a href="/view/mainpage">전체게시판</a>
+                        <ul class="sub-board-list">
+                            <th:block th:each="board : ${boardList}">
+                                <li>
+                                    <a th:href="@{/view/boards/{boardId}(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                                    <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
+                                </li>
+                            </th:block>
+                        </ul>
+                    </li>
+                    <li><a href="/view/radiusposts">지역게시판</a>
+                        <ul class="sub-board-list">
+                            <th:block th:each="board : ${boardList}">
+                                <li>
+                                    <a th:href="@{/view/boards/{boardId}/radiusposts(boardId=${board.id})}" th:text="${board.title}">게시판</a>
+                                    <!-- 추가 하위 리스트 아이템을 여기에 추가할 수 있습니다. -->
+                                </li>
+                            </th:block>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="posts">
+                <h2 class="h2">인기게시글</h2>
+                <ol class="post-ranking">
+                    <li th:each="post : ${topPosts}" class="post">
+                        <div class="post-content">
+                            <div class="post-title-container">
+                                <a th:href="@{/view/posts/{postId}(postId=${post.id})}">
+                                    <span class="post-title" th:text="${post.title}">게시글 제목</span>
+                                </a>
+                            </div>
+                            <div class="post-info-container">
+                            <span class="post-info"
+                                  th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+            <div class="posts">
+                <h2 class="h2">전체게시글</h2>
+                <ul class="post-list">
+                    <li th:each="post : ${posts}" class="post">
+                        <div class="post-content">
+                            <div class="post-title-container">
+                                <a th:href="@{/view/posts/{postId}(postId=${post.id})}">
+                                    <!-- 게시물 제목을 표시합니다 -->
+                                    <span class="post-title" th:text="${post.title}"></span>
+                                </a>
+                            </div>
+                            <div class="post-info-container">
+                                <!-- 게시물 정보를 표시합니다 -->
+                                <span class="post-info"
+                                      th:text="'작성자: ' + ${post.nickname} + ' | 작성일: ' + ${post.createdAt} + ' | 조회수: ' + ${post.viewCount} + ' | 좋아요: ' + ${post.likeCnt}"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- footer 시작 -->
+<footer>
+    <div class="footer">
+        <p><img src="/img/tomato-logo-img/tomato_logo.png" style="width: 50px;">우리 동네 커뮤니티 토마토</p>
+        <br/>
+        <div>
+            <p>김휘수 | 모성민 | 손민지 | 주인수</p>
+            <p>© 2023 7PRINCESS TOMATO ALL RIGHTS RESERVED</p>
+        </div>
+        <br/>
+    </div>
+</footer>
+
+<div class="ui vertical menu" id="user-menu">
+    <div class="header" id="menu-header">User</div>
+    <div class="menu">
+        <a class="item" data-modal="#loginModal" id="login-btn" href="#0">
+            <i class="sign-in icon"></i> 로그인
+        </a>
+        <a class="item" data-modal="#signupModal" id="signup-btn" href="#0">
+            <i class="user plus icon"></i> 회원가입
+        </a>
+        <a class="item" data-modal="#profileModal" id="profile-btn" href="#0">
+            <i class="user circle icon"></i> 프로필
+        </a>
+        <a class="item" id="myChatRoom-btn" href="/view/chatRooms">
+            <i class="comment icon"></i>내 채팅방
+        </a>
+        <a class="item" data-modal=#logout-confirm-modal id="logout-btn" href="#0">
+            <i class="sign-out icon"></i> 로그아웃
+        </a>
+        <a class="item" data-modal="#deactivationModal" id="deactivation-btn" href="#0">
+            <i class="user times icon"></i> 회원탈퇴
+        </a>
+    </div>
+    <div class="divider"></div>
+</div>
+
+<!-- 로그아웃 모달 창 -->
+<div class="ui basic modal" id="logout-confirm-modal">
+    <div class="ui icon header">
+        <i class="sign-out icon"></i>
+        로그아웃 확인
+    </div>
+    <div class="content">
+        <p>로그아웃 하시겠습니까?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            취소
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            확인
+        </div>
+    </div>
+</div>
+
+<!-- 프로필 정보 모달 창 -->
+<div id="profileModal" class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        개인정보
+        <button class="ui right floated button" id="editProfile">수정</button>
+        <button class="ui right floated button" id="saveProfile" style="display: none;">저장</button>
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input style="border: none;" type="text" name="profile-usernameInput" placeholder="아이디" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input style="border: none;" type="password" name="profile-passwordInput" placeholder="비밀번호" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field">
+                <label>닉네임</label>
+                <input style="border: none;" type="text" name="profile-nicknameInput" placeholder="닉네임" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field">
+                <label>이메일</label>
+                <input style="border: none;" type="email" name="profile-emailInput" placeholder="이메일" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field" id="profileset">
+                <label>전화번호</label>
+                <input style="border: none;" type="text" name="profile-phoneNumberInput" placeholder="전화번호" readonly>
+            </div>
+            <div class="divider" style="margin-top: 30px; margin-bottom: 15px;"></div>
+            <div class="temp-none" style="margin-top: 50px; display: none"></div>
+            <div class="field" id="profile-image-id" style="display: none;">
+                <label>프로필 이미지</label>
+                <div class="input-file-container">
+                    <input type="file" id="profile-imageInput" name="profile-imageInput">
+                    <label for="profile-imageInput">
+                        <i class="images icon"></i>
+                    </label>
+                    <span id="selectedFileName"></span>
+                </div>
+            </div>
+            <div class="field" id="radius-id" style="display: none; margin-top: 20px">
+                <label>반경 설정</label>
+                <div class="location-input-button-container">
+                    <select class="ui dropdown" id="radiusSelect" style="display: none;">
+                        <option value="1">1km</option>
+                        <option value="2">2km</option>
+                        <option value="3">3km</option>
+                        <option value="4">4km</option>
+                        <option value="5">5km</option>
+                    </select>
+                    <button class="ui button" id="setLocation" style="display: none;">위치 설정</button>
+                </div>
+            </div>
+            <div class="map" style="margin-bottom: 20px">
+                <div class="temp-none" style="margin-top: 50px; display: none"></div>
+                <label>지도</label>
+            </div>
+            <div id="map" style="height:300px;"></div>
+            <div style="margin-top: 30px;"></div>
+            <p></p>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Signup Form -->
+<div class="ui segment" id="modalContainer">
+    <div class="ui segment modal" id="signupModal">
+        <div class="header" style="margin: -11px;">회원가입</div>
+        <div style="margin-bottom: 15px;"></div>
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" id="signup-usernameInput" placeholder="아이디">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" id="signup-passwordInput" placeholder="비밀번호">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>닉네임</label>
+                <input type="text" id="signup-nicknameInput" placeholder="닉네임">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>이메일</label>
+                <input type="email" id="signup-emailInput" placeholder="이메일">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>전화번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-phoneNumberInput" placeholder="전화번호">
+                    <button class="ui button" id="signup-sendVerificationCode">인증번호 전송</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호</label>
+                <div class="ui action input">
+                    <input type="text" id="signup-verifyCodeInput" placeholder="인증번호">
+                    <button class="ui button" id="signup-verificationCode">인증번호 확인</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label>프로필 이미지</label>
+                <div class="input-file-container">
+                    <input type="file" id="signup-profileImageInput" name="signup-profileImageInput" style="display: none;">
+                    <label for="signup-profileImageInput">
+                        <i class="images icon"></i>
+                    </label>
+                    <span id="signup-selectedFileName"></span>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <div class="field">
+                    <label>반경 설정</label>
+                    <div class = "location-input-button-container">
+                        <select class="ui dropdown" id="signup-radiusSelect">
+                            <option value="1">1km</option>
+                            <option value="2">2km</option>
+                            <option value="3">3km</option>
+                            <option value="4">4km</option>
+                            <option value="5">5km</option>
+                        </select>
+                        <button class="ui button" id="signup-setLocation">위치 설정</button>
+                    </div>
+                </div>
+
+                <div id="signup-map" style="height:300px; display: none;"></div>
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <div class="signup-center-content">
+                <div class="inline field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="accept-terms">
+                        <label for="accept-terms">I agree to the <a href="#0">Terms</a></label>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;"></div>
+                <!-- 회원가입 완료 여부를 저장하는 input 엘리먼트 -->
+                <input type="hidden" id="verificationCompleted" value="false">
+                <button class="ui button" type="submit" id="signup-submit">회원가입</button>
+                <div style="margin-top: 50px;"></div>
+                <a href="/" class="cd-form-bottom-message">메인으로</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Login Form -->
+<div class="ui segment modal" id="loginModal">
+    <div class="login-container">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디</label>
+                <input type="text" name="login-usernameInput" placeholder="아이디">
+            </div>
+            <div style="margin-top: 30px;"></div>
+            <div class="field">
+                <label>비밀번호</label>
+                <input type="password" name="login-passwordInput" placeholder="비밀번호">
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="login-buttons">
+                <button class="ui button" type="submit" id="login-submit">로그인</button>
+                <div class="social-login-text">소셜로그인</div>
+                <div class="custom-button-container">
+                    <button class="custom-image-button" id="naverLogin">
+                        <img src="/img/loginButton/naverButton.png" class="custom-icon-img">
+                    </button>
+                    <button class="custom-image-button" id="kakaoLogin">
+                        <img src="/img/loginButton/kakaoButton.png" class="custom-icon-img">
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div style="margin-top: 50px;"></div>
+        <div class="divider"></div>
+        <div class="login-footer">
+            <p class="item"><a href="#0" data-modal="#usernameFindModal">아이디 찾기</a></p>
+            <p class="item"><a href="#0" data-modal="#passwordResetModal">비밀번호 찾기</a></p>
+            <a href="/" class="cd-form-bottom-message">메인으로</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Deactivation Form -->
+<div class="ui segment modal" id="deactivationModal">
+    <div class="header" style="margin: -11px;">회원탈퇴</div>
+    <div style="margin-bottom: 15px;"></div>
+    <div class="ui segment">
+        <form class="ui form">
+            <!-- 전화번호 입력 및 인증번호 전송 -->
+            <div class="field">
+                <label>전화번호</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 인증번호 확인 -->
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>회원탈퇴 인증코드 발송</label>
+                <div class="input-button-container">
+                    <input type="email" id="deactive-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="deactive-sendDeactiveCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 이메일로 받은 회원탈퇴 코드 확인 -->
+            <div class="field">
+                <label>이메일로 받은 회원탈퇴 코드</label>
+                <div class="input-button-container">
+                    <input type="text" id="deactive-deactivationCodeInput" placeholder="회원탈퇴 코드를 입력해주세요">
+                    <button class="ui button red" id="deactivationButton">탈퇴</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <!-- 회원탈퇴 최종 확인 -->
+            <!--      <div class="field">-->
+            <!--        <div class="ui checkbox">-->
+            <!--          <input type="checkbox" id="confirmDeactivation">-->
+            <!--          <label>정말 회원탈퇴를 진행하시겠습니까?</label>-->
+            <!--        </div>-->
+            <!--      </div>-->
+            <div style="margin-top: 30px;"></div>
+        </form>
+        <a href="/" class="cd-form-bottom-message">메인으로</a>
+    </div>
+</div>
+
+<!-- 회원탈퇴 확인 모달 창 -->
+<div class="ui modal" id="deactivationConfirmModal">
+    <i class="close icon"></i>
+    <div class="header">
+        회원탈퇴 확인
+    </div>
+    <div class="content">
+        <p>정말 회원탈퇴를 진행하시겠습니까?</p>
+        <p>회원탈퇴 시 모든 데이터가 삭제되며, 로그인이 불가능합니다.</p>
+        <!-- 확인 체크박스 -->
+        <div class="ui checkbox">
+            <input type="checkbox" id="confirmDeactivation">
+            <label>위 내용을 확인하였으며, 회원탈퇴에 동의합니다.</label>
+        </div>
+    </div>
+    <div class="actions">
+        <!-- 확인 및 취소 버튼 -->
+        <button class="ui button red" id="confirmDeactivationButton" disabled>회원탈퇴</button>
+        <button class="ui button" id="cancelDeactivation">취소</button>
+    </div>
+</div>
+
+<!-- Temp Password Login Form -->
+<div class="ui segment modal" id="tempLoginModal">
+    <form class="ui form">
+        <div class="field">
+            <label>아이디</label>
+            <input type="text" name="tempLogin-usernameInput" placeholder="아이디">
+        </div>
+        <div class="field">
+            <label>임시 비밀번호</label>
+            <input type="password" name="tempLogin-passwordInput" placeholder="임시 비밀번호">
+        </div>
+        <button class="ui button" type="submit">임시 비밀번호로 로그인</button>
+    </form>
+</div>
+
+
+<!-- Password Reset Form -->
+<div class="ui segment modal" id="passwordResetModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>아이디 인증</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-usernameInput" placeholder="아이디를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verifyUsername">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendVerificationCode">Send</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="passwordReset-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-verificationCode">Enter</button>
+                </div>
+                <div style="margin-top: 50px;"></div>
+            </div>
+            <div class="field">
+                <label>임시 비밀번호 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="passwordReset-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="passwordReset-sendTempPassword">Send</button>
+                </div>
+            </div>
+            <div style="margin-top: 50px;"></div>
+            <div class="field">
+                <label style="margin-bottom: -10px;">임시 비밀번호로 임시 로그인 후, 비밀번호를 변경해주세요.</label>
+                <button class="ui button" type="button" id="passwordReset-tempLoginButton">임시 로그인</button>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
+    </div>
+</div>
+
+<!-- Username Find Form -->
+<div class="ui segment modal" id="usernameFindModal">
+    <div class="ui segment">
+        <form class="ui form">
+            <div class="field">
+                <label>인증번호 보내기</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-phoneNumberInput" placeholder="전화번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendVerificationCode">인증번호 전송</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>인증번호 확인</label>
+                <div class="input-button-container">
+                    <input type="text" id="usernameFind-verifyCodeInput" placeholder="인증번호를 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-verifyPhoneNumber">인증번호 확인</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>아이디 전송</label>
+                <div class="input-button-container">
+                    <input type="email" id="usernameFind-emailInput" placeholder="이메일을 입력해주세요">
+                    <button class="ui button" type="button" id="usernameFind-sendUsername" style="width: 130px">Send</button>
+                </div>
+            </div>
+        </form>
+        <p class="cd-form-bottom-message"><a href="/">메인으로</a></p>
+    </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script src="/js/mainpage.js"></script>
+
+</body>
+<script>
+    $(document).ready(function () {
+        function handleCreate() {
+            // 게시글 작성 페이지로 이동합니다.
+            window.location.href = "/view/createpost";
+        }
+
+        $("#createPostButton").click(function () {
+            // 현재 로그인 중인 인증정보 가져오기
+            const authorization = Cookies.get('Authorization');
+
+            // 작성자 인증 정보 비교
+            if (authorization == null) {
+                $('#loginModal').modal('show');
+                return false;
+            }
+            handleCreate(); // 정확한 페이지로 리다이렉션하기 위해 함수 호출
+        });
+    });
+</script>
+</html>
