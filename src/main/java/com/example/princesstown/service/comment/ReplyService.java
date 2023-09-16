@@ -96,13 +96,7 @@ public class ReplyService {
             Reply reply = replyRepository.findById(replyId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 답글이 존재하지 않습니다."));
 
-            List<ReplyLikes> replyLikes = replyLikesRepository.findAllByCommentIdAndReplyId(commentId, replyId);
-
             replysValid(reply, user);
-
-            if (replyLikes != null) {
-                replyLikesRepository.deleteAll(replyLikes);
-            }
             replyRepository.delete(reply);
 
             return this.resultResponse(HttpStatus.OK, "답글이 삭제되었습니다.", new ReplyResponseDto(reply));
@@ -133,6 +127,12 @@ public class ReplyService {
         try {
             getPostIdAndCommentId(postId, commentId);
 
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+            Reply reply = replyRepository.findById(replyId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 답글이 존재하지 않습니다."));
+
             Optional<ReplyLikes> existingLikesOptional = replyLikesRepository.findByReplyIdAndUserUserId(replyId, user.getUserId());
 
             if (existingLikesOptional.isPresent()) {
@@ -144,15 +144,9 @@ public class ReplyService {
                     replyLikesRepository.save(existingLikes);
                     return this.resultResponse(HttpStatus.CREATED, "좋아요 클릭", new ReplyLikesResponseDto(existingLikes));
                 } else {
-                    throw new IllegalArgumentException("이미 좋아요가 선택되어있습니다.");
+                    throw new IllegalArgumentException("이미 좋아요가 선택되어 있습니다.");
                 }
             } else {
-                Comment comment = commentRepository.findById(commentId)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-
-                Reply reply = replyRepository.findById(replyId)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 답글이 존재하지 않습니다."));
-
                 ReplyLikes newLikes = new ReplyLikes(true, comment, reply, user);
                 reply.setLikeCnt(reply.getLikeCnt() + 1);
                 replyLikesRepository.save(newLikes);

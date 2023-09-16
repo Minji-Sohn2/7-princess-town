@@ -44,7 +44,7 @@ public class Reply extends Timestamped {
     @JoinColumn(name = "user_userId")
     private User user;
 
-    @OneToMany(mappedBy = "reply", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reply", orphanRemoval = true)
     private List<ReplyLikes> replyLikesList = new ArrayList<>();
 
     public Reply(ReplyRequestDto requestDto, Post post, Comment comment, User user) {
