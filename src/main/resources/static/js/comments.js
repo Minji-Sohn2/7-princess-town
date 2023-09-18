@@ -95,6 +95,7 @@ if (token) {
     $(`#createComments`).remove();
     $(`#img-wrap`).remove();
     $('#show').remove();
+    $('.table-form').append('<h3>지금 로그인하시고 댓글에 참여해보세요!</h3>')
 }
 
 $.ajax({

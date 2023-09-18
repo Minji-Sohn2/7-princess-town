@@ -32,7 +32,6 @@ public class Comment extends Timestamped {
     @ColumnDefault("0")
     private Long likeCnt;
 
-
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
