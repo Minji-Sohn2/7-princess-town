@@ -1,7 +1,8 @@
 package com.example.princesstown.repository.user;
 
+import com.example.princesstown.dto.search.SimpleUserInfoDto;
 import com.example.princesstown.dto.search.UserSearchCond;
-import com.example.princesstown.entity.User;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,8 +23,10 @@ public class UserRepositoryQueryImpl implements UserRepositoryQuery {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<User> search(UserSearchCond cond) {
-        var query = jpaQueryFactory.selectFrom(user)
+    public List<SimpleUserInfoDto> search(UserSearchCond cond) {
+        var query = jpaQueryFactory.select(Projections.constructor(SimpleUserInfoDto.class,
+                        user.userId, user.username, user.nickname))
+                .from(user)
                 .where(
                         Objects.requireNonNull(containsKeyword(user.username, cond.getKeyword()))
                                 .or(containsKeyword(user.nickname, cond.getKeyword()))

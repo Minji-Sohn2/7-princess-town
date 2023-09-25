@@ -1,17 +1,20 @@
 package com.example.princesstown.dto.search;
 
-import com.example.princesstown.entity.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Getter
+@NoArgsConstructor
+@Component
 public class SimpleUserInfoDto {
     private Long userId;
     private String username;
     private String nickname;
 
-    public SimpleUserInfoDto(User user) {
-        this.userId = user.getUserId();
-        this.username = user.getUsername();
-        this.nickname = user.getNickname();
+    public SimpleUserInfoDto(Long id, String username, String nickname) {
+        this.userId = id;
+        this.username = username;
+        this.nickname = nickname;
     }
 }

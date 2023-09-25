@@ -171,12 +171,9 @@ public class UserService {
     @Transactional(readOnly = true)
     public SearchUserResponseDto searchUserByKeyword(UserSearchCond userSearchCond) {
 
-        List<SimpleUserInfoDto> result = userRepository.search(userSearchCond)
-                .stream()
-                .map(SimpleUserInfoDto::new)
-                .toList();
+        List<SimpleUserInfoDto> result = userRepository.search(userSearchCond);
 
-        return new SearchUserResponseDto(result);
+       return new SearchUserResponseDto(result);
     }
 
     //userId로 해당 유저의 위치정보를 가져오는 메소드
