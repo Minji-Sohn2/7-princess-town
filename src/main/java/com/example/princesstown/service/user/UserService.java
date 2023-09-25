@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -65,7 +67,7 @@ public class UserService {
         // 전화번호 중복 확인
         String phoneNumber = requestDto.getPhoneNumber();
         User checkPhoneNumber = userRepository.findByPhoneNumber(phoneNumber);
-        if(checkPhoneNumber != null) {
+        if (checkPhoneNumber != null) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 전화번호입니다."));
         } else if (checkUser.isPresent() && checkEmail != null && checkPhoneNumber != null) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "중복된 아이디, 전화번호, 이메일입니다."));
@@ -87,33 +89,33 @@ public class UserService {
             return ResponseEntity.badRequest().body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "비밀번호는 최소 8자 이상, 15자 이하이며 알파벳 대소문자, 숫자로 구성되어야 합니다."));
         }
 
-            // 비밀번호 인코딩
-            String encodedPassword = passwordEncoder.encode(notEncodingPassword);
+        // 비밀번호 인코딩
+        String encodedPassword = passwordEncoder.encode(notEncodingPassword);
 
-            // 회원 가입 진행
-            // requestDto.profileImage를 제외한 필드가 객체에 저장이 됨
-            User user = new User(requestDto, encodedPassword);
+        // 회원 가입 진행
+        // requestDto.profileImage를 제외한 필드가 객체에 저장이 됨
+        User user = new User(requestDto, encodedPassword);
 
-            // S3에 이미지 업로드
-            try {
-                if (requestDto.getProfileImage() != null) {
-                    // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
-                   String imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
-                    // 이미지 URL을 설정
-                    user.setProfileImage(imageUrl);
-                }
-            } catch (IOException e) {
-                // 로깅 또는 적절한 에러 메시지를 반환
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미지 업로드 중 오류가 발생했습니다."));
+        // S3에 이미지 업로드
+        try {
+            if (requestDto.getProfileImage() != null) {
+                // S3에 이미지를 업로드하고, 이미지 URL을 받아와서 user.profileImage에 직접 객체에 저장이 됨
+                String imageUrl = s3Uploader.upload(requestDto.getProfileImage(), "profile-images");
+                // 이미지 URL을 설정
+                user.setProfileImage(imageUrl);
             }
+        } catch (IOException e) {
+            // 로깅 또는 적절한 에러 메시지를 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), "이미지 업로드 중 오류가 발생했습니다."));
+        }
 
-            // User 객체 저장
-            userRepository.save(user);
+        // User 객체 저장
+        userRepository.save(user);
 
-            // 회원가입 완료 후 인증상태 삭제
-            redisTemplate.delete("VerificationStatus_" + requestDto.getPhoneNumber());
+        // 회원가입 완료 후 인증상태 삭제
+        redisTemplate.delete("VerificationStatus_" + requestDto.getPhoneNumber());
 
-            return ResponseEntity.status(201).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원가입 완료 되었습니다."));
+        return ResponseEntity.status(201).body(new ApiResponseDto(HttpStatus.CREATED.value(), "회원가입 완료 되었습니다."));
     }
 
     // 회원탈퇴할 때 인증코드 이메일로 보내기
@@ -122,7 +124,7 @@ public class UserService {
         if (!user.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(400, "사용자를 찾을 수 없습니다."));
         } else {
-             String username = user.get().getUsername();
+            String username = user.get().getUsername();
 
             // 난수 탈퇴 인증코드 생성 및 이메일 전송 로직
             String deteactiveCode = UUID.randomUUID().toString().substring(0, 8);
@@ -160,42 +162,21 @@ public class UserService {
 
     // 유저조회
     public ProfileResponseDto lookupUser(Long userId) {
-        return  userRepository.findById(userId)
+        return userRepository.findById(userId)
                 .map(user -> new ProfileResponseDto(user, user.getLocation())).orElseThrow(
-                () -> new IllegalArgumentException("선택한 게시물은 존재하지 않습니다."));
+                        () -> new IllegalArgumentException("선택한 게시물은 존재하지 않습니다."));
     }
 
     // 사용자 검색
     @Transactional(readOnly = true)
     public SearchUserResponseDto searchUserByKeyword(UserSearchCond userSearchCond) {
-        List<User> searchByUsername
-                = userRepository.searchUserByKeyword(userSearchCond);
 
-
-        List<User> searchByNickname
-                = userRepository.searchNickByKeyword(userSearchCond);
-
-        List<SimpleUserInfoDto> result = mergeUserResultLists(searchByUsername, searchByNickname)
+        List<SimpleUserInfoDto> result = userRepository.search(userSearchCond)
                 .stream()
                 .map(SimpleUserInfoDto::new)
                 .toList();
 
         return new SearchUserResponseDto(result);
-    }
-
-    // 검색 후 겹치는 아이디 제거
-    private List<User> mergeUserResultLists(List<User> list1, List<User> list2) {
-        Map<Long, User> map = new HashMap<>();
-
-        for (User user1 : list1) {
-            map.put(user1.getUserId(), user1);
-        }
-
-        for (User user2 : list2) {
-            map.putIfAbsent(user2.getUserId(), user2);
-        }
-
-        return new ArrayList<>(map.values());
     }
 
     //userId로 해당 유저의 위치정보를 가져오는 메소드
