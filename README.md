@@ -30,6 +30,6 @@
 | 이름 | 역할 | 담당 | 깃허브 주소 |
 | --- | --- | --- | --- |
 | 김휘수 | 팀원 | 게시판, 위치 기반 게시글 | https://github.com/notitle12 |
-| 모성민 | 부팀장 | 댓글, 이모티콘, 리소스 | https://github.com/Garim12 |
+| 모성민 | 부팀장 | 댓글, 이모티콘, 인프라 | https://github.com/Garim12 |
 | 손민지 | 팀장 | 채팅, AWS | https://github.com/Minji-Sohn2 |
 | 주인수 | 팀원 | 사용자 관리 기능, 위치 서비스 | https://github.com/insu20230427 |
