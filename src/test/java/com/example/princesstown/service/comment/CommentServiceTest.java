@@ -244,6 +244,34 @@ class CommentServiceTest {
             // then
             assertThat(responseDto.isLikes()).isTrue();
         }
+
+        @Test
+        @Transactional
+        @DisplayName("댓글 좋아요 성공테스트")
+        void 댓글좋아요실패() {
+            // given
+            Post post = new Post();
+            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+            Comment comment = new Comment();
+
+            post.setId(100L);
+            comment.setPost(post);
+            comment.setUser(user);
+            comment.setId(100L);
+
+            // when
+
+            commentService.createLikes(post.getId(), comment.getId(), user);
+            CommentLikes commentLikes = new CommentLikes(false, comment, post, user);
+            commentLikes.setUser(user);
+            commentLikes.setComment(comment);
+            commentLikes.setPost(post);
+            CommentLikesResponseDto responseDto = new CommentLikesResponseDto(commentLikes);
+
+            // then
+            assertThat(responseDto.isLikes()).isFalse();
+        }
     }
 
     @Nested
@@ -276,6 +304,34 @@ class CommentServiceTest {
 
             // then
             assertThat(responseDto.isLikes()).isFalse();
+        }
+
+        @Test
+        @Transactional
+        @DisplayName("댓글 좋아요 취소 성공테스트")
+        void 댓글좋아요취소실패() {
+            // given
+            Post post = new Post();
+            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+            Comment comment = new Comment();
+
+            post.setId(100L);
+            comment.setPost(post);
+            comment.setUser(user);
+            comment.setId(100L);
+
+            // when
+
+            commentService.deleteLikes(post.getId(), comment.getId(), user);
+            CommentLikes commentLikes = new CommentLikes(true, comment, post, user);
+            commentLikes.setUser(user);
+            commentLikes.setComment(comment);
+            commentLikes.setPost(post);
+            CommentLikesResponseDto responseDto = new CommentLikesResponseDto(commentLikes);
+
+            // then
+            assertThat(responseDto.isLikes()).isTrue();
         }
     }
 
