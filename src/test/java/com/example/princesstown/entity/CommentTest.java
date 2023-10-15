@@ -1,12 +1,13 @@
 package com.example.princesstown.entity;
 
 import com.example.princesstown.dto.comment.CommentRequestDto;
-import com.example.princesstown.dto.comment.CommentResponseDto;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class CommentTest {
@@ -17,7 +18,6 @@ class CommentTest {
         // given
         String content = "content";
         String emoji = "emoji";
-        long likeCnt = 0L;
         Post post = new Post();
         User user = new User();
 
@@ -29,11 +29,14 @@ class CommentTest {
         Comment comment = new Comment(requestDto, post, user);
 
         // then
-        assertEquals(comment.getContent(), content);
-        assertEquals(comment.getEmoji(), emoji);
-        assertEquals(0L, likeCnt);
-        assertEquals(comment.getPost(), post);
-        assertEquals(comment.getUser(), user);
+
+        assertThat(comment.getContent()).isEqualTo(content);
+        assertThat(comment.getEmoji()).isEqualTo(emoji);
+        assertThat(comment.getPost()).isSameAs(post);
+        assertThat(comment.getUser()).isSameAs(user);
+
+        System.out.println("comment.getContent() = " + comment.getContent());
+        System.out.println(content);
     }
 
 }
