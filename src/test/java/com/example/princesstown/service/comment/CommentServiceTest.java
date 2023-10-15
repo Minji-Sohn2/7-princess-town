@@ -229,6 +229,27 @@ class CommentServiceTest {
             System.out.println("commentRepository.findById(111L) = " + commentRepository.findById(111L));
         }
 
+        @Test
+        @Transactional
+        @DisplayName("댓글 삭제 실패테스트")
+        void 댓글삭제실패테스트() {
+            // given
+            CommentRequestDto requestDto = new CommentRequestDto();
+            Post post = new Post();
+            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+            post.setId(10L);
+
+            // when
+            commentService.deleteComments(post.getId(), 111L, user);
+
+            // then
+            assertThat(commentRepository.findById(111L)).isNotEmpty();
+
+            System.out.println("commentRepository.findById(111L) = " + commentRepository.findById(115L));
+        }
+
     }
 
 }
