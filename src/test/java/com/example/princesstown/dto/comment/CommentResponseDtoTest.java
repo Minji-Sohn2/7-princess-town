@@ -42,17 +42,14 @@ class CommentResponseDtoTest {
         @Test
         @DisplayName("Dto에 데이터가 담기지않을시")
         public void 실패테스트() {
-            String content = null;
-            String emoji = null;
+            String content = "content";
+            String emoji = "emoji";
 
             CommentRequestDto requestDto = new CommentRequestDto();
 
             Post post = new Post();
 
             User user = new User();
-
-            requestDto.setContent(content);
-            requestDto.setEmoji(emoji);
 
             Comment comment = new Comment(requestDto, post, user);
 
