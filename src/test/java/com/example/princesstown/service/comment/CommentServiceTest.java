@@ -1,14 +1,15 @@
 package com.example.princesstown.service.comment;
 
+import com.example.princesstown.dto.comment.CommentLikesResponseDto;
 import com.example.princesstown.dto.comment.CommentRequestDto;
 import com.example.princesstown.dto.comment.CommentResponseDto;
 import com.example.princesstown.entity.Comment;
+import com.example.princesstown.entity.CommentLikes;
 import com.example.princesstown.entity.Post;
 import com.example.princesstown.entity.User;
 import com.example.princesstown.repository.comment.CommentRepository;
 import com.example.princesstown.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class CommentServiceTest {
             User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
                             .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
-            post.setId(1L);
+            post.setId(10L);
 
             requestDto.setContent("댓글생성");
             requestDto.setEmoji("/img/emoji/emoji1.png");
@@ -94,28 +95,6 @@ class CommentServiceTest {
     @Nested
     @DisplayName("댓글 수정 테스트")
     class 댓글수정테스트 {
-
-        @BeforeEach
-        @Transactional
-        void 댓글생성() {
-            CommentRequestDto requestDto = new CommentRequestDto();
-            Post post = new Post();
-            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
-                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-
-            post.setId(1L);
-
-            requestDto.setContent("댓글생성");
-            requestDto.setEmoji("/img/emoji/emoji1.png");
-
-            // when
-            Comment comment = new Comment(requestDto, post, user);
-
-            commentService.createComments(post.getId(), requestDto, user);
-
-            System.out.println("comment.getContent() = " + comment.getContent());
-            System.out.println("comment.getEmoji() = " + comment.getEmoji());
-        }
 
         @Test
         @Transactional
@@ -182,38 +161,12 @@ class CommentServiceTest {
     @Nested
     @DisplayName("댓글 삭제 테스트")
     class 댓글삭제테스트 {
-        @BeforeEach
-        @Transactional
-        void 댓글생성() {
-            CommentRequestDto requestDto = new CommentRequestDto();
-            Post post = new Post();
-            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
-                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
-
-            post.setId(10L);
-
-            requestDto.setContent("댓글생성");
-            requestDto.setEmoji("/img/emoji/emoji1.png");
-
-            // when
-            Comment comment = new Comment(requestDto, post, user);
-
-            comment.setId(111L);
-
-            commentService.createComments(post.getId(), requestDto, user);
-
-            System.out.println("comment.getContent() = " + comment.getContent());
-            System.out.println("comment.getEmoji() = " + comment.getEmoji());
-
-            System.out.println("commentRepository.findById(111L) = " + commentRepository.findById(111L));
-        }
 
         @Test
         @Transactional
         @DisplayName("댓글 삭제 성공테스트")
         void 댓글삭제성공테스트() {
             // given
-            CommentRequestDto requestDto = new CommentRequestDto();
             Post post = new Post();
             User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
                     .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
@@ -234,22 +187,96 @@ class CommentServiceTest {
         @DisplayName("댓글 삭제 실패테스트")
         void 댓글삭제실패테스트() {
             // given
-            CommentRequestDto requestDto = new CommentRequestDto();
             Post post = new Post();
             User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
                     .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
             post.setId(10L);
 
+            Comment comment = new Comment();
+
+            comment.setContent("댓글삭제");
+            comment.setEmoji("/img/emoji/emoji1.png");
+
+            commentRepository.save(comment);
+
+            System.out.println("commentRepository.findById(111L) = " + commentRepository.findById(111L));
+
             // when
-            commentService.deleteComments(post.getId(), 111L, user);
+            commentService.deleteComments(post.getId(), 100L, user);
 
             // then
-            assertThat(commentRepository.findById(111L)).isNotEmpty();
+            assertThat(commentRepository.findById(1L)).isNotEmpty();
 
-            System.out.println("commentRepository.findById(111L) = " + commentRepository.findById(115L));
+            System.out.println("commentRepository.findById(111L) = " + commentRepository.findById(111L));
         }
 
+    }
+
+    @Nested
+    @DisplayName("댓글 좋아요 테스트")
+    class 댓글좋아요테스트 {
+
+        @Test
+        @Transactional
+        @DisplayName("댓글 좋아요 성공테스트")
+        void 댓글좋아요성공() {
+            // given
+            Post post = new Post();
+            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+            Comment comment = new Comment();
+
+            post.setId(100L);
+            comment.setPost(post);
+            comment.setUser(user);
+            comment.setId(100L);
+
+            // when
+
+            commentService.createLikes(post.getId(), comment.getId(), user);
+            CommentLikes commentLikes = new CommentLikes(true, comment, post, user);
+            commentLikes.setUser(user);
+            commentLikes.setComment(comment);
+            commentLikes.setPost(post);
+            CommentLikesResponseDto responseDto = new CommentLikesResponseDto(commentLikes);
+
+            // then
+            assertThat(responseDto.isLikes()).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("댓글 좋아요 취소 테스트")
+    class 댓글좋아요취소테스트 {
+
+        @Test
+        @Transactional
+        @DisplayName("댓글 좋아요 취소 성공테스트")
+        void 댓글좋아요취소성공() {
+            // given
+            Post post = new Post();
+            User user = userRepository.findByUsername("ANz63hS1Q_gX48lDe3nHjQm3Po5xMVaogpJpItWCJbk_NaverUser_f24b8a11-5af6-44bb-92f4-c85c287c3265")
+                    .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+            Comment comment = new Comment();
+
+            post.setId(100L);
+            comment.setPost(post);
+            comment.setUser(user);
+            comment.setId(100L);
+
+            // when
+
+            commentService.deleteLikes(post.getId(), comment.getId(), user);
+            CommentLikes commentLikes = new CommentLikes(false, comment, post, user);
+            commentLikes.setUser(user);
+            commentLikes.setComment(comment);
+            commentLikes.setPost(post);
+            CommentLikesResponseDto responseDto = new CommentLikesResponseDto(commentLikes);
+
+            // then
+            assertThat(responseDto.isLikes()).isFalse();
+        }
     }
 
 }
