@@ -23,8 +23,8 @@ public class RedisConfig {
     @Value("${redis.port}")
     private int redisPort;
 
-    @Value("${redis.password}")
-    private String redisPassword;
+//    @Value("${redis.password}")
+//    private String redisPassword;
 
     // Redis 저장소와 연결
 //    @Bean
@@ -36,7 +36,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
-        redisConfig.setPassword(redisPassword);
+//        redisConfig.setPassword(redisPassword);
 
         return new LettuceConnectionFactory(redisConfig);
     }

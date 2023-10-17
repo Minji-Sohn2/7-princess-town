@@ -1,7 +1,12 @@
 // URL에서 postid를 뽑아냄
 function getPostIdFromUrl() {
     const urlParts = window.location.pathname.split('/');
-    const postIdIndex = urlParts.indexOf('posts') + 1;
+    let postIdIndex = urlParts.indexOf('posts') + 1;
+    console.log(postIdIndex);
+    if (postIdIndex === 0) {
+        postIdIndex = urlParts.indexOf('radiusposts') + 1;
+    }
+    console.log(urlParts[postIdIndex]);
     return urlParts[postIdIndex];
 }
 
@@ -95,6 +100,7 @@ if (token) {
     $(`#createComments`).remove();
     $(`#img-wrap`).remove();
     $('#show').remove();
+    $('.table-form').append('<h3>지금 로그인하시고 댓글에 참여해보세요!</h3>')
 }
 
 $.ajax({

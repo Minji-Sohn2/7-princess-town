@@ -117,25 +117,7 @@ public class CommentService {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
-            List<Reply> reply = replyRepository.findAllByCommentId(commentId);
-
-            List<CommentLikes> commentLikes = commentLikesRepository.findAllByCommentId(commentId);
-
-            List<ReplyLikes> replyLikes = replyLikesRepository.findAllByCommentId(commentId);
-
             commentsValid(comment, user);
-
-            if (replyLikes != null) {
-                replyLikesRepository.deleteAll(replyLikes);
-            }
-
-            if (reply != null) {
-                replyRepository.deleteAll(reply);
-            }
-
-            if (commentLikes != null) {
-                commentLikesRepository.deleteAll(commentLikes);
-            }
 
             commentRepository.delete(comment);
 
@@ -165,9 +147,13 @@ public class CommentService {
     // 좋아요 추가
     public ResponseEntity<RestApiResponseDto> createLikes(Long postId, Long commentId, User user) {
         try {
-            getPostId(postId);
-
             Optional<CommentLikes> existingLikesOptional = commentLikesRepository.findByCommentIdAndUserUserId(commentId, user.getUserId());
+
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
+
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
             if (existingLikesOptional.isPresent()) {
                 CommentLikes existingLikes = existingLikesOptional.get();
@@ -181,11 +167,6 @@ public class CommentService {
                     throw new IllegalArgumentException("이미 좋아요가 선택되어 있습니다.");
                 }
             } else {
-                Post post = postRepository.findById(postId)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다."));
-
-                Comment comment = commentRepository.findById(commentId)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
                 CommentLikes newLikes = new CommentLikes(true, comment, post, user);
                 comment.setLikeCnt(comment.getLikeCnt() + 1);

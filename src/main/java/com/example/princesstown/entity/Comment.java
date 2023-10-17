@@ -32,7 +32,6 @@ public class Comment extends Timestamped {
     @ColumnDefault("0")
     private Long likeCnt;
 
-
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
@@ -41,10 +40,10 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "user_userId")
     private User user;
 
-    @OneToMany( mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "comment", orphanRemoval = true)
     private List<Reply> ReplyList= new ArrayList<>();
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
     private List<CommentLikes> commentLikesList = new ArrayList<>();
 
     public Comment(CommentRequestDto requestDto, Post post, User user) {
